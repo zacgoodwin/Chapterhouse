@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - refreshing tokens for feats
 - database config targets Supabase hosted Postgres via the Supavisor session pooler (credentials under <env>.supabase.db); test stays on localhost
 - db/seeds.rb rewritten as a deterministic fresh-database content load (all inputs in-repo, dnd2024 spells now seeded from spells.json, seeds_prod.rb chained); old ETL scratch removed
+- login is Supabase Auth: email/password + Google/Discord OAuth via supabase-js; the SPA session lives in localStorage with automatic token refresh
+- ActiveStorage development/production services point at Supabase Storage's S3 endpoint
+- campaign dice rolls broadcast through Supabase Realtime (async job) instead of ActionCable; subscriber now unsubscribes on unmount
 
 ### Removed
 - authkeeper/bcrypt password + OAuth stack: signin/signup/identities endpoints, user_sessions and user_identities tables, users.password_digest; Rails now verifies Supabase Auth JWTs (ES256/RS256 via JWKS) and provisions app users keyed by the auth id on first request
