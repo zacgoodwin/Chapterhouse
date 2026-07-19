@@ -38,14 +38,14 @@ describe Frontend::Bots::CharactersController do
           context 'for valid params' do
             let(:values) { ['/roll d20'] }
 
-            before { allow(CampaignChannel).to receive(:broadcast_to) }
+            before { allow(BotContext::Channels::SendToCampaignJob).to receive(:perform_later) }
 
             it 'returns result', :aggregate_failures do
               request
 
               expect(response.parsed_body[:errors]).to be_nil
               expect(response).to have_http_status :ok
-              expect(CampaignChannel).not_to have_received(:broadcast_to)
+              expect(BotContext::Channels::SendToCampaignJob).not_to have_received(:perform_later)
             end
 
             context 'when channel is present' do
@@ -61,7 +61,7 @@ describe Frontend::Bots::CharactersController do
 
                 expect(response.parsed_body[:errors]).to be_nil
                 expect(response).to have_http_status :ok
-                expect(CampaignChannel).to have_received(:broadcast_to)
+                expect(BotContext::Channels::SendToCampaignJob).to have_received(:perform_later).with(campaign.id, kind_of(String))
               end
             end
           end

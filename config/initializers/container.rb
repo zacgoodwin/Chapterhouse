@@ -29,6 +29,7 @@ module Charkeeper
     register('monitoring.client') { Monitoring::Client.new }
     register('api.imgproxy.client') { ImgproxyApi::Client.new }
     register('api.discord.client') { DiscordApi::Client.new }
+    register('api.supabase.client') { SupabaseApi::Client.new }
 
     # commands
     register('commands.homebrew_context.dnd.add_item') { HomebrewContext::Dnd::Items::AddCommand.new }

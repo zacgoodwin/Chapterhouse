@@ -80,7 +80,7 @@ module BotContextV2
     end
 
     def send_owlbear_message(campaign, formatted_result)
-      CampaignChannel.broadcast_to(campaign, { message: formatted_result[:result] })
+      BotContext::Channels::SendToCampaignJob.perform_later(campaign.id, formatted_result[:result])
     end
   end
 end

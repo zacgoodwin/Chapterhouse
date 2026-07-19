@@ -5,8 +5,6 @@ require 'active_support/core_ext/integer/time'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.action_cable.url = 'wss://charkeeper.ru/cable'
-  config.action_cable.disable_request_forgery_protection = true
 
   # Code is not reloaded between requests.
   config.enable_reloading = false

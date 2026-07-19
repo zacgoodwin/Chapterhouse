@@ -3,7 +3,6 @@
 Rails.application.routes.draw do
   mount GoodJob::Engine, at: 'good_job'
   mount PgHero::Engine, at: 'pghero'
-  mount ActionCable.server, at: '/cable'
 
   namespace :adminbook do
     resources :homebrews, only: %i[edit update] do

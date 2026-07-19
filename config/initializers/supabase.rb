@@ -8,4 +8,5 @@ supabase_credentials = Rails.application.credentials.dig(Rails.env.to_sym, :supa
 
 Rails.application.config.x.supabase.url = ENV['SUPABASE_URL'].presence || supabase_credentials[:url]
 Rails.application.config.x.supabase.anon_key = supabase_credentials[:anon_key]
+Rails.application.config.x.supabase.service_role_key = supabase_credentials[:service_role_key]
 Rails.application.config.x.supabase.jwks = nil

@@ -1,47 +1,29 @@
-import { createSignal, For, onMount } from 'solid-js';
-import { createConsumer } from '@rails/actioncable';
+import { createSignal, For, onMount, onCleanup } from 'solid-js';
 
 import { ErrorWrapper } from '../../../components';
-import { useAppState } from '../../../context';
-import { readFromCache } from '../../../helpers';
-
-const CHARKEEPER_HOST_CACHE_NAME = 'CharKeeperHost';
+import { supabase } from '../../../helpers';
 
 export const CampaignRolls = (props) => {
   const campaign = () => props.campaign;
 
   const [history, setHistory] = createSignal([]);
 
-  const [appState] = useAppState();
-
-  const readHostData = async () => {
-    const cacheValue = await readFromCache(CHARKEEPER_HOST_CACHE_NAME);
-    return cacheValue === null || cacheValue === undefined ? appState.rootHost : cacheValue;
-  }
-
-  const connectToCable = async () => {
-    const host = await readHostData();
-
-    const protocol = appState.rootHost === 'localhost:5000' ? 'ws' : 'wss';
-    const consumer = createConsumer(`${protocol}://${host}/cable`);
-    consumer.subscriptions.create(
-      { channel: 'CampaignChannel', campaign_id: campaign().id },
-      {
-        connected() {
-          console.log('Connected to the channel:', this);
-        },
-        disconnected() {
-          console.log('Disconnected');
-        },
-        received(data) {
-          if (data.message) setHistory(history().concat([data.message.replace(/\n/g, '<br>')]));
-        }
-      }
-    )
-  }
+  let channel;
 
   onMount(() => {
-    connectToCable();
+    const client = supabase();
+    if (!client) return;
+
+    channel = client
+      .channel(`campaign:${campaign().id}`)
+      .on('broadcast', { event: 'message' }, ({ payload }) => {
+        if (payload.message) setHistory(history().concat([payload.message.replace(/\n/g, '<br>')]));
+      })
+      .subscribe();
+  });
+
+  onCleanup(() => {
+    if (channel) supabase()?.removeChannel(channel);
   });
 
   return (
