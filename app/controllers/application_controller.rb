@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include Authkeeper::Controllers::Authentication
+  include SupabaseAuthentication
 
   append_view_path Rails.root.join('app/views/controllers')
 

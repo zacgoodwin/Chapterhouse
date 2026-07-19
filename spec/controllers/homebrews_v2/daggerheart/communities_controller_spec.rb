@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Daggerheart::CommunitiesController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
-  let!(:own_element) { create :homebrew, :daggerheart_community, user: user_session.user }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
+  let!(:own_element) { create :homebrew, :daggerheart_community, user: user }
   let!(:element) { create :homebrew, :daggerheart_community }
 
   describe 'GET#show' do

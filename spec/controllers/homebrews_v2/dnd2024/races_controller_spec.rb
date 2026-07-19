@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Dnd2024::RacesController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
-  let!(:own_element) { create :dnd2024_homebrews_race, user: user_session.user }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
+  let!(:own_element) { create :dnd2024_homebrews_race, user: user }
   let!(:element) { create :dnd2024_homebrews_race }
 
   describe 'GET#show' do

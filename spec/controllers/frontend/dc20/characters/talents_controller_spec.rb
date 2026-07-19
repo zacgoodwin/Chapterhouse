@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe Frontend::Dc20::Characters::TalentsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:user_character) do
     CharactersContext::Dc20::CreateCommand.new.call(
-      user: user_session.user, name: 'name', main_class: 'commander', ancestry_feats: {}
+      user: user, name: 'name', main_class: 'commander', ancestry_feats: {}
     )[:result]
   end
   let!(:feat) { create :feat, :rally, type: 'Dc20::Feat', origin: 4, origin_value: 'general', info: { multiple: false } }

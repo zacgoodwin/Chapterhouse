@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::ItemsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
@@ -41,11 +41,11 @@ describe Frontend::ItemsController do
       context 'for daggerheart' do
         before do
           create :item, type: 'Daggerheart::Item'
-          create :item, type: 'Daggerheart::Item', user: user_session.user
+          create :item, type: 'Daggerheart::Item', user: user
 
           item = create :item, type: 'Daggerheart::Item'
           book = create :homebrew_book
-          create :user_book, user: user_session.user, book: book
+          create :user_book, user: user, book: book
           create :homebrew_book_item, homebrew_book: book, itemable: item
         end
 

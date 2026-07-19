@@ -11,7 +11,6 @@ Rails.application.routes.draw do
     end
     namespace :users do
       resources :notifications, except: %i[show]
-      resources :identities, only: %i[index]
       resources :platforms, only: %i[index]
     end
     resources :campaigns, only: %i[index]
@@ -83,11 +82,6 @@ Rails.application.routes.draw do
     end
     resources :homebrews, only: %i[index]
 
-    scope module: :users do
-      resource :signin, only: %i[create destroy]
-      resources :signup, only: %i[create]
-    end
-
     resources :characters, only: %i[index show destroy] do
       resources :notes, only: %i[index create update destroy], module: 'characters'
       resources :resources, only: %i[create update destroy], module: 'characters'
@@ -110,7 +104,6 @@ Rails.application.routes.draw do
       resources :items, only: %i[show]
     end
     resource :users, only: %i[update destroy] do
-      resources :identities, only: %i[destroy], module: 'users'
       resources :feedbacks, only: %i[create], module: 'users'
       resources :notifications, only: %i[index], module: 'users' do
         get 'unread', on: :collection
@@ -308,16 +301,6 @@ Rails.application.routes.draw do
 
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/, defaults: { locale: nil } do
     scope module: :web do
-      get 'auth/:provider/callback', to: 'users/omniauth_callbacks#create'
-
-      scope module: :users do
-        resources :signin, only: %i[new create]
-        resources :signup, only: %i[new create]
-        resources :external, only: %i[new] unless Rails.env.production?
-
-        get 'logout', to: 'signin#destroy'
-      end
-
       resource :dashboard, only: %i[show]
       resource :homebrews, only: %i[show]
       resources :characters, only: %i[show]

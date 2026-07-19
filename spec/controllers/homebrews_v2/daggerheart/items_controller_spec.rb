@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Daggerheart::ItemsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
-  let!(:item1) { create :item, :daggerheart, user: user_session.user, kind: 'item' }
+  let!(:item1) { create :item, :daggerheart, user: user, kind: 'item' }
   let!(:item2) { create :item, :daggerheart, public: true, kind: 'item' }
   let!(:item3) { create :item, :daggerheart, kind: 'item' }
   let!(:item4) { create :item, :daggerheart, public: true, kind: 'recipe' }

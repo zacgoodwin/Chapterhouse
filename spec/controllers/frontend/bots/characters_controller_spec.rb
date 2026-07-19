@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe Frontend::Bots::CharactersController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#create' do
-    let!(:character) { create :character, user: user_session.user }
+    let!(:character) { create :character, user: user }
 
     context 'for logged users' do
       context 'without character' do
@@ -156,7 +156,7 @@ describe Frontend::Bots::CharactersController do
         end
 
         context 'for daggerheart checks' do
-          let!(:character) { create :character, :daggerheart, user: user_session.user }
+          let!(:character) { create :character, :daggerheart, user: user }
 
           %w[attr attack].each do |attr|
             let(:values) { ["/check #{attr} presence --bonus 1"] }
@@ -174,7 +174,7 @@ describe Frontend::Bots::CharactersController do
         end
 
         context 'for pathfinder2 checks' do
-          let!(:character) { create :character, :pathfinder2, user: user_session.user }
+          let!(:character) { create :character, :pathfinder2, user: user }
 
           %w[save attr skill attack initiative].each do |attr|
             let(:values) { ["/check #{attr} will --bonus 1"] }
@@ -192,7 +192,7 @@ describe Frontend::Bots::CharactersController do
         end
 
         context 'for fate checks' do
-          let!(:character) { create :character, :fate, user: user_session.user }
+          let!(:character) { create :character, :fate, user: user }
 
           %w[skill stunt].each do |attr|
             let(:values) { ["/check #{attr} will --bonus 1"] }
@@ -210,7 +210,7 @@ describe Frontend::Bots::CharactersController do
         end
 
         context 'for dc20 checks' do
-          let!(:character) { create :character, :dc20, user: user_session.user }
+          let!(:character) { create :character, :dc20, user: user }
 
           %w[attr save skill trade language initiative attack].each do |attr|
             let(:values) { ["/check #{attr} empty --bonus 2"] }

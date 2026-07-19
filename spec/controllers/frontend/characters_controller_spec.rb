@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 describe Frontend::CharactersController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
       before do
-        create :character, user: user_session.user
+        create :character, user: user
       end
 
       it 'returns data', :aggregate_failures do
@@ -36,7 +36,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for dnd5' do
-        let!(:character) { create :character, user: user_session.user }
+        let!(:character) { create :character, user: user }
 
         it 'returns data', :aggregate_failures do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -66,7 +66,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for dnd2024' do
-        let!(:character) { create :character, :dnd2024, user: user_session.user }
+        let!(:character) { create :character, :dnd2024, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -84,7 +84,7 @@ describe Frontend::CharactersController do
           end
 
           context 'when user is admin' do
-            before { user_session.user.update!(admin: true) }
+            before { user.update!(admin: true) }
 
             it 'returns data' do
               get :show, params: { id: another_character.id, charkeeper_access_token: access_token }
@@ -96,7 +96,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for pathfinder 2' do
-        let!(:character) { create :character, :pathfinder2, user: user_session.user }
+        let!(:character) { create :character, :pathfinder2, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -106,7 +106,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for daggerheart' do
-        let!(:character) { create :character, :daggerheart, user: user_session.user }
+        let!(:character) { create :character, :daggerheart, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -116,7 +116,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for dc20' do
-        let!(:character) { create :character, :dc20, user: user_session.user }
+        let!(:character) { create :character, :dc20, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -126,7 +126,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for cosmere' do
-        let!(:character) { create :character, :cosmere, user: user_session.user }
+        let!(:character) { create :character, :cosmere, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -136,7 +136,7 @@ describe Frontend::CharactersController do
       end
 
       context 'for fate' do
-        let!(:character) { create :character, :fate, user: user_session.user }
+        let!(:character) { create :character, :fate, user: user }
 
         it 'returns data' do
           get :show, params: { id: character.id, charkeeper_access_token: access_token }
@@ -155,7 +155,7 @@ describe Frontend::CharactersController do
         let(:request) { delete :destroy, params: { id: character.id, charkeeper_access_token: access_token } }
 
         context 'for user character' do
-          before { character.update!(user: user_session.user) }
+          before { character.update!(user: user) }
 
           it 'destroys character', :aggregate_failures do
             expect { request }.to change(Character, :count).by(-1)

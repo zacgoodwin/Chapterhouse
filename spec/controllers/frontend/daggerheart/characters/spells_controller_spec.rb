@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe Frontend::Daggerheart::Characters::SpellsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:character) { create :character, :daggerheart }
-  let!(:user_character) { create :character, :daggerheart, user: user_session.user }
+  let!(:user_character) { create :character, :daggerheart, user: user }
   let!(:spell) { create :feat, :rally, origin: 7, origin_value: 'codex', conditions: { level: 1 } }
 
   describe 'GET#index' do

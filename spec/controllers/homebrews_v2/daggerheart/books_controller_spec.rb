@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Daggerheart::BooksController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
       let(:request) { get :index, params: { charkeeper_access_token: access_token } }
 
       before do
-        book = create :homebrew_book, user: user_session.user
+        book = create :homebrew_book, user: user
         create :homebrew_book, shared: true
-        item = create :homebrew, :daggerheart_transformation, user: user_session.user
+        item = create :homebrew, :daggerheart_transformation, user: user
         create :homebrew_book_item, homebrew_book: book, itemable: item
       end
 
@@ -32,7 +32,7 @@ describe HomebrewsV2::Daggerheart::BooksController do
       let(:request) { get :for_items, params: { charkeeper_access_token: access_token } }
 
       before do
-        create :homebrew_book, user: user_session.user
+        create :homebrew_book, user: user
         create :homebrew_book, shared: true
       end
 
@@ -69,7 +69,7 @@ describe HomebrewsV2::Daggerheart::BooksController do
       context 'for valid data with existing name' do
         let(:request) { post :create, params: { book: { name: 'Book' }, charkeeper_access_token: access_token } }
 
-        before { create :homebrew_book, user: user_session.user, name: 'Book' }
+        before { create :homebrew_book, user: user, name: 'Book' }
 
         it 'creates book', :aggregate_failures do
           expect { request }.to change(Homebrew::Book, :count)
@@ -91,7 +91,7 @@ describe HomebrewsV2::Daggerheart::BooksController do
       end
 
       context 'for existing book' do
-        let!(:book) { create :homebrew_book, user: user_session.user }
+        let!(:book) { create :homebrew_book, user: user }
         let(:request) { delete :destroy, params: { id: book.id, charkeeper_access_token: access_token } }
 
         it 'updates book', :aggregate_failures do

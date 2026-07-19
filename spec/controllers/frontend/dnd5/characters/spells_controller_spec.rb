@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe Frontend::Dnd5::Characters::SpellsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:character) { create :character, data: { classes: { wizard: 1 } } }
-  let!(:user_character) { create :character, user: user_session.user, data: { classes: { wizard: 1 } } }
+  let!(:user_character) { create :character, user: user, data: { classes: { wizard: 1 } } }
   let!(:spell) { create :spell, data: { available_for: %w[wizard] } }
 
   describe 'GET#index' do

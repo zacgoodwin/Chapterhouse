@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Cthulhu7::CharactersController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#create' do
     context 'for logged users' do
@@ -11,7 +11,7 @@ describe Frontend::Cthulhu7::CharactersController do
       }
 
       it 'creates character', :aggregate_failures do
-        expect { request }.to change(user_session.user.characters.cthulhu7, :count).by(1)
+        expect { request }.to change(user.characters.cthulhu7, :count).by(1)
         expect(response).to have_http_status :created
       end
 
@@ -29,7 +29,7 @@ describe Frontend::Cthulhu7::CharactersController do
 
   describe 'PATCH#update' do
     context 'for logged users' do
-      let!(:character) { create :character, :cthulhu7, user: user_session.user }
+      let!(:character) { create :character, :cthulhu7, user: user }
       let(:params) do
         { abilities: { str: 90, con: 80, siz: 70, dex: 60, app: 50, pow: 40, int: 40, edu: 40 } }
       end

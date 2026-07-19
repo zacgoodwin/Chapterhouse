@@ -28,12 +28,7 @@
             <%= image_tag 'icon.png', alt: 'charkeeper', width: 24, height: 24 %>
           <% end %>
           <div>
-            <% if current_user %>
-              <%= link_to t('web.users.signin.logout'), logout_path, class: 'underline' %>
-            <% else %>
-              <%= link_to t('web.users.signin.title'), new_signin_path, class: 'mr-4 underline', data: { 'test-id' => 'signin-link' } %>
-              <%= link_to t('web.users.signup.title'), new_signup_path, class: 'underline' %>
-            <% end %>
+            <%= link_to t('web.welcome.index_v2.dashboard_link'), dashboard_path, class: 'underline', data: { 'test-id' => 'signin-link' } %>
           </div>
         </div>
       </div>

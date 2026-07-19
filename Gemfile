@@ -51,7 +51,6 @@ gem 'props_template'
 
 # auth
 gem 'action_policy'
-gem 'authkeeper', '0.1.21'
 gem 'jwt', '~> 2.5'
 
 # Work with JSON-backed attributes
@@ -70,8 +69,7 @@ gem 'aws-sdk-s3', require: false
 # using csv
 gem 'csv'
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.7'
+# Ed25519 signature verification for Discord webhooks
 gem 'rbnacl'
 
 # PDF generating

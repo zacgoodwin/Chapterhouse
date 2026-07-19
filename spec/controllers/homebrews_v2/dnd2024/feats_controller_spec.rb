@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Dnd2024::FeatsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
-  let!(:feat1) { create :dnd2024_feat, user: user_session.user }
+  let!(:feat1) { create :dnd2024_feat, user: user }
   let!(:feat2) { create :dnd2024_feat, public: true }
   let!(:feat3) { create :dnd2024_feat }
 
@@ -26,7 +26,7 @@ describe HomebrewsV2::Dnd2024::FeatsController do
 
   describe 'GET#show' do
     context 'for logged users' do
-      let!(:feat) { create :dnd2024_feat, user: user_session.user }
+      let!(:feat) { create :dnd2024_feat, user: user }
       let(:request) { get :show, params: { id: feat.id, charkeeper_access_token: access_token } }
 
       it 'returns data', :aggregate_failures do

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Monitoring
-  AuthByUsername = Class.new(StandardError)
   ReceiveDiscordWebhook = Class.new(StandardError)
   ValidationError = Class.new(StandardError)
   FrontendError = Class.new(StandardError)

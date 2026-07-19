@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - db/seeds.rb rewritten as a deterministic fresh-database content load (all inputs in-repo, dnd2024 spells now seeded from spells.json, seeds_prod.rb chained); old ETL scratch removed
 
 ### Removed
+- authkeeper/bcrypt password + OAuth stack: signin/signup/identities endpoints, user_sessions and user_identities tables, users.password_digest; Rails now verifies Supabase Auth JWTs (ES256/RS256 via JWKS) and provisions app users keyed by the auth id on first request
 - all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
 - orphaned active_bot_objects table and ActiveBotObject model (dead code, no readers or writers)
 - Solid Errors and its second database (errors); production error visibility is logs until a replacement tracker is chosen

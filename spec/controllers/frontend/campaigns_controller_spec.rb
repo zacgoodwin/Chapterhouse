@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 describe Frontend::CampaignsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
-      let!(:campaign1) { create :campaign, :dnd5, user: user_session.user }
+      let!(:campaign1) { create :campaign, :dnd5, user: user }
       let!(:campaign2) { create :campaign, :daggerheart }
-      let!(:character) { create :character, :daggerheart, user: user_session.user }
+      let!(:character) { create :character, :daggerheart, user: user }
 
       before do
         create :campaign, :dnd2024
@@ -70,7 +70,7 @@ describe Frontend::CampaignsController do
         let(:name) { 'Homunculus fight' }
 
         it 'creates campaign', :aggregate_failures do
-          expect { request }.to change(user_session.user.campaigns, :count).by(1)
+          expect { request }.to change(user.campaigns, :count).by(1)
           expect(response).to have_http_status :created
         end
       end
@@ -90,7 +90,7 @@ describe Frontend::CampaignsController do
       end
 
       context 'for not user campaign' do
-        let!(:character) { create :character, :daggerheart, user: user_session.user }
+        let!(:character) { create :character, :daggerheart, user: user }
 
         before { create :campaign_character, campaign: campaign, character: character }
 
@@ -104,7 +104,7 @@ describe Frontend::CampaignsController do
       context 'for user campaign' do
         let(:request) { delete :destroy, params: { id: campaign.id, charkeeper_access_token: access_token } }
 
-        before { campaign.update!(user: user_session.user) }
+        before { campaign.update!(user: user) }
 
         it 'deletes campaign', :aggregate_failures do
           expect { request }.to change(Campaign, :count).by(-1)

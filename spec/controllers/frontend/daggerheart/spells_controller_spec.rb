@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Daggerheart::SpellsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
@@ -25,10 +25,10 @@ describe Frontend::Daggerheart::SpellsController do
       end
 
       context 'with spell for extended domain' do
-        let!(:domain) { create :homebrew, :daggerheart_domain, info: { domain_id: 'bone' }, user: user_session.user }
+        let!(:domain) { create :homebrew, :daggerheart_domain, info: { domain_id: 'bone' }, user: user }
 
         before do
-          create :daggerheart_feat, origin: 7, origin_value: domain.id, conditions: { level: 1 }, user: user_session.user
+          create :daggerheart_feat, origin: 7, origin_value: domain.id, conditions: { level: 1 }, user: user
         end
 
         it 'returns data', :aggregate_failures do
@@ -47,9 +47,9 @@ describe Frontend::Daggerheart::SpellsController do
           before do
             book = create :homebrew_book
             create :homebrew_book_item, homebrew_book: book, itemable: domain
-            create :user_book, user: user_session.user, book: book
+            create :user_book, user: user, book: book
 
-            HomebrewsContext::RefreshUserDataService.new.call(user: user_session.user)
+            HomebrewsContext::RefreshUserDataService.new.call(user: user)
           end
 
           it 'returns data', :aggregate_failures do

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Books::ItemsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#create' do
     context 'for logged users' do
-      let!(:book) { create :homebrew_book, user: user_session.user }
+      let!(:book) { create :homebrew_book, user: user }
 
       context 'for unexisting book' do
         let(:request) { post :create, params: { book_id: 'unexisting', charkeeper_access_token: access_token } }
@@ -18,7 +18,7 @@ describe HomebrewsV2::Books::ItemsController do
       end
 
       context 'for valid data' do
-        let!(:homebrew) { create :homebrew, :daggerheart_transformation, user: user_session.user }
+        let!(:homebrew) { create :homebrew, :daggerheart_transformation, user: user }
         let(:request) {
           post :create, params: {
             book_id: book.id,

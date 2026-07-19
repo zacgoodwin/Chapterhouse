@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe Frontend::Daggerheart::Characters::CraftController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:character) { create :character, :daggerheart }
-  let!(:user_character) { create :character, :daggerheart, user: user_session.user, data: { main_class: 'bard' } }
+  let!(:user_character) { create :character, :daggerheart, user: user, data: { main_class: 'bard' } }
 
   describe 'GET#index' do
     context 'for logged users' do

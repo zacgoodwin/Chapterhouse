@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Cthulhu7::Characters::ItemsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#load' do
     context 'for logged users' do
@@ -20,7 +20,7 @@ describe Frontend::Cthulhu7::Characters::ItemsController do
       end
 
       context 'for valid character' do
-        let!(:character) { create :character, :cthulhu7, user: user_session.user }
+        let!(:character) { create :character, :cthulhu7, user: user }
 
         context 'for invalid params' do
           let(:request) {

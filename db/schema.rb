@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_19_121000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_19_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -499,20 +499,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_121000) do
     t.index ["user_id"], name: "index_user_homebrews_on_user_id"
   end
 
-  create_table "user_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "active", default: true, null: false
-    t.datetime "created_at", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.integer "provider", null: false
-    t.string "uid", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.string "username"
-    t.index ["provider", "uid"], name: "index_user_identities_on_provider_and_uid", unique: true
-    t.index ["user_id"], name: "index_user_identities_on_user_id"
-  end
-
   create_table "user_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "read", default: false, null: false
@@ -531,13 +517,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_121000) do
     t.index ["user_id", "name"], name: "index_user_platforms_on_user_id_and_name", unique: true
   end
 
-  create_table "user_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.index ["user_id"], name: "index_user_sessions_on_user_id"
-  end
-
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "admin", default: false, null: false
     t.integer "color_schema"
@@ -545,9 +524,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_121000) do
     t.datetime "discarded_at"
     t.datetime "homebrew_updated_at"
     t.string "locale", default: "en", null: false
-    t.string "password_digest"
     t.jsonb "provider_locales", default: {}, comment: "Альтернативные переводы"
-    t.boolean "russian_login", default: false, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

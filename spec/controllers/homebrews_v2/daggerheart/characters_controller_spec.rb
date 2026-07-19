@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Daggerheart::CharactersController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
-  let!(:character) { create :character, :daggerheart, user: user_session.user }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
+  let!(:character) { create :character, :daggerheart, user: user }
 
   describe 'GET#index' do
     context 'for logged users' do

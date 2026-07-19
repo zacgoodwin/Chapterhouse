@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Daggerheart::TransformationsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
-  let!(:own_transformation) { create :homebrew, :daggerheart_transformation, user: user_session.user }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
+  let!(:own_transformation) { create :homebrew, :daggerheart_transformation, user: user }
   let!(:transformation) { create :homebrew, :daggerheart_transformation }
 
   describe 'GET#show' do

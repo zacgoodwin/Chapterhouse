@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 describe Frontend::Pathfinder2::Characters::RestController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:user_character) {
     create :character,
            :pathfinder2,
-           user: user_session.user,
+           user: user,
            data: {
              main_class: 'bard',
              health_current: 1,

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Cthulhu7::Characters::CopyController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#create' do
     context 'for logged users' do
@@ -18,7 +18,7 @@ describe Frontend::Cthulhu7::Characters::CopyController do
       end
 
       context 'for valid character' do
-        let!(:character) { create :character, :cthulhu7, user: user_session.user }
+        let!(:character) { create :character, :cthulhu7, user: user }
         let(:request) {
           post :create, params: { character_id: character.id, charkeeper_access_token: access_token }
         }

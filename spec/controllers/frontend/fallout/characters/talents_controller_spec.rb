@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe Frontend::Fallout::Characters::TalentsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
   let!(:user_character) do
     CharactersContext::Fallout::CreateCommand.new.call(
-      user: user_session.user, name: 'name', origin: 'mutant'
+      user: user, name: 'name', origin: 'mutant'
     )[:result]
   end
   let!(:feat) do

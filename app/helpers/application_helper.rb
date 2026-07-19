@@ -2,7 +2,6 @@
 
 module ApplicationHelper
   include Pagy::Frontend
-  include Authkeeper::ApplicationHelper
 
   def change_locale(locale)
     url_for(request.params.merge(switch_locale: locale.to_s))

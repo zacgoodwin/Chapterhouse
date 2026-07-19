@@ -5,11 +5,10 @@ module Web
     class JoinsController < Web::BaseController
       layout 'charkeeper_app'
 
+      skip_before_action :authenticate
       before_action :find_campaign, only: %i[show]
 
-      def show
-        @access_token = cookies[Authkeeper.configuration.access_token_name]
-      end
+      def show; end
 
       private
 
