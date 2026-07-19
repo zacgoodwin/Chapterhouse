@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
+- leyfarers (tlc) implementation plan, reference digests, and source docs (docs/; PDFs via the reference-docs release)
 - homebrew upvotes
 - extending domains by homebrew for dh characters
 
