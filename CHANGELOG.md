@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
 - orphaned active_bot_objects table and ActiveBotObject model (dead code, no readers or writers)
+- Solid Errors and its second database (errors); production error visibility is logs until a replacement tracker is chosen
 
 ### Fixed
 - updating hb mechanics for dh characters

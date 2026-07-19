@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  mount SolidErrors::Engine, at: 'solid_errors'
   mount GoodJob::Engine, at: 'good_job'
   mount PgHero::Engine, at: 'pghero'
   mount ActionCable.server, at: '/cable'

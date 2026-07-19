@@ -494,12 +494,6 @@ GEM
     simplecov_json_formatter (0.1.4)
     skylight (7.1.1)
       activesupport (>= 7.2.0)
-    solid_errors (0.7.0)
-      actionpack (>= 7.0)
-      actionview (>= 7.0)
-      activerecord (>= 7.0)
-      activesupport (>= 7.0)
-      railties (>= 7.0)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -635,7 +629,6 @@ DEPENDENCIES
   shoulda-matchers (~> 8.0)
   simplecov
   skylight
-  solid_errors
   sprockets-rails
   store_model
   strong_migrations (~> 2.0)

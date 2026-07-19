@@ -10,45 +10,25 @@ default: &default
   password: postgres
 
 development:
-  primary: &primary_development
-    <<: *default
-    database: charkeeper_development
-  errors:
-    <<: *primary_development
-    database: charkeeper_development_errors
-    migrations_paths: db/errors_migrate
+  <<: *default
+  database: charkeeper_development
 
 local_production:
   <<: *default
   database: charkeeper_development
 
 test:
-  primary: &primary_test
-    <<: *default
-    database: charkeeper_test
-  errors:
-    <<: *primary_test
-    database: charkeeper_test_errors
-    migrations_paths: db/errors_migrate
+  <<: *default
+  database: charkeeper_test
 
 production:
-  primary: &primary_production
-    <<: *default
-    database: charkeeper
-    username: charkeeper
-    password: <%= Rails.application.credentials[:database_password] %>
-  errors:
-    <<: *primary_production
-    database: charkeeper_errors
-    migrations_paths: db/errors_migrate
+  <<: *default
+  database: charkeeper
+  username: charkeeper
+  password: <%= Rails.application.credentials[:database_password] %>
 
 ru_production:
-  primary: &primary_production
-    <<: *default
-    database: charkeeper
-    username: charkeeper
-    password: <%= Rails.application.credentials[:database_password] %>
-  errors:
-    <<: *primary_production
-    database: charkeeper_errors
-    migrations_paths: db/errors_migrate
+  <<: *default
+  database: charkeeper
+  username: charkeeper
+  password: <%= Rails.application.credentials[:database_password] %>

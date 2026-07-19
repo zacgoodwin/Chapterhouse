@@ -64,9 +64,6 @@ gem 'faraday', '~> 2.0'
 gem 'pghero'
 gem 'skylight'
 
-# bugs tracking
-gem 'solid_errors'
-
 # Uploading to S3
 gem 'aws-sdk-s3', require: false
 
