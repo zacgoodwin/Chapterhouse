@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Modified
 - refreshing tokens for feats
+- database config targets Supabase hosted Postgres via the Supavisor session pooler (credentials under <env>.supabase.db); test stays on localhost
+- db/seeds.rb rewritten as a deterministic fresh-database content load (all inputs in-repo, dnd2024 spells now seeded from spells.json, seeds_prod.rb chained); old ETL scratch removed
 
 ### Removed
 - all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
