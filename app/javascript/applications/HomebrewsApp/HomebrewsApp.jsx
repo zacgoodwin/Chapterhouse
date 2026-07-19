@@ -3,7 +3,7 @@ import { HomebrewsAppContent } from './HomebrewsAppContent';
 import { AppStateProvider, AppLocaleProvider, AppAlertProvider } from './context';
 
 export const HomebrewsApp = (props) => (
-  <AppStateProvider accessToken={props.accessToken}>
+  <AppStateProvider>
     <AppLocaleProvider locale={props.locale}>
       <AppAlertProvider>
         <HomebrewsAppContent />

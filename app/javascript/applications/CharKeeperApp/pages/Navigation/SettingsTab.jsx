@@ -4,8 +4,7 @@ import * as i18n from '@solid-primitives/i18n';
 import { PageHeader, NotificationsBudge } from '../../components';
 import { Discord, Vk, Boosty, BuyMeACoffee } from '../../assets';
 import { useAppState, useAppLocale } from '../../context';
-import { logoutRequest } from '../../requests/logoutRequest';
-import { readFromCache, localize } from '../../helpers';
+import { readFromCache, localize, supabase } from '../../helpers';
 
 const CHARKEEPER_HOST_CACHE_NAME = 'CharKeeperHost';
 const TRANSLATION = {
@@ -62,7 +61,7 @@ export const SettingsTab = () => {
   );
 
   const logout = async () => {
-    await logoutRequest(appState.accessToken);
+    await supabase()?.auth.signOut();
 
     setAccessToken(null);
     window.location.href = '/';
@@ -82,7 +81,6 @@ export const SettingsTab = () => {
           </Show>
           {renderSettingsLink(t('pages.settingsPage.profile'), 'profile')}
           {renderSettingsLink(localize(TRANSLATION, locale()).profileDeleting, 'profileDeleting')}
-          {renderSettingsLink(localize(TRANSLATION, locale()).changePassword, 'passwords')}
           {renderSettingsLink(t('pages.settingsPage.notifications'), 'notifications')}
           {renderSettingsLink(t('pages.settingsPage.feedback'), 'feedback')}
           <div class="flex py-3 px-4 gap-4 dark:text-snow">

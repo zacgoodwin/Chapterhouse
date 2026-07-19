@@ -1,11 +1,10 @@
 import { createContext, createEffect, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
-import { readFromCache, writeToCache } from '../helpers';
+import { readFromCache, writeToCache, supabase } from '../helpers';
 
 const AppStateContext = createContext();
 
-const CHARKEEPER_ACCESS_TOKEN = 'CharKeeperAccessToken';
 const COLOR_SCHEMA = 'ColorSchema';
 const SHOW_NAVIGATION = 'ShowNavigation';
 
@@ -19,8 +18,6 @@ export const AppStateProvider = (props) => {
     activePage: null,
     activePageParams: {},
     unreadNotificationsCount: undefined,
-    identities: props.identities, // eslint-disable-line solid/reactivity
-    oauthLinks: props.oauthLinks, // eslint-disable-line solid/reactivity
     initialized: false,
     rootHost: props.host || 'charkeeper.org', // eslint-disable-line solid/reactivity
     showNavigation: 'show'
@@ -35,13 +32,18 @@ export const AppStateProvider = (props) => {
     bodyElement.style.paddingBottom = `${result.adjustedInsetBottom}px`;
   }
 
-  const readAccessTokenFromCache = async () => {
-    const stateValue = await readFromCache(CHARKEEPER_ACCESS_TOKEN);
-    if (stateValue === null || stateValue === undefined) {
-      return setAppState({ ...appState, initialized: true });
-    }
+  // supabase-js owns the session: read it once, then track auth state
+  // changes (sign in/out, background token refresh)
+  const initSupabaseSession = async () => {
+    const client = supabase();
+    if (!client) return setAppState({ ...appState, accessToken: null, initialized: true });
 
-    setAppState({ ...appState, accessToken: stateValue, initialized: true });
+    const { data } = await client.auth.getSession();
+    setAppState({ ...appState, accessToken: data.session?.access_token ?? null, initialized: true });
+
+    client.auth.onAuthStateChange((_event, session) => {
+      setAppState('accessToken', session?.access_token ?? null);
+    });
   }
 
   const readNavigationFromCache = async () => {
@@ -52,7 +54,7 @@ export const AppStateProvider = (props) => {
   createEffect(() => {
     if (appState.accessToken !== undefined) return;
 
-    readAccessTokenFromCache();
+    initSupabaseSession();
   });
 
   createEffect(() => {
@@ -92,7 +94,6 @@ export const AppStateProvider = (props) => {
         setAppState({ ...appState, ...payload });
       },
       setAccessToken(value) {
-        writeToCache(CHARKEEPER_ACCESS_TOKEN, value);
         setAppState({ ...appState, accessToken: value });
       },
       navigate(page, params) {

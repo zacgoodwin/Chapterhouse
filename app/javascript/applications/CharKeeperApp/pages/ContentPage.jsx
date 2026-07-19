@@ -1,7 +1,7 @@
 import { Switch, Match } from 'solid-js';
 
 import {
-  CharacterTab, PasswordsTab, FeedbackTab, UsernameTab, NotificationsTab, CharacterView, CampaignTab,
+  CharacterTab, FeedbackTab, UsernameTab, NotificationsTab, CharacterView, CampaignTab,
   CampaignJoinTab, ProfileDeleteTab
 } from '../pages';
 
@@ -21,9 +21,6 @@ export const ContentPage = (props) => {
         </Match>
         <Match when={appState.activePage === 'characterView'}>
           <CharacterView onNavigate={props.onNavigate} />
-        </Match>
-        <Match when={appState.activePage === 'passwords'}>
-          <PasswordsTab onNavigate={props.onNavigate} />
         </Match>
         <Match when={appState.activePage === 'notifications'}>
           <NotificationsTab onNavigate={props.onNavigate} />

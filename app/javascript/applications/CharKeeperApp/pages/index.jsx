@@ -10,7 +10,6 @@ export * from './Navigation/HomebrewTab';
 
 export * from './Content/CharacterTab';
 export * from './Content/CharacterView';
-export * from './Content/PasswordsTab';
 export * from './Content/FeedbackTab';
 export * from './Content/UsernameTab';
 export * from './Content/ProfileDeleteTab';

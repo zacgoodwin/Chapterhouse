@@ -1,19 +1,14 @@
-import { Show, createEffect, createSignal, createMemo, batch, For, Switch, Match } from 'solid-js';
+import { Show, createEffect, createSignal, batch, For } from 'solid-js';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
 import { PageHeader, IconButton, Input, Button, Select, Label } from '../../components';
-import { Arrow, Google, Discord, Close, Yandex } from '../../assets';
+import { Arrow } from '../../assets';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
 import { updateUserRequest } from '../../requests/updateUserRequest';
-import { removeIdentityRequest } from '../../requests/removeIdentityRequest';
-import { localize, performResponse, writeToCache, readFromCache } from '../../helpers';
+import { localize, performResponse } from '../../helpers';
 
-const USER_CREDENTIALS_CACHE_NAME = 'UserCredentials';
 const TRANSLATION = {
   en: {
-    existingIdentities: 'Existing identities',
-    availableIdentities: 'Available identities',
-    connected: 'Everything is connected',
     light: 'Light',
     dark: 'Dark',
     username: 'Username',
@@ -28,9 +23,6 @@ const TRANSLATION = {
     }
   },
   ru: {
-    existingIdentities: 'Подключенные сервисы',
-    availableIdentities: 'Доступные сервисы',
-    connected: 'Всё подключено',
     light: 'Светлая',
     dark: 'Тёмная',
     username: 'Имя пользователя',
@@ -45,9 +37,6 @@ const TRANSLATION = {
     }
   },
   es: {
-    existingIdentities: 'Identidades existentes',
-    availableIdentities: 'Identidades disponibles',
-    connected: 'Todo está conectado',
     light: 'Claro',
     dark: 'Oscuro',
     username: 'Nombre de usuario',
@@ -93,29 +82,6 @@ export const UsernameTab = (props) => {
     });
   });
 
-  const refreshCredentials = async () => {
-    const cacheValue = await readFromCache(USER_CREDENTIALS_CACHE_NAME);
-    if (cacheValue) {
-      const credentials = JSON.parse(cacheValue);
-      writeToCache(
-        USER_CREDENTIALS_CACHE_NAME,
-        JSON.stringify({ username:username(), password: credentials.password })
-      );
-    }
-  }
-
-  const identityProviders = createMemo(() => {
-    if (appState.identities === undefined) return [];
-
-    return appState.identities.map((item) => item.provider);
-  });
-
-  const availableProviders = createMemo(() => {
-    if (appState.oauthLinks === undefined) return [];
-
-    return Object.keys(appState.oauthLinks);
-  });
-
   const updateProfile = async () => {
     let payload = { color_schema: colorSchema(), locale: localeValue() };
     if (username() !== appState.username) payload = { ...payload, username: username() };
@@ -126,7 +92,6 @@ export const UsernameTab = (props) => {
     performResponse(
       result,
       function() { // eslint-disable-line solid/reactivity
-        if (username() !== appState.username) refreshCredentials();
         batch(() => {
           changeUserInfo({ username: username(), colorSchema: colorSchema(), providerLocales: providerLocales() });
           setLocale(localeValue());
@@ -135,11 +100,6 @@ export const UsernameTab = (props) => {
       },
       function() { renderAlerts(result.errors_list) }
     );
-  }
-
-  const removeIdentity = async (id) => {
-    await removeIdentityRequest(appState.accessToken, id);
-    window.location.href = '/';
   }
 
   return (
@@ -190,57 +150,6 @@ export const UsernameTab = (props) => {
                 />
               }
             </For>
-          </div>
-        </Show>
-        <Show when={appState.identities !== undefined}>
-          <div class="mb-2 grid grid-cols-1 emd:grid-cols-2 gap-2">
-            <div>
-              <Label labelText={localize(TRANSLATION, locale()).existingIdentities} />
-              <table class="table border border-gray-200 bg-white dark:bg-neutral-700 dark:border-gray-500 dark:text-snow">
-                <tbody>
-                  <For each={appState.identities}>
-                    {(identity) =>
-                      <tr>
-                        <td class="flex p-1">
-                          <Switch>
-                            <Match when={identity.provider === 'discord'}><Discord /></Match>
-                            <Match when={identity.provider === 'google'}><Google /></Match>
-                            <Match when={identity.provider === 'yandex'}><Yandex /></Match>
-                          </Switch>
-                          <p class="dark:text-snow ml-4">{identity.uid}</p>
-                        </td>
-                        <td class="p-1">
-                          <IconButton onClick={() => removeIdentity(identity.id)}>
-                            <Close />
-                          </IconButton>
-                        </td>
-                      </tr>
-                    }
-                  </For>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <Label labelText={localize(TRANSLATION, locale()).availableIdentities} />
-              <Show
-                when={availableProviders().filter((item) => !identityProviders().includes(item)).length > 0}
-                fallback={
-                  <p class="dark:text-snow">{localize(TRANSLATION, locale()).connected}</p>
-                }
-              >
-                <div class="p-1">
-                  <For each={availableProviders().filter((item) => !identityProviders().includes(item))}>
-                    {(provider) =>
-                      <Switch>
-                        <Match when={provider === 'discord'}><a href={appState.oauthLinks.discord}><Discord /></a></Match>
-                        <Match when={provider === 'google'}><a href={appState.oauthLinks.google}><Google /></a></Match>
-                        <Match when={provider === 'yandex'}><a href={appState.oauthLinks.yandex}><Yandex /></a></Match>
-                      </Switch>
-                    }
-                  </For>
-                </div>
-              </Show>
-            </div>
           </div>
         </Show>
         <Button default textable classList="mt-4" onClick={updateProfile}>{localize(TRANSLATION, locale()).save}</Button>
