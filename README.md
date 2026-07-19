@@ -1,5 +1,14 @@
 # README
 
+### Reference docs
+
+The Leyfarers/TLC implementation plan lives at
+`docs/leyfarers-implementation-plan.md` with digests in `docs/reference/`.
+Reference PDFs are NOT in git (GitHub blocks LFS uploads on public forks);
+download the Players Guide from the
+[reference-docs release](https://github.com/zacgoodwin/Chapterhouse/releases/tag/reference-docs)
+into `docs/` (gitignored there).
+
 ### E2E tests
 
 With browser
