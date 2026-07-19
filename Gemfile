@@ -100,6 +100,9 @@ gem 'discard', '~> 2.0'
 # advisory locking for processes
 gem 'with_advisory_lock'
 
+# timezone data for Windows development machines
+gem 'tzinfo-data', platforms: %i[windows jruby]
+
 group :development, :production, :ru_production do
   gem 'get_process_mem'
   gem 'rails_performance'

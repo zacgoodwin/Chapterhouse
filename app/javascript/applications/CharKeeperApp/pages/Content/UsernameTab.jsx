@@ -2,7 +2,7 @@ import { Show, createEffect, createSignal, createMemo, batch, For, Switch, Match
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
 import { PageHeader, IconButton, Input, Button, Select, Label } from '../../components';
-import { Arrow, Google, Discord, Telegram, Close, Yandex } from '../../assets';
+import { Arrow, Google, Discord, Close, Yandex } from '../../assets';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
 import { updateUserRequest } from '../../requests/updateUserRequest';
 import { removeIdentityRequest } from '../../requests/removeIdentityRequest';
@@ -113,7 +113,7 @@ export const UsernameTab = (props) => {
   const availableProviders = createMemo(() => {
     if (appState.oauthLinks === undefined) return [];
 
-    return Object.keys(appState.oauthLinks).concat(Object.keys(appState.oauthCredentials));
+    return Object.keys(appState.oauthLinks);
   });
 
   const updateProfile = async () => {
@@ -205,7 +205,6 @@ export const UsernameTab = (props) => {
                           <Switch>
                             <Match when={identity.provider === 'discord'}><Discord /></Match>
                             <Match when={identity.provider === 'google'}><Google /></Match>
-                            <Match when={identity.provider === 'telegram'}><Telegram /></Match>
                             <Match when={identity.provider === 'yandex'}><Yandex /></Match>
                           </Switch>
                           <p class="dark:text-snow ml-4">{identity.uid}</p>
@@ -236,18 +235,6 @@ export const UsernameTab = (props) => {
                         <Match when={provider === 'discord'}><a href={appState.oauthLinks.discord}><Discord /></a></Match>
                         <Match when={provider === 'google'}><a href={appState.oauthLinks.google}><Google /></a></Match>
                         <Match when={provider === 'yandex'}><a href={appState.oauthLinks.yandex}><Yandex /></a></Match>
-                        <Match when={provider === 'telegram'}>
-                          <script
-                            async
-                            src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login={appState.oauthCredentials.telegram.botName}
-                            data-size="medium"
-                            data-userpic="false"
-                            data-radius="0"
-                            data-auth-url={appState.oauthCredentials.telegram.redirectUrl}
-                            data-request-access="write"
-                          />
-                        </Match>
                       </Switch>
                     }
                   </For>

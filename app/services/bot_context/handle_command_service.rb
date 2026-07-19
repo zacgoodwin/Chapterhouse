@@ -17,8 +17,8 @@ module BotContext
       when '/dualityRoll' then duality_roll_command.call(arguments: arguments)
       when '/fateRoll' then fate_roll_command.call(arguments: arguments)
       when '/check' then check_command.call(source: source, arguments: arguments, data: data)
-      when '/campaign' then campaign_command.call(source: source, arguments: arguments, data: data)
-      when '/character' then character_command.call(source: source, arguments: arguments, data: data)
+      when '/campaign' then campaign_command.call(arguments: arguments, data: data)
+      when '/character' then character_command.call(arguments: arguments, data: data)
       end
     end
   end

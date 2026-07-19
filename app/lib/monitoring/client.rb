@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 module Monitoring
-  AuthByTelegram = Class.new(StandardError)
   AuthByUsername = Class.new(StandardError)
-  ReceiveTelegramWebhook = Class.new(StandardError)
   ReceiveDiscordWebhook = Class.new(StandardError)
-  HandleTelegramWebhook = Class.new(StandardError)
   ValidationError = Class.new(StandardError)
   FrontendError = Class.new(StandardError)
   FeatVariableError = Class.new(StandardError)

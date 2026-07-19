@@ -6,7 +6,7 @@ describe Web::Users::OmniauthCallbacksController do
   before do
     allow(Authkeeper).to receive_messages(configuration: configuration)
 
-    configuration.omniauth_providers = %w[telegram]
+    configuration.omniauth_providers = %w[google]
     configuration.access_token_name = :charkeeper_access_token
   end
 
@@ -23,29 +23,27 @@ describe Web::Users::OmniauthCallbacksController do
       end
     end
 
-    context 'for telegram' do
-      let(:request) { post :create, params: { provider: provider, id: id } }
-      let(:id) { nil }
-      let(:provider) { 'telegram' }
+    context 'for google' do
+      let(:provider) { 'google' }
 
-      context 'for blank id' do
+      context 'for blank code' do
         it 'redirects to login path', :aggregate_failures do
           expect { request }.not_to change(User, :count)
           expect(response).to redirect_to root_path
         end
       end
 
-      context 'for present id' do
-        let(:id) { 'id' }
+      context 'for present code' do
+        let(:code) { 'code' }
 
         before do
-          allow(Authkeeper::Container.resolve('services.providers.telegram')).to(
-            receive(:call).and_return(telegram_auth_result)
+          allow(Authkeeper::Container.resolve('services.providers.google')).to(
+            receive(:call).and_return(google_auth_result)
           )
         end
 
-        context 'for invalid id' do
-          let(:telegram_auth_result) { { result: nil } }
+        context 'for invalid code' do
+          let(:google_auth_result) { { result: nil } }
 
           it 'redirects to login path', :aggregate_failures do
             expect { request }.not_to change(User, :count)
@@ -53,14 +51,14 @@ describe Web::Users::OmniauthCallbacksController do
           end
         end
 
-        context 'for valid id' do
-          let(:telegram_auth_result) { { result: auth_payload } }
+        context 'for valid code' do
+          let(:google_auth_result) { { result: auth_payload } }
 
           context 'for not logged user' do
             let(:auth_payload) do
               {
                 uid: '123',
-                provider: 'telegram',
+                provider: 'google',
                 login: 'octocat'
               }
             end
@@ -108,7 +106,7 @@ describe Web::Users::OmniauthCallbacksController do
               let(:auth_payload) do
                 {
                   uid: '123',
-                  provider: 'telegram',
+                  provider: 'google',
                   login: 'octocat'
                 }
               end

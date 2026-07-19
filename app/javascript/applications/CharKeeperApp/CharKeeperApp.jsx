@@ -11,7 +11,6 @@ export const CharKeeperApp = (props) => (
     providerLocales={props.providerLocales}
     identities={props.identities}
     oauthLinks={props.oauthLinks}
-    oauthCredentials={props.oauthCredentials}
     host={props.host}
   >
     <AppLocaleProvider locale={props.locale}>

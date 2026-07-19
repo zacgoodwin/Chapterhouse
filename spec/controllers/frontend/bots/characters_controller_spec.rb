@@ -38,14 +38,14 @@ describe Frontend::Bots::CharactersController do
           context 'for valid params' do
             let(:values) { ['/roll d20'] }
 
-            before { allow(BotContext::Channels::SendToTelegramJob).to receive(:perform_later) }
+            before { allow(CampaignChannel).to receive(:broadcast_to) }
 
             it 'returns result', :aggregate_failures do
               request
 
               expect(response.parsed_body[:errors]).to be_nil
               expect(response).to have_http_status :ok
-              expect(BotContext::Channels::SendToTelegramJob).not_to have_received(:perform_later)
+              expect(CampaignChannel).not_to have_received(:broadcast_to)
             end
 
             context 'when channel is present' do
@@ -56,12 +56,12 @@ describe Frontend::Bots::CharactersController do
                 create :channel, campaign: campaign
               end
 
-              it 'returns result', :aggregate_failures do
+              it 'returns result and broadcasts to owlbear channel', :aggregate_failures do
                 request
 
                 expect(response.parsed_body[:errors]).to be_nil
                 expect(response).to have_http_status :ok
-                expect(BotContext::Channels::SendToTelegramJob).to have_received(:perform_later)
+                expect(CampaignChannel).to have_received(:broadcast_to)
               end
             end
           end

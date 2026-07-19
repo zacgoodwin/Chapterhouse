@@ -7,7 +7,7 @@ module Web
         add_identity: 'commands.auth_context.add_identity'
       ]
 
-      DISABLED_RUSSIAN_PROVIDERS = %w[google discord telegram].freeze
+      DISABLED_RUSSIAN_PROVIDERS = %w[google discord].freeze
 
       def create
         user = current_user.nil? ? auth_login : auth_attach(current_user)

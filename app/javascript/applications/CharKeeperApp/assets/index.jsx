@@ -38,7 +38,6 @@ export * from './Damage';
 export * from './Upgrade';
 export * from './Star';
 export * from './socials/Discord';
-export * from './socials/Telegram';
 export * from './socials/Vk';
 export * from './socials/Yandex';
 export * from './socials/Boosty';

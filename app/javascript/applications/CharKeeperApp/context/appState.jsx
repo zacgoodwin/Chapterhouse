@@ -21,7 +21,6 @@ export const AppStateProvider = (props) => {
     unreadNotificationsCount: undefined,
     identities: props.identities, // eslint-disable-line solid/reactivity
     oauthLinks: props.oauthLinks, // eslint-disable-line solid/reactivity
-    oauthCredentials: props.oauthCredentials, // eslint-disable-line solid/reactivity
     initialized: false,
     rootHost: props.host || 'charkeeper.org', // eslint-disable-line solid/reactivity
     showNavigation: 'show'

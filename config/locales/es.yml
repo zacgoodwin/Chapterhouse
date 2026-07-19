@@ -303,7 +303,7 @@ es:
         descripción de la extensión: CharKeeper permite importar personajes de D&D Beyond mediante extensiones específicas para navegador. Simplemente instala la extensión, visita la página del personaje y descarga el archivo del personaje a través de la extensión.
         extensión para: Extensión para
         integrations: Integraciones
-        integrations_desc: CharKeeper tiene capacidades de integración con Owlbear Rodeo y Telegram para mostrar los resultados de las tiradas de dados dentro de la aplicación y ejecutar varios comandos.
+        integrations_desc: CharKeeper tiene capacidades de integración con Owlbear Rodeo para mostrar los resultados de las tiradas de dados dentro de la aplicación y ejecutar varios comandos.
         cross: Multiplataforma
         cross_desc: CharKeeper está disponible como una aplicación web, funciona en dispositivos móviles iOS y Android y tiene una aplicación para MacOS.
         homebrews:
@@ -311,8 +311,6 @@ es:
           feature_1: Crea y comparte tus propias razas, clases, subclases y objetos.
           feature_2: Combina tus creaciones personalizadas en libros para compartirlas fácilmente con tus jugadores.
         app_for: Aplicación de
-        telegram_description: Disponible a través %{href} en Telegram
-        telegram_link: de bot
         open_source: Código abierto
         os_desc: CharKeeper está disponible como código abierto en GitHub. Puedes publicar problemas con comentarios o reportar errores, o contribuir al desarrollo de CharKeeper.
         os_link: Source code link
@@ -342,14 +340,6 @@ es:
         signup: Registrarse
         create: Iniciar sesión
         logout: Cerrar sesión
-  telegram_webhook:
-    unknown: "No sé qué decir, lo siento :("
-    start: "¡Hola, %{sender}! Soy Charkeeper, ¡una hoja de personaje electrónica! Te ayudaré a llevar un registro de los personajes con los que juegas a juegos de rol de mesa. Encontrarás el botón del mini lanzador de aplicaciones en la parte inferior izquierda.\n\nLo que puedo hacer ahora: crear personajes según las reglas de D&D 5 y 2024, Daggerheart y, en menor medida, Pathfinder 2; tener en cuenta el equipo y los hechizos conocidos; mostrar las habilidades raciales y de clase disponibles para el personaje en función de su nivel; tener en cuenta los espacios de hechizo gastados; actualizar las habilidades disponibles después del descanso; mostrar todas las habilidades de ataque posibles y ayudar a mantener la hoja de personaje de todas las formas posibles.\n\nLo que puedo hacer ahora: crear personajes según las reglas de D&D 5 y 2024, Daggerheart y, en menor medida, Pathfinder 2; tener en cuenta el equipo y los hechizos conocidos; mostrar las habilidades raciales y de clase disponibles para el personaje en función de su nivel; tener en cuenta los espacios de hechizo gastados; actualizar las habilidades disponibles después del descanso; mostrar todas las habilidades de ataque posibles y ayudar a mantener la hoja de personaje de todas las formas posibles.\n\nPara darte de baja de la lista de noticias del bot, introduce el comando /unsubscribe o elimina este chat con el bot de bloqueo."
-    contacts: "Si tienes alguna pregunta, comentario, sugerencia o informe de error, o si deseas colaborar con el proyecto, puedes escribir directamente en Telegram: @kortirso.\n\nO suscríbete a los grupos principales: @charkeeper en Telegram, https://vk.com/char_keeper en VK y https://discord.gg/CmT8RgyECQ en Discord."
-    unsubscribe: "Ha cancelado su suscripción para recibir noticias del proyecto.\n\nPara volver a suscribirse, utilice el comando /subscribe."
-    subscribe: "Se ha suscrito para recibir noticias del proyecto.\n\nPara cancelar la suscripción, utilice el comando /unsubscribe."
-    commands: "Puedes utilizar varios comandos del bot tanto en este chat como incluir el bot en tus grupos y ejecutar comandos allí.\n\nPuedes encontrar una lista completa de comandos en https://charkeeper.org/bot_commands"
-    help: "Si deseas ayudar a desarrollar la aplicación de alguna manera, puedes ponerte en contacto con nosotros con cualquier pregunta utilizando la información de contacto proporcionada, o simplemente hacer una donación para cubrir los gastos a través de:\n\nBoosty https://boosty.to/kortirso\ncrypto USDT (TRC20 | TRON) TT1T8m3ffwh9f8AVYqLkDB7miuJpAq1ji9"
   tags:
     cosmere:
       weapon:

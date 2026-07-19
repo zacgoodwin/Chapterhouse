@@ -2,10 +2,6 @@
 
 module Adminbook
   class NotificationsController < Adminbook::BaseController
-    include Deps[
-      send_notification: 'services.notifications_context.send_notification'
-    ]
-
     def index
       @pagy, @notifications = pagy(Notification.order(created_at: :desc), limit: 25)
     end
@@ -15,8 +11,7 @@ module Adminbook
     end
 
     def create
-      notification = Notification.new(transform_params(notification_params))
-      send_notification.call(notification: notification) if notification.save
+      Notification.new(transform_params(notification_params)).save
       redirect_to adminbook_notifications_path
     end
 

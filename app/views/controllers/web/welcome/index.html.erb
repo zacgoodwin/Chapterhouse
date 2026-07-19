@@ -50,9 +50,6 @@
       </div>
       <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'MacOS', "#{root_url}Charkeeper_aarch64.dmg", class: 'underline', download: 'Charkeeper_aarch64.dmg' %></p>
       <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'Android', "#{root_url}Charkeeper.apk", class: 'underline', download: 'Charkeeper.apk' %></p>
-      <p>
-        <%= t('web.welcome.index_v2.telegram_description', href: link_to(t('web.welcome.index_v2.telegram_link'), (Rails.env.ru_production? ? 'https://t.me/charkeeper_ru_bot' : 'https://t.me/charkeeper_bot'), class: 'underline', target: '_blank', rel: 'noopener noreferrer')).html_safe %>
-      </p>
     </div>
     <div class="flex-1">
       <%= image_tag 'screenshots/apps.webp', alt: 'apps', width: 624, height: 364 %>

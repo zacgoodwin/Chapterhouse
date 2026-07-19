@@ -1,6 +1,6 @@
 # CharKeeper (Chapterhouse fork) — Architecture Map
 
-Rails 8.1 + PostgreSQL (uuid PKs, heavy JSONB) backend API, SolidJS SPA bundled by esbuild, plus Telegram/Discord bots and an adminbook. 9 systems: Dnd5, Dnd2024, Pathfinder2, Daggerheart, Dc20, Fate, Fallout, Cosmere, Cthulhu7.
+Rails 8.1 + PostgreSQL (uuid PKs, heavy JSONB) backend API, SolidJS SPA bundled by esbuild, plus a Discord bot and an adminbook. 9 systems: Dnd5, Dnd2024, Pathfinder2, Daggerheart, Dc20, Fate, Fallout, Cosmere, Cthulhu7.
 
 ## 1. System architecture
 One `characters` table, STI via `type` column (e.g. `Dnd2024::Character`) + a JSONB `data` blob holding all system-specific attributes (db/schema.rb L197-206). Base `app/models/character.rb` has per-system scopes; `decorator` is abstract. System subclasses live in `app/platforms/<sys>/character.rb` (not models/lib). Each defines `<Sys>::CharacterData` (include StoreModel::Model, typed JSONB attribute schema) and `<Sys>::Character < Character` which attaches `attribute :data, <Sys>::CharacterData.to_type`, exposes `config` from `PlatformConfig.data('<sys>')`, and returns its calc engine via `def decorator`. Same folder holds `feat.rb` (STI `<Sys>::Feat < Feat`, with `enum :origin/:kind/:limit_refresh`), `item.rb`, `spell.rb`, `homebrews/`.

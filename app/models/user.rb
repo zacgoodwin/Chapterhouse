@@ -20,7 +20,6 @@ class User < ApplicationRecord
   has_many :campaigns, dependent: :destroy
   has_many :homebrew_books, class_name: '::Homebrew::Book', dependent: :destroy
   has_many :homebrew_publications, class_name: '::Homebrew::Publication', dependent: :destroy
-  has_many :active_bot_objects, dependent: :destroy
   has_many :user_books, class_name: '::User::Book', dependent: :destroy
   has_many :books, through: :user_books
   has_many :upvotes, dependent: :destroy

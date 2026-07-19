@@ -63,17 +63,9 @@ module BotContextV2
     def send_to_channels(character, formatted_result)
       character.channels.uniq.each do |channel|
         case channel.provider
-        when Channel::TELEGRAM then send_telegram_message(channel.external_id, formatted_result)
         when Channel::OWLBEAR then send_owlbear_message(channel.campaign, formatted_result)
         end
       end
-    end
-
-    def send_telegram_message(external_id, formatted_result)
-      BotContext::Channels::SendToTelegramJob.perform_later(
-        external_id,
-        formatted_result[:errors] ? formatted_result.dig(:errors, 0) : formatted_result[:result]
-      )
     end
 
     def character_provider(name)

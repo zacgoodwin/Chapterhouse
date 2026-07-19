@@ -6,4 +6,9 @@ describe User::Identity do
 
     expect(user_identity).to be_valid
   end
+
+  # guards against silent enum renumbering after provider removals
+  it 'keeps provider enum mapping' do
+    expect(described_class.providers).to eq('google' => 1, 'discord' => 2, 'yandex' => 3)
+  end
 end

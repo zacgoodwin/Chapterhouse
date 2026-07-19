@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Modified
 - refreshing tokens for feats
 
+### Removed
+- all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
+- orphaned active_bot_objects table and ActiveBotObject model (dead code, no readers or writers)
+
 ### Fixed
 - updating hb mechanics for dh characters
 

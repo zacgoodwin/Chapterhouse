@@ -6,8 +6,6 @@ Rails.application.routes.draw do
   mount PgHero::Engine, at: 'pghero'
   mount ActionCable.server, at: '/cable'
 
-  get 'web_telegram', to: 'web_telegram#index'
-
   namespace :adminbook do
     resources :homebrews, only: %i[edit update] do
       get 'download_report', to: 'reports#download'
@@ -91,7 +89,6 @@ Rails.application.routes.draw do
       resources :signup, only: %i[create]
     end
 
-    resources :auth, only: %i[create]
     resources :characters, only: %i[index show destroy] do
       resources :notes, only: %i[index create update destroy], module: 'characters'
       resources :resources, only: %i[create update destroy], module: 'characters'
@@ -303,7 +300,6 @@ Rails.application.routes.draw do
   end
 
   namespace :webhooks do
-    resource :telegram, only: %i[create]
     resource :discord, only: %i[create]
   end
 

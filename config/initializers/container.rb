@@ -27,7 +27,6 @@ module Charkeeper
     register('formula') { Formula.new }
     register('monitoring.providers.rails') { Monitoring::Providers::Rails.new }
     register('monitoring.client') { Monitoring::Client.new }
-    register('api.telegram.client') { TelegramApi::Client.new }
     register('api.imgproxy.client') { ImgproxyApi::Client.new }
     register('api.discord.client') { DiscordApi::Client.new }
 
@@ -169,13 +168,6 @@ module Charkeeper
     register('commands.image_processing.attach_avatar_by_file') { ImageProcessingContext::AttachAvatarByFileCommand.new }
     register('commands.image_processing.attach_avatar_by_url') { ImageProcessingContext::AttachAvatarByUrlCommand.new }
 
-    register('commands.webhooks_context.telegram.receive_message_webhook') {
-      WebhooksContext::Telegram::ReceiveMessageWebhookCommand.new
-    }
-    register('commands.webhooks_context.telegram.receive_chat_member_webhook') {
-      WebhooksContext::Telegram::ReceiveChatMemberWebhookCommand.new
-    }
-
     register('commands.homebrew_context.books.add') { HomebrewContext::Books::AddCommand.new }
     register('commands.homebrew_context.books.change') { HomebrewContext::Books::ChangeCommand.new }
 
@@ -204,21 +196,11 @@ module Charkeeper
     register('commands.resources_context.refresh') { ResourcesContext::RefreshCommand.new }
 
     # services
-    register('services.auth_context.validate_web_telegram_signature') { AuthContext::WebTelegramSignatureValidateService.new }
-
-    register('services.webhooks_context.telegram.handle_message_webhook') {
-      WebhooksContext::Telegram::HandleMessageWebhookService.new
-    }
-    register('services.webhooks_context.telegram.handle_chat_member_webhook') {
-      WebhooksContext::Telegram::HandleChatMemberWebhookService.new
-    }
-
     register('services.characters_context.pathfinder2.refresh_feats') { CharactersContext::Pathfinder2::RefreshFeats.new }
     register('services.characters_context.daggerheart.refresh_feats') { CharactersContext::Daggerheart::RefreshFeats.new }
     register('services.characters_context.dnd5.refresh_feats') { CharactersContext::Dnd5::RefreshFeats.new }
     register('services.characters_context.dnd2024.refresh_feats') { CharactersContext::Dnd2024::RefreshFeats.new }
     register('services.characters_context.dc20.refresh_feats') { CharactersContext::Dc20::RefreshFeats.new }
-    register('services.notifications_context.send_notification') { NotificationsContext::SendService.new }
 
     register('services.bot_context.handle') { BotContext::HandleService.new }
 
@@ -232,7 +214,6 @@ module Charkeeper
     register('services.bot_context.commands.rolls.fate') { BotContext::Commands::Rolls::Fate.new }
 
     register('services.bot_context.represent_command') { BotContext::RepresentCommandService.new }
-    register('services.bot_context.represent_raw_command') { BotContext::RepresentRawCommandService.new }
 
     register('services.homebrews_context.refresh_user_data') { HomebrewsContext::RefreshUserDataService.new }
 

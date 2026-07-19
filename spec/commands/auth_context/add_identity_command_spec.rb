@@ -6,7 +6,7 @@ describe AuthContext::AddIdentityCommand do
   let(:instance) { described_class.new }
   let(:user) { create :user }
   let(:uid) { '123' }
-  let(:provider) { 'telegram' }
+  let(:provider) { 'google' }
 
   context 'without user' do
     let(:user) { nil }
@@ -28,7 +28,7 @@ describe AuthContext::AddIdentityCommand do
   end
 
   context 'for existing identity' do
-    before { create :user_identity, uid: '123', provider: 'telegram' }
+    before { create :user_identity, uid: '123', provider: 'google' }
 
     it 'does not create identity', :aggregate_failures do
       expect { command_call }.not_to change(User::Identity, :count)
