@@ -36,6 +36,12 @@ module CharactersContext
 
       DEFINITIONS_PATH = Rails.root.join('db/data/tlc/resources.json')
 
+      # Homebrew subclass ids are UUIDs; seeded subclass slugs (e.g. 'gambler')
+      # are not. Only UUID-shaped attached values can name a Tlc::Homebrews::Subclass,
+      # and the id column is uuid, so a non-UUID slug in the IN-list would raise
+      # PG::InvalidTextRepresentation — filter before querying.
+      UUID_RE = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
+
       class << self
         def definitions
           @definitions ||= JSON.parse(File.read(DEFINITIONS_PATH))
@@ -55,9 +61,25 @@ module CharactersContext
         data = character.data
         attached_slugs = data.subclasses.values.compact.uniq
 
-        self.class.definitions
+        (self.class.definitions + homebrew_definitions(attached_slugs))
           .select { |entry| attached_slugs.include?(entry['subclass']) }
           .flat_map { |entry| available_resources(data, entry) }
+      end
+
+      # A homebrew subclass (ticket E2) carries its C8-shaped pool definitions in
+      # info.resources; surface them as synthetic entries so they flow through the
+      # exact same available_resources/upsert path the seeded subclasses use.
+      def homebrew_definitions(attached_slugs)
+        ids = attached_slugs.select { |slug| slug.to_s.match?(UUID_RE) }
+        return [] if ids.empty?
+
+        ::Tlc::Homebrews::Subclass.where(id: ids).map do |subclass|
+          {
+            'subclass' => subclass.id,
+            'class' => subclass.info.class_id,
+            'resources' => subclass.info.resources.map { |resource| resource.to_h.deep_stringify_keys }
+          }
+        end
       end
 
       def available_resources(data, entry)

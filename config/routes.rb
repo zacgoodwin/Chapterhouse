@@ -147,6 +147,14 @@ Rails.application.routes.draw do
       end
     end
 
+    namespace :tlc do
+      resources :species, only: %i[show destroy]
+      resources :subclasses, only: %i[show destroy]
+      resources :feats, only: %i[index show destroy] do
+        post :batch_destroy, on: :collection
+      end
+    end
+
     resources :books, only: %i[] do
       resources :items, only: %i[create destroy], module: :books
     end
