@@ -4,12 +4,15 @@ class CustomResource < ApplicationRecord
   belongs_to :resourceable, polymorphic: true
 
   # Same algorithm as CharactersContext::Dnd5::Make{Short,Long}RestCommand's
-  # inline refresh_resources case statement, generalized to any cadence key
-  # (not just 'long'/'short'). Lives on the model instead of a third inline
-  # copy so TLC's session cadence (ticket C8; no TLC rest command exists yet
-  # to read it) and any future caller share one implementation. The existing
-  # rest commands are left untouched -- not routed through this yet -- since
-  # refactoring shipped dnd5/dnd2024 rest behavior is outside this ticket.
+  # inline refresh_resources case statement (dnd2024 inherits both, so this
+  # covers dnd5 and dnd2024 too), generalized to any cadence key (not just
+  # 'long'/'short'). Lives on the model instead of a third inline copy so
+  # TLC's session cadence (ticket C8; no TLC rest command exists yet to read
+  # it) and any future caller share one implementation. A resets hash missing
+  # the queried cadence key (change is nil) is a no-op, matching the shipped
+  # rest commands' own `when 0, nil` branch -- both were audited to agree
+  # after a QA pass found the shipped commands missing that branch and added
+  # it there (see spec/models/custom_resource_spec.rb's partial-resets case).
   def refreshed_value(current_value, cadence)
     change = resets[cadence.to_s]
     case change

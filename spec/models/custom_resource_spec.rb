@@ -69,5 +69,61 @@ describe CustomResource do
         expect(resource.reload.value).to eq(expected)
       end
     end
+
+    # QA regression (ticket C8 pass 2): a resets hash that doesn't list the
+    # queried cadence -- exactly what several seeded TLC resources look like
+    # (e.g. db/data/tlc/resources.json's ghostscale_reaver_ghost_shroud has
+    # only a 'session' key) -- used to crash the real rest commands with
+    # `NoMethodError: undefined method 'abs' for nil`, because their inline
+    # case statement had no `when 0, nil` branch even though #refreshed_value
+    # did. Fixed at the root (make_short_rest_command.rb, make_long_rest_
+    # command.rb) rather than patched per-caller. These specs pin both the
+    # no-crash behavior and the no-op value against the real commands, so the
+    # "IDENTICAL" parity claim above is proven for partial-resets shapes too,
+    # not just the both-keys-present shape.
+    describe 'parity with the shipped dnd2024 rest commands for a partial resets hash' do
+      let!(:character) do
+        create :character, :dnd2024, data: {
+          spent_spell_slots: {}, hit_dice: {}, spent_hit_dice: {}, health: { max: 10, current: 5 }
+        }
+      end
+
+      context 'when only "long" is configured (no "short" key)' do
+        let!(:custom_resource) do
+          create :custom_resource, resourceable: character, max_value: 4, reset_direction: 1, resets: { 'long' => -1 }
+        end
+        let!(:resource) { create :character_resource, character: character, custom_resource: custom_resource, value: 0 }
+
+        it 'no-ops on short rest instead of raising', :aggregate_failures do
+          expected = custom_resource.refreshed_value(0, 'short')
+
+          expect do
+            CharactersContext::Dnd2024::MakeShortRestCommand.new.call(character: Dnd2024::Character.find(character.id))
+          end.not_to raise_error
+
+          expect(resource.reload.value).to eq(expected)
+          expect(resource.value).to eq(0)
+        end
+      end
+
+      context 'when only "session" is configured (no "short" or "long" key)' do
+        let!(:custom_resource) do
+          create :custom_resource, resourceable: character, max_value: 4, reset_direction: 1, resets: { 'session' => -1 }
+        end
+        let!(:resource) { create :character_resource, character: character, custom_resource: custom_resource, value: 0 }
+
+        it 'no-ops on both short and long rest instead of raising', :aggregate_failures do
+          expect do
+            CharactersContext::Dnd2024::MakeShortRestCommand.new.call(character: Dnd2024::Character.find(character.id))
+          end.not_to raise_error
+          expect(resource.reload.value).to eq(0)
+
+          expect do
+            CharactersContext::Dnd2024::MakeLongRestCommand.new.call(character: Dnd2024::Character.find(character.id))
+          end.not_to raise_error
+          expect(resource.reload.value).to eq(0)
+        end
+      end
+    end
   end
 end
