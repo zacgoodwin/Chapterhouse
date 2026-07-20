@@ -1,7 +1,7 @@
-import { Show, createEffect, createSignal, batch, For } from 'solid-js';
+import { Show, createEffect, createSignal, batch } from 'solid-js';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
-import { PageHeader, IconButton, Input, Button, Select, Label } from '../../components';
+import { PageHeader, IconButton, Input, Button, Select } from '../../components';
 import { Arrow } from '../../assets';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
 import { updateUserRequest } from '../../requests/updateUserRequest';
@@ -16,11 +16,7 @@ const TRANSLATION = {
     colorSchema: 'Color schema',
     profile: 'Profile',
     save: 'Save',
-    alternatives: 'Alternative translations',
-    updated: 'Profile is updated',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
+    updated: 'Profile is updated'
   },
   ru: {
     light: 'Светлая',
@@ -30,11 +26,7 @@ const TRANSLATION = {
     colorSchema: 'Цветовая палитра',
     profile: 'Профиль',
     save: 'Сохранить',
-    alternatives: 'Альтернативные переводы',
-    updated: 'Профиль обновлён',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
+    updated: 'Профиль обновлён'
   },
   es: {
     light: 'Claro',
@@ -44,20 +36,7 @@ const TRANSLATION = {
     colorSchema: 'Esquema de colores',
     profile: 'Perfil',
     save: 'Guardar',
-    alternatives: 'Traducciones alternativas',
-    updated: 'Perfil actualizado',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
-  }
-}
-
-const PROVIDER_LOCALES = {
-  'ru': {
-    'daggerheart': {
-      'ru': 'Стандартный (daggerheart.su)',
-      'ru-DHM': 'Modno (dagger-heart.ru)'
-    }
+    updated: 'Perfil actualizado'
   }
 }
 
@@ -67,7 +46,6 @@ export const UsernameTab = (props) => {
   const [username, setUsername] = createSignal('');
   const [colorSchema, setColorSchema] = createSignal('');
   const [localeValue, setLocaleValue] = createSignal(undefined);
-  const [providerLocales, setProviderLocales] = createSignal({});
 
   const [appState, { changeUserInfo }] = useAppState();
   const [{ renderAlerts, renderNotice }] = useAppAlert();
@@ -78,14 +56,12 @@ export const UsernameTab = (props) => {
       setUsername(appState.username);
       setColorSchema(appState.colorSchema);
       setLocaleValue(locale());
-      setProviderLocales(appState.providerLocales);
     });
   });
 
   const updateProfile = async () => {
     let payload = { color_schema: colorSchema(), locale: localeValue() };
     if (username() !== appState.username) payload = { ...payload, username: username() };
-    if (providerLocales() !== appState.providerLocales) payload = { ...payload, provider_locales: providerLocales() };
 
     const result = await updateUserRequest(appState.accessToken, payload);
 
@@ -93,7 +69,7 @@ export const UsernameTab = (props) => {
       result,
       function() { // eslint-disable-line solid/reactivity
         batch(() => {
-          changeUserInfo({ username: username(), colorSchema: colorSchema(), providerLocales: providerLocales() });
+          changeUserInfo({ username: username(), colorSchema: colorSchema() });
           setLocale(localeValue());
         });
         renderNotice(localize(TRANSLATION, locale()).updated);
@@ -136,22 +112,6 @@ export const UsernameTab = (props) => {
           selectedValue={colorSchema()}
           onSelect={setColorSchema}
         />
-        <Show when={PROVIDER_LOCALES[locale()]}>
-          <div>
-            <Label labelText={localize(TRANSLATION, locale()).alternatives} />
-            <For each={Object.entries(PROVIDER_LOCALES[locale()])}>
-              {([provider, values]) =>
-                <Select
-                  containerClassList="mb-2"
-                  labelText={localize(TRANSLATION, locale()).providers[provider]}
-                  items={values}
-                  selectedValue={providerLocales()[provider] === null || providerLocales()[provider] === undefined ? 'ru' : providerLocales()[provider]}
-                  onSelect={(value) => setProviderLocales({ ...providerLocales(), [provider]: value })}
-                />
-              }
-            </For>
-          </div>
-        </Show>
         <Button default textable classList="mt-4" onClick={updateProfile}>{localize(TRANSLATION, locale()).save}</Button>
       </div>
     </>

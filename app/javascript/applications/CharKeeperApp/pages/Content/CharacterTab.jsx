@@ -1,7 +1,7 @@
 import { createSignal, createEffect, Show, Switch, Match } from 'solid-js';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
-import { Dnd5, Pathfinder2, Daggerheart, Dc20, Fate, Fallout, Cosmere, Cthulhu7 } from '../../pages';
+import { Dnd5 } from '../../pages';
 import { PageHeader, IconButton } from '../../components';
 import { Arrow } from '../../assets';
 import { useAppState } from '../../context';
@@ -52,27 +52,6 @@ export const CharacterTab = (props) => {
         </Match>
         <Match when={character().provider === 'dnd2024'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'pathfinder2'}>
-          <Pathfinder2 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'daggerheart'}>
-          <Daggerheart character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'dc20'}>
-          <Dc20 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'fate'}>
-          <Fate character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'fallout'}>
-          <Fallout character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'cosmere'}>
-          <Cosmere character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
-        </Match>
-        <Match when={character().provider === 'cthulhu7'}>
-          <Cthulhu7 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>
       </Switch>
     </>

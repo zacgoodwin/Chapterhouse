@@ -153,9 +153,9 @@ const TRANSLATION = {
     chargesMax: 'Max'
   }
 }
-const CREATE_HOMEBREW_ITEMS = ['daggerheart', 'dnd2024'];
-const ITEMS_INFO = ['daggerheart', 'dnd2024', 'dnd5'];
-const HOMEBREWED_PROVIDERS = ['daggerheart', 'dnd2024']
+const CREATE_HOMEBREW_ITEMS = ['dnd2024'];
+const ITEMS_INFO = ['dnd2024', 'dnd5'];
+const HOMEBREWED_PROVIDERS = ['dnd2024']
 
 export const Equipment = (props) => {
   const safeChildren = children(() => props.children);

@@ -3,7 +3,7 @@ import { createStore } from 'solid-js/store';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
 import { ItemsTableItem } from './ItemsTableItem';
-import { IconButton, createModal, DaggerheartItemUpgrade, Dnd2024ItemUpgrade } from '../../components';
+import { IconButton, createModal, Dnd2024ItemUpgrade } from '../../components';
 import { useAppLocale } from '../../context';
 import { Hands, Equipment, Backpack, Storage, Dots } from '../../assets';
 import { clickOutside, localize } from '../../helpers';
@@ -29,7 +29,7 @@ const TRANSLATION = {
     info: 'Información'
   }
 }
-const ITEMS_INFO = ['daggerheart', 'dnd2024', 'dnd5'];
+const ITEMS_INFO = ['dnd2024', 'dnd5'];
 
 export const ItemsTable = (props) => {
   const size = createWindowSize();
@@ -148,15 +148,6 @@ export const ItemsTable = (props) => {
       <Modal>
         <Show when={upgradingItem.item}>
           <Switch>
-            <Match when={props.provider === 'daggerheart'}>
-              <DaggerheartItemUpgrade
-                characterId={props.characterId}
-                item={upgradingItem.item}
-                state={upgradingItem.state}
-                upgradeItems={props.upgradeItems}
-                completeUpgrade={completeUpgrade}
-              />
-            </Match>
             <Match when={props.provider === 'dnd2024'}>
               <Dnd2024ItemUpgrade
                 characterId={props.characterId}

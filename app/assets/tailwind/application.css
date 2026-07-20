@@ -285,18 +285,6 @@
   @apply text-sm;
 }
 
-.dc20-skill-box {
-  @apply blockable p-4 pb-8 mb-2;
-}
-
-.dc20-skill-box-title {
-  @apply text-lg mb-2;
-}
-
-.dc20-skill-converter {
-  @apply flex items-center justify-between text-sm mb-2;
-}
-
 .experience-title-box {
   @apply flex justify-between items-center;
 }
@@ -323,18 +311,6 @@
 
 .experience:nth-of-type(n+2), .character-resource:nth-of-type(n+2) {
   @apply border-t border-gray-200 dark:border-neutral-800;
-}
-
-.dc20-conditions .dc20-condition {
-  @apply flex flex-col dark:text-snow p-2;
-}
-
-.dc20-conditions .dc20-condition:nth-of-type(2n) {
-  @apply bg-gray-50 dark:bg-dusty;
-}
-
-.dc20-condition-data {
-  @apply flex items-center;
 }
 
 .truncate-text {
@@ -560,14 +536,6 @@ body.web {
 
 .stat-title {
   @apply uppercase text-sm mb-2 text-center;
-}
-
-.dc20-stat-value-box {
-  @apply mx-auto flex items-center justify-center;
-}
-
-.dc20-stat-value {
-  @apply text-2xl font-normal! leading-10;
 }
 
 .weapon-title {
@@ -835,61 +803,40 @@ body.web {
   @apply border-b border-gray-200 dark:border-dusty;
 }
 
-.dc20-skill {
-  @apply flex items-center p-1;
-  @apply even:bg-stone-100 even:dark:bg-dark-dusty;
-}
-
-.dc20-skill:nth-of-type(n+2) {
-  @apply border-t border-gray-200 dark:border-neutral-800;
-}
-
-.fallout-skills {
+.skills-grid {
   @apply grid grid-cols-1 sm:grid-cols-2 gap-x-8 mt-2;
 }
 
-.fallout-skill {
+.skills-grid-item {
   @apply flex items-center py-1 p-1;
 }
 
-.fallout-skill-actions {
+.skills-grid-item-actions {
   @apply flex items-center gap-x-2;
 }
 
 @media (width < 48rem) {
-  .fallout-skill:nth-child(2n+1) {
+  .skills-grid-item:nth-child(2n+1) {
     @apply bg-stone-100 dark:bg-dark-dusty md:bg-none;
   }
 
-  .fallout-skill:nth-of-type(n+2) {
+  .skills-grid-item:nth-of-type(n+2) {
     @apply border-t border-gray-200 dark:border-neutral-800;
   }
 }
 
 @media (width >= 48rem) {
-  .fallout-skill:nth-child(4n+3), .fallout-skill:nth-child(4n+4) {
+  .skills-grid-item:nth-child(4n+3), .skills-grid-item:nth-child(4n+4) {
     @apply md:bg-stone-100 md:dark:bg-dark-dusty;
   }
 
-  .fallout-skill:nth-of-type(n+3) {
+  .skills-grid-item:nth-of-type(n+3) {
     @apply border-t border-gray-200 dark:border-neutral-800;
   }
 }
 
 .dice-text-box {
   @apply absolute top-0 left-0 w-full h-full flex justify-center items-center;
-}
-
-.dc20-ability-title {
-  @apply text-sm uppercase text-center mb-2 dark:text-white;
-}
-
-.dc20-ability {
-  @apply mx-auto flex items-center justify-center;
-}
-
-.dc20-ability-savebox {
-  @apply absolute -bottom-2 -right-6;
 }
 
 .ancestry-item {
@@ -940,16 +887,16 @@ body.web {
   @apply grid grid-cols-3 emd:grid-cols-6 elg:grid-cols-3 exl:grid-cols-6 gap-x-2 gap-y-4;
 }
 
-.cthulhu-abilities-box {
-  @apply grid grid-cols-3 md:grid-cols-4 gap-x-2 gap-y-4;
-}
-
 .ability-title {
   @apply text-sm uppercase text-center mb-2;
 }
 
 .ability-value-box {
   @apply mx-auto flex items-center justify-center;
+}
+
+.ability-savebox {
+  @apply absolute -bottom-2 -right-6;
 }
 
 .ability-value {
@@ -1014,10 +961,6 @@ body.web {
 
 .roll-results {
   @apply flex flex-1 items-center justify-end dark:text-snow;
-}
-
-.cosmere-feat {
-  @apply pb-2 border-b border-gray-200 dark:border-neutral-800;
 }
 
 .blockable-padding {

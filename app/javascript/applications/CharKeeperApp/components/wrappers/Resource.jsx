@@ -23,11 +23,6 @@ const TRANSLATION = {
       1: 'Reset to max'
     },
     rests: {
-      daggerheart: {
-        short: 'Short rest',
-        long: 'Long rest',
-        session: 'Session rest'
-      },
       dnd5: {
         short: 'Short rest',
         long: 'Long rest'
@@ -49,11 +44,6 @@ const TRANSLATION = {
       1: 'Сброс до максимума'
     },
     rests: {
-      daggerheart: {
-        short: 'Короткий отдых',
-        long: 'Длинный отдых',
-        session: 'Между сессиями'
-      },
       dnd5: {
         short: 'Короткий отдых',
         long: 'Длинный отдых'
@@ -75,11 +65,6 @@ const TRANSLATION = {
       1: 'Reset to max'
     },
     rests: {
-      daggerheart: {
-        short: 'Descanso corto',
-        long: 'Descanso largo',
-        session: 'Descanso entre sesiones'
-      },
       dnd5: {
         short: 'Descanso corto',
         long: 'Descanso largo'

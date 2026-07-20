@@ -27,7 +27,6 @@ const TRANSLATION = {
   }
 }
 const PROVIDERS = {
-  daggerheart: 'Daggerheart',
   dnd: 'D&D 5.5'
 }
 
@@ -81,7 +80,7 @@ export const HomebrewTab = () => {
           <p class="mb-2 text-sm">{localize(TRANSLATION, locale()).page}</p>
           <p class="mb-4 text-sm">{localize(TRANSLATION, locale()).link} <a href={host()} class='underline' target='_blank' rel='noopener noreferrer'>{localize(TRANSLATION, locale()).here}</a></p>
           <div class="flex flex-col gap-2">
-            <For each={['daggerheart', 'dnd']}>
+            <For each={['dnd']}>
               {(provider) =>
                 <Toggle containerClassList="mb-0!" title={PROVIDERS[provider]}>
                   <div class="flex flex-col gap-2">

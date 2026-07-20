@@ -12,15 +12,8 @@
     },
     "characterNavigation": {
       "allFilter": "Все",
-      "dc20": "DC20",
       "dnd5": "D&D 5",
       "dnd2024": "D&D 2024",
-      "pathfinder2": "Pathfinder 2",
-      "daggerheart": "Daggerheart",
-      "fate": "Fate",
-      "cosmere": "Cosmere",
-      "fallout": "Fallout 2D20",
-      "cthulhu7": "Call of Cthulhu 7",
       "aspects": "Аспекты",
       "skills": "Навыки",
       "vitals": "Здоровье",
@@ -79,33 +72,6 @@
     "botPage": {
       "title": "Команды бота",
       "link": "Список доступных команд можно узнать <a href='https://charkeeper.org/bot_commands' class='underline' target='_blank' rel='noopener noreferrer'>тут</a>"
-    }
-  },
-  "daggerheart": {
-    "terms": {
-      "traits": "Способности",
-      "thresholds": "Пороги урона"
-    },
-    "domainCards": {
-      "limit": "Лимит карт",
-      "spellcastTraits": "Способности",
-      "loadout": "Инвентарь",
-      "vault": "Хранилище",
-      "select": "Добавить карты",
-      "cardNote": "Заметка"
-    },
-    "bonuses": {
-      "title": "Бонусы",
-      "health": "Здоровье",
-      "stress": "Стресс",
-      "evasion": "Уклонение",
-      "armor_score": "Доспех",
-      "attack": "Атака",
-      "proficiency": "Мастерство"
-    },
-    "transformation": {
-      "transformation": "Трансформация",
-      "naturalForm": "Естественная форма"
     }
   },
   "combat": {
@@ -176,24 +142,8 @@
         "small": "Маленький",
         "medium": "Средний",
         "large": "Большой"
-      }
-    },
-    "pathfinder2": {
-      "race": "Раса",
-      "subrace": "Подраса",
-      "mainClass": "Основной класс",
-      "background": "Происхождение",
-      "mainAbility": "Основная характеристика"
-    },
-    "daggerheart": {
-      "ancestry": "Раса",
-      "community": "Общество",
-      "mainClass": "Основной класс",
-      "subclass": "Подкласс",
-      "customAncestry": "Мультираса",
-      "ancestryName": "Название расы",
-      "mainFeature": "Главная способность",
-      "secondaryFeature": "Дополнительная способность"
+      },
+      "background": "Происхождение"
     }
   },
   "itemsPage": {

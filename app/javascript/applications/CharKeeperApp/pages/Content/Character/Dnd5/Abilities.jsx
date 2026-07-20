@@ -120,7 +120,7 @@ export const Dnd5Abilities = (props) => {
                 {([slug, values]) =>
                   <div>
                     <p class="text-sm uppercase text-center mb-2">{localize(values.name, locale())}</p>
-                    <div class="dc20-ability">
+                    <div class="ability-value-box">
                       <p class="text-2xl font-normal!">
                         <Show when={!editMode()} fallback={abilitiesData()[slug]}>
                           <div class="relative pb-4">
@@ -131,7 +131,7 @@ export const Dnd5Abilities = (props) => {
                               textClassList="text-4xl"
                               onClick={() => props.openD20Test(`/check attr ${slug}`, `${localize(TRANSLATION, locale()).check}, ${localize(values.name, locale())}`, character().modifiers[slug])}
                             />
-                            <div class="dc20-ability-savebox">
+                            <div class="ability-savebox">
                               <Dice
                                 text={modifier(character().save_dc[slug])}
                                 onClick={() => props.openD20Test(`/check save ${slug}`, `${localize(TRANSLATION, locale()).saveCheck}, ${localize(values.name, locale())}`, character().save_dc[slug])}

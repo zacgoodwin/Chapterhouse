@@ -12,15 +12,8 @@
     },
     "characterNavigation": {
       "allFilter": "All",
-      "dc20": "DC20",
       "dnd5": "D&D 5",
       "dnd2024": "D&D 2024",
-      "pathfinder2": "Pathfinder 2",
-      "daggerheart": "Daggerheart",
-      "fate": "Fate",
-      "cosmere": "Cosmere",
-      "fallout": "Fallout 2D20",
-      "cthulhu7": "Call of Cthulhu 7",
       "aspects": "Aspects",
       "skills": "Skills",
       "vitals": "Vitals",
@@ -79,33 +72,6 @@
     "botPage": {
       "title": "Bot commands",
       "link": "List of available commands you can check <a href='https://charkeeper.org/bot_commands' class='underline' target='_blank' rel='noopener noreferrer'>here</a>"
-    }
-  },
-  "daggerheart": {
-    "terms": {
-      "traits": "Traits",
-      "thresholds": "Damage thresholds"
-    },
-    "domainCards": {
-      "limit": "Cards limit",
-      "spellcastTraits": "Spellcast traits",
-      "loadout": "Loadout",
-      "vault": "Vault",
-      "select": "Add domain cards",
-      "cardNote": "Domain card note"
-    },
-    "bonuses": {
-      "title": "Bonuses",
-      "health": "Health",
-      "stress": "Stress",
-      "evasion": "Evasion",
-      "armor_score": "Armor",
-      "attack": "Attack",
-      "proficiency": "Proficiency"
-    },
-    "transformation": {
-      "transformation": "Transformation",
-      "naturalForm": "Natural form"
     }
   },
   "combat": {
@@ -176,24 +142,8 @@
         "small": "Small",
         "medium": "Medium",
         "large": "Large"
-      }
-    },
-    "pathfinder2": {
-      "race": "Race",
-      "subrace": "Subrace",
-      "mainClass": "Main class",
-      "background": "Background",
-      "mainAbility": "Main ability"
-    },
-    "daggerheart": {
-      "ancestry": "Ancestry",
-      "community": "Community",
-      "mainClass": "Main class",
-      "subclass": "Subclass",
-      "customAncestry": "Mixed ancestry",
-      "ancestryName": "Ancestry's name",
-      "mainFeature": "Main feature",
-      "secondaryFeature": "Secondary feature"
+      },
+      "background": "Background"
     }
   },
   "itemsPage": {
@@ -212,7 +162,7 @@
     "damageConditions": "Damage resistances",
     "vulnerability": "Vulner",
     "resistance": "Resist",
-    "immunity": "Immune", 
+    "immunity": "Immune",
     "ammoList": "Ammo",
     "itemNote": "Item note",
     "deathSavingThrows": "Death saving throws",

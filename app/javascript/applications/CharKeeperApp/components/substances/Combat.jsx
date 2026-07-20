@@ -1,7 +1,6 @@
-import { createSignal, createEffect, createMemo, For, Show, Switch, Match, batch } from 'solid-js';
+import { createSignal, createEffect, createMemo, For, Show, batch } from 'solid-js';
 
 import { ErrorWrapper, Dice, GuideWrapper, createModal, Button, Select } from '../../components';
-import daggerheartConfig from '../../data/daggerheart.json';
 import { useAppState, useAppLocale } from '../../context';
 import { Edit } from '../../assets';
 import { modifier, readFromCache, writeToCache, localize } from '../../helpers';
@@ -20,18 +19,6 @@ const TRANSLATION = {
     imperial: 'Imperial distance',
     metric: 'Metric distance',
     settings: 'Distance settings',
-    daggerheart: {
-      'melee': 'Melee',
-      'very close': 'V Close',
-      'close': 'Close',
-      'far': 'Far',
-      'very far': 'V Far'
-    },
-    fallout: {
-      close: 'Close',
-      medium: 'Medium',
-      long: 'Long'
-    },
     squares: 'sq',
     feet: 'ft',
     meters: 'm',
@@ -48,18 +35,6 @@ const TRANSLATION = {
     imperial: 'Имперская система',
     metric: 'Метрическая система',
     settings: 'Настройки дистанции',
-    daggerheart: {
-      'melee': 'Вплотную',
-      'very close': 'Близко',
-      'close': 'Средне',
-      'far': 'Далеко',
-      'very far': 'Оч далеко'
-    },
-    fallout: {
-      close: 'Близкая',
-      medium: 'Средняя',
-      long: 'Дальняя'
-    },
     squares: 'кв',
     feet: 'фт',
     meters: 'м',
@@ -76,32 +51,12 @@ const TRANSLATION = {
     imperial: 'Sistema imperial',
     metric: 'Sistema métrico',
     settings: 'Configuración de distancia',
-    daggerheart: {
-      'melee': 'Melee',
-      'very close': 'Muy cerca',
-      'close': 'Cerca',
-      'far': 'Lejos',
-      'very far': 'Muy lejos'
-    },
-    fallout: {
-      close: 'Cerca',
-      medium: 'Medio',
-      long: 'Largo'
-    },
     squares: 'cuad',
     feet: 'ft',
     meters: 'm',
     attacks: 'Attks'
   }
 }
-const DH_SQUARE_DISTANCES = {
-  'melee': 1,
-  'very close': 3,
-  'close': 6,
-  'far': 12,
-  'very far': 24
-}
-
 export const Combat = (props) => {
   const character = () => props.character;
 
@@ -127,19 +82,8 @@ export const Combat = (props) => {
     readDistanceSettings();
   });
 
-  const currentLocale = createMemo(() => {
-    const providerLocale = appState.providerLocales[character().provider];
-    if (providerLocale && providerLocale.includes(`${locale()}-`)) return providerLocale;
-    return locale();
-  });
-
   const distanceOptions = createMemo(() => {
-    const result = {}
-
-    if (character().provider === 'daggerheart') result.narrative = localize(TRANSLATION, locale()).narrative;
-
     return {
-      ...result,
       'showSquares': localize(TRANSLATION, locale()).showSquares,
       'imperial': localize(TRANSLATION, locale()).imperial,
       'metric': localize(TRANSLATION, locale()).metric
@@ -183,18 +127,11 @@ export const Combat = (props) => {
 
   const renderAttackDistance = (attack) => {
     const provider = character().provider;
-    if (provider === 'daggerheart') {
-      if (settings()[provider] === 'narrative' || settings()[provider] === undefined) {
-        return localize(TRANSLATION, locale()).daggerheart[attack.range];
-      }
-    }
 
     let distance = attack.distance || attack.range;
     if (!distance) return '';
 
-    if (provider === 'daggerheart') distance = [DH_SQUARE_DISTANCES[attack.range] * 5];
-    if (provider === 'pathfinder2') distance = [distance];
-    if (provider === 'dnd5' || provider === 'dnd2024' || provider === 'dc20' || provider === 'cosmere') distance = distance.toString().includes('/') ? distance.split('/').map((item) => parseInt(item)) : [distance];
+    distance = distance.toString().includes('/') ? distance.split('/').map((item) => parseInt(item)) : [distance];
 
     const result = distance.map((item) => {
       if (settings()[provider] === 'imperial') return item;
@@ -207,28 +144,6 @@ export const Combat = (props) => {
     if (settings()[provider] === 'metric') return `${result} ${localize(TRANSLATION, locale()).meters}`;
 
     return `${result} ${localize(TRANSLATION, locale()).squares}`;
-  }
-
-  const renderFalloutAttackDice = (attack) => {
-    const skill = character().skills.find(({ slug }) => attack.kind === slug);
-    if (!skill) return '';
-
-    return (
-      <Dice
-        width="32"
-        height="32"
-        text={skill.modifier + skill.attribute_modifier}
-        onClick={() => props.openAttackRoll(`/check skill "${attack.name}"`, attack.name, skill.modifier + skill.attribute_modifier, (skill.expertise ? skill.modifier : 1), attack.damage, attack.id)}
-      />
-    )
-  }
-
-  const renderFalloutDistance = (attack) => {
-    if (!attack.distance) return '';
-
-    return (
-      <p class="text-sm">{localize(TRANSLATION, locale()).fallout[attack.distance]}</p>
-    );
   }
 
   const renderAttacksBox = (title, values) => {
@@ -244,47 +159,15 @@ export const Combat = (props) => {
                 <div class="weapon-item-header">
                   <p class="weapon-item-name">{attack.name}</p>
                   <div class="weapon-item-stats">
-                    <Switch
-                      fallback={
-                        <>
-                          <div class="weapon-damage">
-                            <Show when={character().provider === 'daggerheart' && attack.trait}>
-                              <span class="weapon-damage-trait">{localize(daggerheartConfig.traits[attack.trait].shortName, currentLocale())}</span>
-                            </Show>
-                            <Dice width="28" height="28" text={modifier(attack.attack_bonus)} onClick={() => openAttackRoll(attack, attack.attack_bonus)} />
-                            <Show when={attack.thrown_attack_bonus}>
-                              <span> / </span>
-                              <Dice width="28" height="28" text={modifier(attack.thrown_attack_bonus)} onClick={() => openAttackRoll(attack, attack.thrown_attack_bonus)} />
-                            </Show>
-                          </div>
-                          <p>{attack.damage}{attack.damage_bonus !== 0 ? modifier(attack.damage_bonus) : ''}</p>
-                          <p class="text-sm">{renderAttackDistance(attack)}</p>
-                        </>
-                      }
-                    >
-                      <Match when={character().provider === 'fallout'}>
-                        <div class="weapon-damage gap-x-2">
-                          {renderFalloutAttackDice(attack)}
-                          <Dice type="D6" width="32" height="32" text={attack.damage} />
-                          {renderFalloutDistance(attack)}
-                        </div>
-                      </Match>
-                      <Match when={character().provider === 'cthulhu7'}>
-                        <>
-                          <div class="weapon-damage">
-                            <Dice
-                              width="28"
-                              height="28"
-                              text={attack.attack_bonus}
-                              onClick={() => props.openCthulhuTest(`/check skill "${attack.slug}"`, attack.name, attack.attack_bonus)}
-                            />
-                          </div>
-                          <p>{attack.damage}{attack.damage_bonus ? `+${attack.damage_bonus}` : ''}</p>
-                          <p class="text-sm">{attack.distance}</p>
-                          <p class="text-xs">{localize(TRANSLATION, locale()).attacks} {attack.attacks}</p>
-                        </>
-                      </Match>
-                    </Switch>
+                    <div class="weapon-damage">
+                      <Dice width="28" height="28" text={modifier(attack.attack_bonus)} onClick={() => openAttackRoll(attack, attack.attack_bonus)} />
+                      <Show when={attack.thrown_attack_bonus}>
+                        <span> / </span>
+                        <Dice width="28" height="28" text={modifier(attack.thrown_attack_bonus)} onClick={() => openAttackRoll(attack, attack.thrown_attack_bonus)} />
+                      </Show>
+                    </div>
+                    <p>{attack.damage}{attack.damage_bonus !== 0 ? modifier(attack.damage_bonus) : ''}</p>
+                    <p class="text-sm">{renderAttackDistance(attack)}</p>
                   </div>
                 </div>
                 <Show when={attack.tags && Object.keys(attack.tags).length > 0}>
@@ -296,7 +179,7 @@ export const Combat = (props) => {
                     </For>
                   </div>
                 </Show>
-                <Show when={(attack.tags === undefined || character().provider === 'daggerheart') && attack.features && attack.features.length > 0}>
+                <Show when={attack.tags === undefined && attack.features && attack.features.length > 0}>
                   <p class="weapon-features">
                     {typeof attack.features[0] === 'string' ? attack.features.join(', ') : attack.features.map((item) => localize(item, locale())).join(', ')}
                   </p>
@@ -329,9 +212,7 @@ export const Combat = (props) => {
           </Show>
           {renderAttacksBox(localize(TRANSLATION, locale()).primary, character().attacks.filter((item) => item.ready_to_use))}
           {renderAttacksBox(localize(TRANSLATION, locale()).additional, character().attacks.filter((item) => !item.ready_to_use))}
-          <Show when={character().provider !== 'cthulhu7'}>
-            <Button default classList="weapon-settings min-w-6 min-h-6" onClick={() => setShowSettings(!showSettings())}><Edit /></Button>
-          </Show>
+          <Button default classList="weapon-settings min-w-6 min-h-6" onClick={() => setShowSettings(!showSettings())}><Edit /></Button>
         </div>
         <Modal classList="md:max-w-md!">
           <p class="mb-3 text-xl">{tagInfo()[0]}</p>
