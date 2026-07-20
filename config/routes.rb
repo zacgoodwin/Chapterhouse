@@ -26,6 +26,11 @@ Rails.application.routes.draw do
       resources :characters, only: %i[index]
       resources :recipes, only: %i[index new create]
     end
+    namespace :tlc do
+      resources :feats, except: %i[show]
+      resources :spells, except: %i[show]
+      resources :items, except: %i[show]
+    end
 
     resources :items, except: %i[show]
     resources :spells, except: %i[show]
@@ -139,6 +144,14 @@ Rails.application.routes.draw do
       resources :spells, only: %i[index show destroy]
       resources :books, only: %i[index show create update destroy] do
         get :for_items, on: :collection
+      end
+    end
+
+    namespace :tlc do
+      resources :species, only: %i[show destroy]
+      resources :subclasses, only: %i[show destroy]
+      resources :feats, only: %i[index show destroy] do
+        post :batch_destroy, on: :collection
       end
     end
 

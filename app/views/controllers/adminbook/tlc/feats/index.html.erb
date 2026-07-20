@@ -1,0 +1,27 @@
+<%= render 'adminbook/tlc/toolbar' %>
+<table class="table w-full text-sm font-cascadia-light">
+  <thead>
+    <tr>
+      <td>Slug</td>
+      <td>Title</td>
+      <td>Origin</td>
+      <td>Kind</td>
+      <td>Visibility</td>
+      <td>Verified</td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @records.each do |feat| %>
+      <tr>
+        <td class="pr-4"><%= link_to feat.slug, edit_adminbook_tlc_feat_path(feat.id), class: 'underline text-blue-400' %></td>
+        <td class="pr-4"><%= feat.title['en'] %></td>
+        <td class="pr-4"><%= feat.origin %> / <%= feat.origin_value %></td>
+        <td class="pr-4"><%= feat.kind %></td>
+        <td class="pr-4"><%= feat.visibility %></td>
+        <td class="pr-4"><%= feat.verified? ? 'yes' : 'NO' %></td>
+        <td><%= button_to 'X', adminbook_tlc_feat_path(feat.id), method: :delete, class: 'btn-warning btn-small text-sm' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+<%# Visibility + verified controls shared by every TLC content form. Both fold
+    into the row's jsonb meta column via the model setters. %>
+<div class="form-field mb-2">
+  <div><%= form.label 'Visibility', class: 'form-label' %></div>
+  <div><%= form.select :visibility, Tlc::ContentFlags::VISIBILITIES, selected: @record.visibility %></div>
+</div>
+<div class="form-field mb-2">
+  <div><%= form.label 'Verified', class: 'form-label' %></div>
+  <div><%= form.checkbox :verified, checked: @record.verified? %></div>
+</div>

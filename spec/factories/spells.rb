@@ -15,5 +15,12 @@ FactoryBot.define do
     trait :dnd2024 do
       type { 'Dnd2024::Spell' }
     end
+
+    trait :tlc do
+      initialize_with { Tlc::Spell.new }
+      type { 'Tlc::Spell' }
+      sequence(:slug) { |i| "tlc-spell-#{i}" }
+      name { { en: 'Leyward', ru: 'Leyward' } }
+    end
   end
 end

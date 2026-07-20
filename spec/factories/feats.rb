@@ -87,6 +87,7 @@ FactoryBot.define do
     end
 
     trait :tlc do
+      initialize_with { Tlc::Feat.new }
       type { 'Tlc::Feat' }
       sequence(:slug) { |i| "tlc-slug-#{i}" }
       title {

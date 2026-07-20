@@ -5,6 +5,10 @@ module Tlc
   # class-level, so each STI sibling must redeclare them. The `session`
   # limit_refresh value is owned by C1 and deliberately not added here.
   class Feat < Feat
+    include Tlc::ContentFlags
+
+    tlc_content meta: :info, name: :title
+
     SPECIES_ORIGIN = 'species'
     LEGACY_ORIGIN = 'legacy'
     CLASS_ORIGIN = 'class'

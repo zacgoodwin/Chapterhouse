@@ -108,6 +108,7 @@ module Charkeeper
     register('services.characters_context.dnd5.refresh_feats') { CharactersContext::Dnd5::RefreshFeats.new }
     register('services.characters_context.dnd2024.refresh_feats') { CharactersContext::Dnd2024::RefreshFeats.new }
     register('services.characters_context.tlc.refresh_feats') { CharactersContext::Tlc::RefreshFeats.new }
+    register('services.characters_context.tlc.refresh_resources') { CharactersContext::Tlc::RefreshResources.new }
 
     register('services.bot_context.handle') { BotContext::HandleService.new }
 
