@@ -1,0 +1,38 @@
+<%= form_with model: @record, scope: :item,
+      url: (@record.persisted? ? adminbook_tlc_item_path(@record) : adminbook_tlc_items_path),
+      class: 'font-cascadia-light' do |form| %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Slug', class: 'form-label' %></div>
+    <div><%= form.text_field :slug, class: 'form-value w-80', required: true %></div>
+  </div>
+  <%= form.fields_for :name, @record.name do |name_form| %>
+    <div class="form-field mb-2">
+      <div><%= name_form.label 'Name (en)', class: 'form-label' %></div>
+      <div><%= name_form.text_field :en, value: @record.name['en'], class: 'form-value w-80' %></div>
+    </div>
+    <div class="form-field mb-2">
+      <div><%= name_form.label 'Name (ru)', class: 'form-label' %></div>
+      <div><%= name_form.text_field :ru, value: @record.name['ru'], class: 'form-value w-80' %></div>
+    </div>
+  <% end %>
+  <%= form.fields_for :description, @record.description do |description_form| %>
+    <div class="form-field mb-2">
+      <div><%= description_form.label 'Description (en)', class: 'form-label' %></div>
+      <div><%= description_form.textarea :en, value: @record.description['en'], class: 'form-text text-sm', size: '100x5' %></div>
+    </div>
+    <div class="form-field mb-2">
+      <div><%= description_form.label 'Description (ru)', class: 'form-label' %></div>
+      <div><%= description_form.textarea :ru, value: @record.description['ru'], class: 'form-text text-sm', size: '100x5' %></div>
+    </div>
+  <% end %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Kind', class: 'form-label' %></div>
+    <div><%= form.text_field :kind, class: 'form-value w-80', required: true %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Modifiers (JSON)', class: 'form-label' %></div>
+    <div><%= form.textarea :modifiers, value: @record.modifiers.to_json, class: 'form-text text-sm', size: '100x5' %></div>
+  </div>
+  <%= render 'adminbook/tlc/meta_fields', form: form %>
+  <%= form.submit(@record.persisted? ? 'Update' : 'Create', class: 'btn btn-primary') %>
+<% end %>

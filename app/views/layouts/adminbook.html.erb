@@ -32,6 +32,10 @@
       <%= link_to 'Items', adminbook_items_path(provider: 'dnd2024') %>
       <%= link_to 'Feats', adminbook_feats_path(provider: 'dnd2024') %>
       <%= link_to 'Recipes', adminbook_dnd2024_recipes_path %>
+      <p class="mt-4 text-gray-400">TLC</p>
+      <%= link_to 'Feats', adminbook_tlc_feats_path %>
+      <%= link_to 'Spells', adminbook_tlc_spells_path %>
+      <%= link_to 'Items', adminbook_tlc_items_path %>
     </nav>
     <main class="flex-1 overflow-y-auto p-4">
       <%= yield %>
