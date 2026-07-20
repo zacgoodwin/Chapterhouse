@@ -7,6 +7,8 @@ class Feat < ApplicationRecord
 
   scope :dnd5, -> { where(type: 'Dnd5::Feat') }
   scope :dnd2024, -> { where(type: 'Dnd2024::Feat') }
+  scope :tlc, -> { where(type: 'Tlc::Feat') } # STRICT: own type only
+  scope :tlc_content, -> { where(type: %w[Dnd2024::Feat Tlc::Feat]) } # P4 content union
 
   belongs_to :user, optional: true
 

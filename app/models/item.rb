@@ -16,6 +16,8 @@ class Item < ApplicationRecord
   scope :dnd, -> { where(type: %w[Dnd5::Item Dnd2024::Item]) }
   scope :dnd5, -> { where(type: 'Dnd5::Item') }
   scope :dnd2024, -> { where(type: 'Dnd2024::Item') }
+  scope :tlc, -> { where(type: 'Tlc::Item') } # STRICT: own type only
+  scope :tlc_content, -> { where(type: %w[Dnd2024::Item Tlc::Item]) } # P4 content union
 
   scope :visible, -> { where(itemable: nil) }
 end
