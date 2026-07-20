@@ -21,23 +21,24 @@ def check(failures, label, formula, vars, expected)
   got = Formula.new.call(formula: formula, variables: vars)
   ok = got == expected
   failures << label unless ok
-  printf("  [%s] %-42s %-42s => %s (want %s)\n",
-         ok ? 'PASS' : 'FAIL', label, formula.inspect, got.inspect, expected.inspect)
+  status = ok ? 'PASS' : 'FAIL'
+  puts "  [#{status}] #{label.ljust(42)} #{formula.inspect.ljust(42)} => #{got.inspect} (want #{expected.inspect})"
 end
 
 puts 'FITS (evaluated via app/lib/formula.rb):'
 # Row 1 — choose-one AC: set armor_class = 13 + Dex/Con mod (max-of-set = best choice)
-check(failures, 'AC 13+Dex (set armor_class)',        '13 + dex', { dex: 2 }, 15)
-check(failures, 'AC 13+Con Turtlefolk (set)',         '13 + con', { con: 3 }, 16)
+check(failures, 'AC 13+Dex (set armor_class)', '13 + dex', { dex: 2 }, 15)
+check(failures, 'AC 13+Con Turtlefolk (set)', '13 + con', { con: 3 }, 16)
 # Row 4 — Snail's Pace: add speed -10
-check(failures, "Snail's Pace speed (add speed)",     '-10',      {}, -10)
+check(failures, "Snail's Pace speed (add speed)", '-10', {}, -10)
 # Row 7 (speed half) — Vial of Sand carried: add speed -10 (item modifier)
-check(failures, 'Vial carried speed (add speed)',     '-10',      {}, -10)
+check(failures, 'Vial carried speed (add speed)', '-10', {}, -10)
 # Proves Dentaku IF is available -> an unarmored-only AC guard is expressible
-check(failures, 'Unarmored AC guard true (IF)',  'if(no_body_armor, 13 + con, armor_class)', { no_body_armor: true,  con: 3, armor_class: 12 }, 16)
-check(failures, 'Armored AC picks base (IF)',    'if(no_body_armor, 13 + con, armor_class)', { no_body_armor: false, con: 3, armor_class: 18 }, 18)
+ac_guard = 'if(no_body_armor, 13 + con, armor_class)'
+check(failures, 'Unarmored AC guard true (IF)', ac_guard, { no_body_armor: true, con: 3, armor_class: 12 }, 16)
+check(failures, 'Armored AC picks base (IF)', ac_guard, { no_body_armor: false, con: 3, armor_class: 18 }, 18)
 # Rows 8/9 — the "PB per LR" USE-LIMIT half is a plain formula
-check(failures, 'PB-per-LR use limit',                'proficiency_bonus', { proficiency_bonus: 3 }, 3)
+check(failures, 'PB-per-LR use limit', 'proficiency_bonus', { proficiency_bonus: 3 }, 3)
 
 puts
 puts 'NEEDS-EXTENSION evidence (why these are NOT modifiers):'
@@ -48,16 +49,18 @@ rolls = Array.new(60) { Formula.new.call(formula: 'd(20)', variables: {}) }
 distinct = rolls.uniq.size
 reroll_ok = rolls.all? { |r| r.between?(1, 20) } && distinct > 1
 failures << 'd() reroll demo' unless reroll_ok
-printf("  [%s] %-42s 60 rolls -> %d distinct in 1..20 (a stored roll can't be a modifier)\n",
-       reroll_ok ? 'PASS' : 'FAIL', 'd(20) rerolls every eval', distinct)
+reroll_status = reroll_ok ? 'PASS' : 'FAIL'
+reroll_label = 'd(20) rerolls every eval'.ljust(38)
+puts "  [#{reroll_status}] #{reroll_label} 60 rolls -> #{distinct} distinct in 1..20 (a stored roll can't be a modifier)"
 
 # Row 8 — leyfarer_rank is NOT in formula_variables today, so a formula
 # referencing it resolves to nil (Formula uses the non-bang evaluate).
 rank_result = Formula.new.call(formula: 'leyfarer_rank', variables: {})
 rank_ok = rank_result.nil?
 failures << 'leyfarer_rank unbound' unless rank_ok
-printf("  [%s] %-42s unbound => %s (rank is not a formula variable yet)\n",
-       rank_ok ? 'PASS' : 'FAIL', 'leyfarer_rank in a formula', rank_result.inspect)
+rank_status = rank_ok ? 'PASS' : 'FAIL'
+rank_label = 'leyfarer_rank in a formula'.ljust(38)
+puts "  [#{rank_status}] #{rank_label} unbound => #{rank_result.inspect} (rank is not a formula variable yet)"
 
 puts
 if failures.empty?
