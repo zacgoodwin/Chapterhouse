@@ -86,6 +86,25 @@ FactoryBot.define do
       kind { 0 }
     end
 
+    trait :tlc do
+      type { 'Tlc::Feat' }
+      sequence(:slug) { |i| "tlc-slug-#{i}" }
+      title {
+        {
+          en: 'Name',
+          ru: 'Название'
+        }
+      }
+      description {
+        {
+          en: 'Description',
+          ru: 'Описание'
+        }
+      }
+      origin { 2 }
+      kind { 0 }
+    end
+
     trait :dnd2024_bardic_inspiration do
       type { 'Dnd2024::Feat' }
       slug { 'bardic_inspiration' }
