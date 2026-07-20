@@ -21,7 +21,8 @@
   "devDependencies": {
     "esbuild": "^0.24.0",
     "eslint": "^9.9.0",
-    "eslint-plugin-solid": "^0.14.2"
+    "eslint-plugin-solid": "^0.14.2",
+    "globals": "^17.7.0"
   },
   "eslintConfig": {
     "globals": {

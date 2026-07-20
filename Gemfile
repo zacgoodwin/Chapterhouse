@@ -98,6 +98,9 @@ gem 'with_advisory_lock'
 # timezone data for Windows development machines
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
+# get_process_mem backend for Windows development machines
+gem 'sys-proctable', platforms: %i[windows jruby]
+
 group :development, :production, :ru_production do
   gem 'get_process_mem'
   gem 'rails_performance'
