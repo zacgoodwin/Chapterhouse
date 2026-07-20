@@ -1,0 +1,147 @@
+[
+  {
+    "subclass": "sunforge",
+    "class": "artificer",
+    "resources": [
+      {
+        "slug": "sunforge_infusion_slots",
+        "name": "Sunshard Infusion Slots",
+        "description": "Slots for attaching a Sunshard Infusion (Overcharge / Solar Shield / Arcane Brilliance / Cutting Edge) to a synthesized Sunshard. Improved Infusions (level 9) adds Intelligence modifier to the pool.",
+        "min_class_level": 3,
+        "max_formula": "IF(artificer_level >= 9, proficiency_bonus + int, proficiency_bonus)",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "long": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  },
+  {
+    "subclass": "path_of_the_primordial",
+    "class": "barbarian",
+    "resources": []
+  },
+  {
+    "subclass": "college_of_calamity",
+    "class": "bard",
+    "resources": [
+      {
+        "slug": "college_of_calamity_dumb_luck",
+        "name": "Dumb Luck",
+        "description": "Reaction uses to reduce incoming damage by 1d6 + Charisma modifier. Last use of the day imposes disadvantage on your next d20 Test.",
+        "min_class_level": 6,
+        "max_formula": "1 + cha",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "long": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  },
+  {
+    "subclass": "rune_priest",
+    "class": "cleric",
+    "resources": [
+      {
+        "slug": "rune_priest_runes",
+        "name": "Runes",
+        "description": "Runes you can inscribe per long rest (Escape / Accuracy / Resilience / Absorption / Warding / Impact / Rune of Destruction).",
+        "min_class_level": 3,
+        "max_formula": "ROUNDDOWN(cleric_level / 2) + proficiency_bonus",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "long": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  },
+  {
+    "subclass": "frog_knight",
+    "class": "fighter",
+    "resources": []
+  },
+  {
+    "subclass": "way_of_the_twisting_hand",
+    "class": "monk",
+    "resources": [],
+    "note": "Fiendish Mutation/Armor of Fiends spend the existing monk Focus Point pool (already tracked via the generic character data.energy counter, not character_resources) -- new spend options only, no new resource. See ticket C8 context."
+  },
+  {
+    "subclass": "oath_of_the_ivory_knight",
+    "class": "paladin",
+    "resources": []
+  },
+  {
+    "subclass": "ghostscale_reaver",
+    "class": "ranger",
+    "resources": [
+      {
+        "slug": "ghostscale_reaver_ghost_shroud",
+        "name": "Ghost Shroud",
+        "description": "Reaction uses (+Wisdom modifier to AC, or reroll a failed save) at 1 + Wisdom modifier. Players Guide says \"per day\"; TLC has no standalone day-tracking (session-based leveling/rests, design-doc-digest.md), so this maps to session cadence rather than long rest.",
+        "min_class_level": 7,
+        "max_formula": "1 + wis",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "session": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  },
+  {
+    "subclass": "gambler",
+    "class": "rogue",
+    "resources": [
+      {
+        "slug": "gambler_lucky_number",
+        "name": "Lucky Number",
+        "description": "A d20 rolled by hand and stored after each long rest; rolling that number on a weapon attack is a critical hit (a natural 20 triples damage dice).",
+        "min_class_level": 3,
+        "max_formula": null,
+        "max_value": 20,
+        "reset_direction": 0,
+        "resets": { "long": -1 },
+        "display_hint": "stored_value"
+      },
+      {
+        "slug": "gambler_hedge_your_bets",
+        "name": "Hedge Your Bets",
+        "description": "Uses per short rest for Side Bet / Split Bet / Sure Bet.",
+        "min_class_level": 9,
+        "max_formula": "proficiency_bonus",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "short": -1, "long": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  },
+  {
+    "subclass": "mirage",
+    "class": "sorcerer",
+    "resources": [],
+    "note": "Withered Might spends Hit Dice for sorcery points with an unscoped 'uses scale 1->5' ramp (players-guide-digest.md L105) -- but the digest's own curated Section 9 list ('Subclass resource pools (all need counters)', L51-57) does not include Mirage, so no counter is authored here. If a future ticket adds one, resolve the scaling ambiguity against the source PDF first."
+  },
+  {
+    "subclass": "lady_of_ivory",
+    "class": "warlock",
+    "resources": []
+  },
+  {
+    "subclass": "technomancer",
+    "class": "wizard",
+    "resources": [
+      {
+        "slug": "technomancer_divine_code",
+        "name": "Divine Code Points",
+        "description": "Manipulate the Code options: Diagnostic Recalibration / Override Safeguards / Entropy Optimization / Threat Interdiction (1 point each); also 1/long rest free re-cast of an already-cast action spell for points equal to its level.",
+        "min_class_level": 3,
+        "max_formula": "ROUNDDOWN(wizard_level / 2) + proficiency_bonus",
+        "max_value": null,
+        "reset_direction": 1,
+        "resets": { "long": -1 },
+        "display_hint": "counter"
+      }
+    ]
+  }
+]

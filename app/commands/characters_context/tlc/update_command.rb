@@ -1,0 +1,234 @@
+# frozen_string_literal: true
+
+module CharactersContext
+  module Tlc
+    # Cloned from CharactersContext::Dnd2024::UpdateCommand (TLC is a D&D 2024
+    # variant). Deltas vs dnd2024: operates on Tlc::Character, uses the tlc
+    # refresh service, accepts + validates selected_traits (union-scope slug
+    # check, cap 10, dedupe) and mixed_species, and NEVER declares
+    # eval_variables / description_eval_variables (Ruby-eval'd feat columns —
+    # plan §Security T4). Config-derived enums read the dnd2024 baseline (plan P4).
+    class UpdateCommand < BaseCommand
+      include Deps[
+        attach_avatar_by_url: 'commands.image_processing.attach_avatar_by_url',
+        attach_avatar_by_file: 'commands.image_processing.attach_avatar_by_file',
+        refresh_feats: 'services.characters_context.tlc.refresh_feats',
+        cache: 'cache.avatars'
+      ]
+
+      SKILLS = %w[
+        acrobatics animal arcana athletics deception history insight intimidation investigation
+        medicine nature perception performance persuasion religion sleight stealth survival
+      ].freeze
+      WEAPON_CORE_SKILLS = %w[light martial].freeze
+      ARMOR_PROFICIENCY = %w[light medium heavy shield].freeze
+      DAMAGE_TYPES = %w[bludge pierce slash acid cold fire force lighting necrotic poison psychic radiant thunder].freeze
+
+      # plan §Security threats 2/3: bound + dedupe the JSONB trait array.
+      SELECTED_TRAITS_CAP = 10
+
+      # rubocop: disable Metrics/BlockLength
+      use_contract do
+        config.messages.namespace = :dnd5_character
+
+        Beastforms = Dry::Types['strict.string'].enum(*::Dnd2024::Character.beastforms.keys)
+
+        params do
+          required(:character).filled(type?: ::Tlc::Character)
+          optional(:classes).hash
+          optional(:subclasses).hash
+          optional(:abilities).hash do
+            required(:str).filled(:integer, gteq?: 1, lteq?: 30)
+            required(:dex).filled(:integer, gteq?: 1, lteq?: 30)
+            required(:con).filled(:integer, gteq?: 1, lteq?: 30)
+            required(:int).filled(:integer, gteq?: 1, lteq?: 30)
+            required(:wis).filled(:integer, gteq?: 1, lteq?: 30)
+            required(:cha).filled(:integer, gteq?: 1, lteq?: 30)
+          end
+          optional(:health).hash do
+            required(:current).filled(:integer, gteq?: 0)
+            required(:max).filled(:integer, gteq?: 0)
+            required(:temp).filled(:integer, gteq?: 0)
+          end
+          optional(:death_saving_throws).hash do
+            required(:success).filled(:integer)
+            required(:failure).filled(:integer)
+          end
+          optional(:coins).hash do
+            required(:gold).filled(:integer)
+            required(:silver).filled(:integer)
+            required(:copper).filled(:integer)
+          end
+          optional(:money).filled(:integer, gteq?: 0)
+          optional(:selected_skills).hash
+          optional(:selected_features).hash
+          optional(:selected_feats).value(:array)
+          optional(:selected_traits).value(:array).each(:string)
+          optional(:mixed_species).maybe(:string)
+          optional(:weapon_core_skills).value(:array).each(included_in?: WEAPON_CORE_SKILLS)
+          optional(:weapon_mastery).value(:array).each(:string)
+          optional(:armor_proficiency).value(:array).each(included_in?: ARMOR_PROFICIENCY)
+          optional(:languages).value(:array).each(:string)
+          optional(:energy).hash
+          optional(:spent_spell_slots).hash
+          optional(:spent_hit_dice).hash
+          optional(:tools).value(:array).each(:string)
+          optional(:music).value(:array).each(:string)
+          optional(:resistance).value(:array).each(included_in?: DAMAGE_TYPES)
+          optional(:immunity).value(:array).each(included_in?: DAMAGE_TYPES)
+          optional(:vulnerability).value(:array).each(included_in?: DAMAGE_TYPES)
+          optional(:name).filled(:string, max_size?: 50)
+          optional(:avatar_file).hash do
+            required(:file_content).filled(:string)
+            required(:file_name).filled(:string)
+          end
+          optional(:avatar_url).filled(:string)
+          optional(:file)
+          optional(:selected_beastforms).maybe(:array).each(:string)
+          optional(:beastform).maybe(Beastforms)
+          optional(:conditions).maybe(:array).each(:string)
+          optional(:guide_step).maybe(:integer)
+          optional(:heroic_inspiration).filled(:bool)
+          optional(:bardic_inspiration).maybe(:integer)
+          optional(:exhaustion).filled(:integer)
+        end
+
+        rule(:avatar_file, :avatar_url, :file).validate(:check_only_one_present)
+
+        # ключи classes и subclasses должны быть одинаковые
+        rule(:classes) do
+          next if value.nil?
+
+          # добавить проверку, что main_class присутствует в списке классов
+          key.failure(:invalid_class_name) unless value.keys.all? { |item| item.in?(::Dnd2024::Character.classes_info.keys) }
+          key.failure(:invalid_level) unless value.values.all? { |item| item.to_i.between?(1, 20) }
+        end
+
+        # Nonexistent slug = reject; rule-breaking-but-real = soft warning in C7.
+        rule(:selected_traits) do
+          next if value.blank?
+
+          uniq_slugs = value.uniq
+          if uniq_slugs.size > SELECTED_TRAITS_CAP
+            key.failure(:too_many_traits)
+            next
+          end
+          unknown = uniq_slugs - ::Feat.tlc_content.where(slug: uniq_slugs).pluck(:slug)
+          key.failure(:unknown_trait_slug) if unknown.any?
+        end
+
+        # Existence-only, and only "when present" (nil/blank stays allowed). Reads the
+        # dnd2024 baseline species config — TLC has no distinct species config (plan P4).
+        # A real-but-rule-breaking Mixed Ancestry pick is a C7 soft warning, never a
+        # contract error here (plan L539-540).
+        rule(:mixed_species) do
+          next if value.blank?
+
+          key.failure(:unknown_mixed_species) unless ::Dnd2024::Character.species.key?(value)
+        end
+      end
+      # rubocop: enable Metrics/BlockLength
+
+      private
+
+      def lock_key(input) = "character_update_#{input[:character].id}"
+      def lock_time = 0
+
+      def do_prepare(input) # rubocop: disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength
+        %i[classes abilities health coins energy spent_spell_slots spent_hit_dice].each do |key|
+          input[key]&.transform_values!(&:to_i)
+        end
+
+        input[:selected_traits] = input[:selected_traits].uniq if input.key?(:selected_traits)
+
+        if input[:classes]
+          input[:level] = input[:classes].values.sum(&:to_i)
+          input[:added_classes] = input[:classes].keys - input[:character].data.classes.keys
+          input[:removed_classes] = input[:character].data.classes.keys - input[:classes].keys
+          input[:hit_dice] = { 6 => 0, 8 => 0, 10 => 0, 12 => 0 }
+          input[:classes].each do |key, class_level|
+            input[:hit_dice][::Dnd2024::Character::HIT_DICES[key]] += class_level
+          end
+        end
+
+        if input.key?(:money)
+          gold, modulus = input[:money].divmod(100)
+          silver, copper = modulus.divmod(10)
+          input[:coins] = { copper: copper, silver: silver, gold: gold }
+        elsif input.key?(:coins)
+          input[:money] = (input.dig(:coins, :gold) * 100) + (input.dig(:coins, :silver) * 10) + input.dig(:coins, :copper)
+        end
+
+        if input.key?(:abilities)
+          input[:ability_boosts] = 0
+          input[:leveling_ability_boosts] = 0
+          input[:leveling_ability_boosts_list] = []
+        end
+        if input.key?(:selected_skills)
+          input[:any_skill_boosts] = 0
+          input[:skill_boosts] = 0
+          input[:skill_boosts_list] = []
+        end
+      end
+
+      def do_persist(input) # rubocop: disable Metrics/AbcSize
+        input[:character].data =
+          input[:character].data.attributes.merge(
+            input.except(:character, :avatar_file, :avatar_url, :file, :name).stringify_keys
+          )
+        input[:character].assign_attributes(input.slice(:name))
+        input[:character].save!
+
+        if %i[classes subclasses selected_features selected_feats].intersect?(input.keys)
+          refresh_feats.call(character: input[:character])
+        end
+        refresh_spells(input) if input[:classes]
+        upload_avatar(input)
+
+        { result: input[:character] }
+      end
+
+      def refresh_spells(input) # rubocop: disable Metrics/AbcSize
+        input[:added_classes].each do |added_class|
+          next if ::Dnd2024::Character::CLASSES_KNOW_SPELLS_LIST.exclude?(added_class)
+
+          relation = ::Feat.tlc_content.where(origin: 6).where('origin_values && ?', "{#{added_class}}")
+          spells =
+            relation.where(user_id: [nil, input[:character].user_id]).or(relation.where(id: homebrew_item_ids(input)))
+            .map do |feat|
+              {
+                character_id: input[:character].id,
+                feat_id: feat.id,
+                ready_to_use: false,
+                value: { prepared_by: added_class }
+              }
+            end
+          ::Character::Feat.upsert_all(spells) if spells.any?
+        end
+
+        input[:removed_classes].each do |removed_class|
+          input[:character].feats.where("value -> 'prepared_by' ? :prepared_by", prepared_by: removed_class).delete_all
+        end
+      end
+
+      def homebrew_item_ids(input)
+        ::Homebrew::Book::Item
+          .where(homebrew_book_id: ::User::Book.where(user_id: input[:character].user).select(:homebrew_book_id))
+          .where(itemable_type: %w[Dnd2024::Feat Tlc::Feat])
+          .pluck(:itemable_id)
+      end
+
+      def upload_avatar(input) # rubocop: disable Metrics/AbcSize
+        return if input.slice(:avatar_file, :avatar_url, :file).keys.blank?
+
+        attach_avatar_by_file.call({ character: input[:character], file: input[:avatar_file] }) if input[:avatar_file]
+        attach_avatar_by_url.call({ character: input[:character], url: input[:avatar_url] }) if input[:avatar_url]
+        return unless input[:file]
+
+        input[:character].avatar.attach(input[:file])
+        cache.push_item(item: input[:character].avatar)
+      rescue StandardError => _e
+      end
+    end
+  end
+end

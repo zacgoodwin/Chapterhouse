@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module TlcCharacter
+  module Backgrounds
+    class AcolyteBuilder
+      def call(result:)
+        result[:selected_feats] = ['cleric_magic_initiate']
+        result[:selected_skills] = { insight: 1, religion: 1 }
+        result[:ability_boosts] = %w[int wis cha]
+        result[:tools] = result[:tools].push('calligrapher').uniq
+
+        result
+      end
+    end
+  end
+end

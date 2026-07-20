@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -200,11 +200,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
     t.text "description"
     t.integer "max_value", default: 1, null: false
     t.string "name", null: false
+    t.string "origin_slug"
     t.integer "reset_direction", default: 0, null: false, comment: "0 - сброс к нулю, 1 - сброс к максимуму"
     t.jsonb "resets", default: {}, null: false
     t.uuid "resourceable_id", null: false
     t.string "resourceable_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["origin_slug"], name: "index_custom_resources_on_origin_slug"
     t.index ["resourceable_id", "resourceable_type"], name: "idx_on_resourceable_id_resourceable_type_718cca992a"
   end
 
@@ -239,6 +241,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
     t.index ["origin_value"], name: "index_feats_on_origin_value", where: "(origin_value IS NOT NULL)"
     t.index ["origin_values"], name: "index_feats_on_origin_values", where: "(origin_values IS NOT NULL)", using: :gin
     t.index ["slug"], name: "index_feats_on_slug", where: "(slug IS NOT NULL)"
+    t.index ["type", "slug"], name: "index_feats_on_type_and_slug_tlc", unique: true, where: "((type)::text ~~ 'Tlc::%'::text)"
     t.index ["type"], name: "index_feats_on_type"
     t.index ["user_id"], name: "index_feats_on_user_id"
   end
@@ -430,6 +433,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
     t.index ["discarded_at"], name: "index_items_on_discarded_at"
     t.index ["itemable_id", "itemable_type"], name: "index_items_on_itemable_id_and_itemable_type", where: "((itemable_id IS NOT NULL) AND (itemable_type IS NOT NULL))"
     t.index ["slug"], name: "index_items_on_slug"
+    t.index ["type", "slug"], name: "index_items_on_type_and_slug_tlc", unique: true, where: "((type)::text ~~ 'Tlc::%'::text)"
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
@@ -450,6 +454,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_spells_on_slug"
+    t.index ["type", "slug"], name: "index_spells_on_type_and_slug_tlc", unique: true, where: "((type)::text ~~ 'Tlc::%'::text)"
   end
 
   create_table "upvotes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

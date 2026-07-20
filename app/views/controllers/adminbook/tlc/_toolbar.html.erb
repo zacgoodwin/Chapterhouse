@@ -1,0 +1,9 @@
+<%# New link + verified-queue filter, shared by every TLC content index. %>
+<div class="mb-4 flex gap-4 items-center font-cascadia-light">
+  <%= link_to 'New', url_for(action: :new), class: 'btn btn-primary' %>
+  <span class="text-gray-400">Filter:</span>
+  <%= link_to 'All', url_for(action: :index, verified: nil),
+        class: (params[:verified] == 'false' ? 'underline text-blue-400' : 'font-bold') %>
+  <%= link_to 'Unverified queue', url_for(action: :index, verified: 'false'),
+        class: (params[:verified] == 'false' ? 'font-bold' : 'underline text-blue-400') %>
+</div>

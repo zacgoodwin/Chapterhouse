@@ -12,5 +12,13 @@ FactoryBot.define do
         price: 1
       }
     }
+
+    trait :tlc do
+      initialize_with { Tlc::Item.new }
+      type { 'Tlc::Item' }
+      sequence(:slug) { |i| "tlc-item-#{i}" }
+      name { { en: 'Leyfarers Journal', ru: 'Leyfarers Journal' } }
+      kind { 'gear' }
+    end
   end
 end

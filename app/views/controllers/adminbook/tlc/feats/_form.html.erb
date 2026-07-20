@@ -1,0 +1,62 @@
+<%= form_with model: @record, scope: :feat,
+      url: (@record.persisted? ? adminbook_tlc_feat_path(@record) : adminbook_tlc_feats_path),
+      class: 'font-cascadia-light' do |form| %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Slug', class: 'form-label' %></div>
+    <div><%= form.text_field :slug, class: 'form-value w-80', required: true %></div>
+  </div>
+  <%= form.fields_for :title, @record.title do |title_form| %>
+    <div class="form-field mb-2">
+      <div><%= title_form.label 'Title (en)', class: 'form-label' %></div>
+      <div><%= title_form.text_field :en, value: @record.title['en'], class: 'form-value w-80' %></div>
+    </div>
+    <div class="form-field mb-2">
+      <div><%= title_form.label 'Title (ru)', class: 'form-label' %></div>
+      <div><%= title_form.text_field :ru, value: @record.title['ru'], class: 'form-value w-80' %></div>
+    </div>
+  <% end %>
+  <%= form.fields_for :description, @record.description do |description_form| %>
+    <div class="form-field mb-2">
+      <div><%= description_form.label 'Description (en)', class: 'form-label' %></div>
+      <div><%= description_form.textarea :en, value: @record.description['en'], class: 'form-text text-sm', size: '100x7' %></div>
+    </div>
+    <div class="form-field mb-2">
+      <div><%= description_form.label 'Description (ru)', class: 'form-label' %></div>
+      <div><%= description_form.textarea :ru, value: @record.description['ru'], class: 'form-text text-sm', size: '100x7' %></div>
+    </div>
+  <% end %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Excluded feats (comma-separated)', class: 'form-label' %></div>
+    <div><%= form.text_field :exclude, value: (@record.exclude&.join(',') || ''), class: 'form-text text-sm' %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Origin', class: 'form-label' %></div>
+    <div><%= form.select :origin, @record.class.origins.keys, { selected: @record.origin }, required: true %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Origin value', class: 'form-label' %></div>
+    <div><%= form.text_field :origin_value, class: 'form-value', required: true %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Kind', class: 'form-label' %></div>
+    <div><%= form.select :kind, @record.class.kinds.keys, { selected: @record.kind }, required: true %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Limit refresh', class: 'form-label' %></div>
+    <div><%= form.select :limit_refresh, @record.class.limit_refreshes.keys, selected: @record.limit_refresh, include_blank: true %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Conditions (JSON)', class: 'form-label' %></div>
+    <div><%= form.textarea :conditions, value: @record.conditions.to_json, class: 'form-text text-sm', size: '100x5' %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Price (JSON)', class: 'form-label' %></div>
+    <div><%= form.textarea :price, value: @record.price.to_json, class: 'form-text text-sm', size: '100x3' %></div>
+  </div>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Toggleable', class: 'form-label' %></div>
+    <div><%= form.checkbox :continious, checked: @record.continious %></div>
+  </div>
+  <%= render 'adminbook/tlc/meta_fields', form: form %>
+  <%= form.submit(@record.persisted? ? 'Update' : 'Create', class: 'btn btn-primary') %>
+<% end %>
