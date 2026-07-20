@@ -3,8 +3,8 @@
 describe Frontend::Characters::BonusesController do
   let!(:user) { create :user }
   let(:access_token) { supabase_token_for(user) }
-  let!(:character) { create :character, :daggerheart }
-  let!(:user_character) { create :character, :daggerheart, user: user }
+  let!(:character) { create :character, :dnd2024 }
+  let!(:user_character) { create :character, :dnd2024, user: user }
 
   describe 'GET#index' do
     context 'for logged users' do
@@ -16,17 +16,9 @@ describe Frontend::Characters::BonusesController do
         end
       end
 
-      context 'for invalid provider' do
-        it 'returns error' do
-          get :index, params: { character_id: user_character.id, provider: 'dnd5', charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :not_found
-        end
-      end
-
       context 'for unexisting character' do
         it 'returns error' do
-          get :index, params: { character_id: 'unexisting', provider: 'daggerheart', charkeeper_access_token: access_token }
+          get :index, params: { character_id: 'unexisting', provider: 'dnd2024', charkeeper_access_token: access_token }
 
           expect(response).to have_http_status :not_found
         end
@@ -34,7 +26,7 @@ describe Frontend::Characters::BonusesController do
 
       context 'for not user character' do
         it 'returns error' do
-          get :index, params: { character_id: character.id, provider: 'daggerheart', charkeeper_access_token: access_token }
+          get :index, params: { character_id: character.id, provider: 'dnd2024', charkeeper_access_token: access_token }
 
           expect(response).to have_http_status :not_found
         end
@@ -47,7 +39,7 @@ describe Frontend::Characters::BonusesController do
         end
 
         it 'returns data', :aggregate_failures do
-          get :index, params: { character_id: user_character.id, provider: 'daggerheart', charkeeper_access_token: access_token }
+          get :index, params: { character_id: user_character.id, provider: 'dnd2024', charkeeper_access_token: access_token }
 
           response_values = response.parsed_body.dig('bonuses', 0)
 
@@ -63,7 +55,7 @@ describe Frontend::Characters::BonusesController do
     context 'for logged users' do
       context 'for unexisting character' do
         it 'returns error' do
-          post :create, params: { character_id: 'unexisting', provider: 'daggerheart', charkeeper_access_token: access_token }
+          post :create, params: { character_id: 'unexisting', provider: 'dnd2024', charkeeper_access_token: access_token }
 
           expect(response).to have_http_status :not_found
         end
@@ -71,7 +63,7 @@ describe Frontend::Characters::BonusesController do
 
       context 'for not user character' do
         it 'returns error' do
-          post :create, params: { character_id: character.id, provider: 'daggerheart', charkeeper_access_token: access_token }
+          post :create, params: { character_id: character.id, provider: 'dnd2024', charkeeper_access_token: access_token }
 
           expect(response).to have_http_status :not_found
         end
@@ -82,9 +74,10 @@ describe Frontend::Characters::BonusesController do
           let(:request) {
             post :create, params: {
               character_id: user_character.id,
-              provider: 'daggerheart',
+              provider: 'dnd2024',
               bonus: { value: { health: 'abc' } },
-              charkeeper_access_token: access_token
+              charkeeper_access_token: access_token,
+              version: '0.4.20'
             }
           }
 
@@ -94,14 +87,14 @@ describe Frontend::Characters::BonusesController do
           end
         end
 
-        context 'for value bonus' do
+        context 'for dnd 2024' do
           let(:request) {
             post :create, params: {
               character_id: user_character.id,
-              provider: 'daggerheart',
-              bonus: { value: { health: 1 }, comment: 'Comment' },
+              provider: 'dnd2024',
+              bonus: { value: { str: { type: 'add', value: 1 } }, comment: 'Comment' },
               charkeeper_access_token: access_token,
-              version: '0.3.23'
+              version: '0.4.20'
             }
           }
 
@@ -109,62 +102,22 @@ describe Frontend::Characters::BonusesController do
             expect { request }.to change(user_character.bonuses, :count).by(1)
             expect(response).to have_http_status :created
           end
+        end
 
-          context 'for pathfinder 2' do
-            let(:request) {
-              post :create, params: {
-                character_id: user_character.id,
-                provider: 'pathfinder2',
-                bonus: { value: { str: { type: 'add', value: 1 } }, comment: 'Comment' },
-                charkeeper_access_token: access_token,
-                version: '0.4.20'
-              }
+        context 'for invalid version' do
+          let(:request) {
+            post :create, params: {
+              character_id: user_character.id,
+              provider: 'dnd2024',
+              bonus: { value: { str: { type: 'add', value: 1 } }, comment: 'Comment' },
+              charkeeper_access_token: access_token,
+              version: '0.3.23'
             }
+          }
 
-            before { user_character.update(type: 'Pathfinder2::Character') }
-
-            it 'creates character bonus', :aggregate_failures do
-              expect { request }.to change(user_character.bonuses, :count).by(1)
-              expect(response).to have_http_status :created
-            end
-          end
-
-          context 'for dnd 2024' do
-            let(:request) {
-              post :create, params: {
-                character_id: user_character.id,
-                provider: 'dnd2024',
-                bonus: { value: { str: { type: 'add', value: 1 } }, comment: 'Comment' },
-                charkeeper_access_token: access_token,
-                version: '0.4.20'
-              }
-            }
-
-            before { user_character.update(type: 'Dnd2024::Character') }
-
-            it 'creates character bonus', :aggregate_failures do
-              expect { request }.to change(user_character.bonuses, :count).by(1)
-              expect(response).to have_http_status :created
-            end
-          end
-
-          context 'for invalid version' do
-            let(:request) {
-              post :create, params: {
-                character_id: user_character.id,
-                provider: 'dnd2024',
-                bonus: { value: { str: { type: 'add', value: 1 } }, comment: 'Comment' },
-                charkeeper_access_token: access_token,
-                version: '0.3.23'
-              }
-            }
-
-            before { user_character.update(type: 'Dnd2024::Character') }
-
-            it 'creates character bonus', :aggregate_failures do
-              expect { request }.not_to change(user_character.bonuses, :count)
-              expect(response).to have_http_status :unprocessable_content
-            end
+          it 'does not create character bonus', :aggregate_failures do
+            expect { request }.not_to change(user_character.bonuses, :count)
+            expect(response).to have_http_status :unprocessable_content
           end
         end
       end
@@ -178,7 +131,7 @@ describe Frontend::Characters::BonusesController do
           delete :destroy, params: {
             character_id: 'unexisting',
             id: 'unexisting',
-            provider: 'daggerheart',
+            provider: 'dnd2024',
             charkeeper_access_token: access_token
           }
 
@@ -191,7 +144,7 @@ describe Frontend::Characters::BonusesController do
           delete :destroy, params: {
             character_id: character.id,
             id: 'unexisting',
-            provider: 'daggerheart',
+            provider: 'dnd2024',
             charkeeper_access_token: access_token
           }
 
@@ -205,7 +158,7 @@ describe Frontend::Characters::BonusesController do
             delete :destroy, params: {
               character_id: user_character.id,
               id: 'unexisting',
-              provider: 'daggerheart',
+              provider: 'dnd2024',
               charkeeper_access_token: access_token
             }
           }
@@ -222,7 +175,7 @@ describe Frontend::Characters::BonusesController do
             delete :destroy, params: {
               character_id: user_character.id,
               id: bonus.id,
-              provider: 'daggerheart',
+              provider: 'dnd2024',
               charkeeper_access_token: access_token
             }
           }

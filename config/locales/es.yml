@@ -1,66 +1,14 @@
 es:
   changelogs:
     '4031':
-      cosmere:
-        title1: Easy character creation
-        title2: Equipment and available attacks
-        title3: Plot die
-        title4: Leveling
-        desc1: For new Cosmere character you need just select ancestry, culture and heroic path
-        desc2: You can select any equipment for your character, combat section will render all available attacks
-        desc3: In addition to simple D20 rolls you can make plot die rolls
-        desc4: You can change level of your characters, select expertises and talents
     '4026':
-      pf:
-        title1: Archetypes
-        title2: Animal companions
-        title3: Damage reduction
-        title4: Static classes progression
-        desc1: Added selecting archetypes
-        desc2: Added editing animal companions
-        desc3: Added auto and manual counting of damage reduction
-        desc4: Added auto attach static class feats by levels
     '4023':
-      pf:
-        title1: Pet Feats
-        title2: Experience Calculation
-        title3: Secondary Speeds
-        title4: Hero Points
-        title5: Health
-        desc1: Added the ability to manage pet/familiar feats with automatic bonuses
-        desc2: Added the ability to take character experience into account
-        desc3: Added the display of secondary speeds with the ability to add bonuses to them
-        desc4: Added the ability to take Hero Points into account
-        desc5: Added automatic calculation of maximum health
     '4021':
       dnd:
         title1: Homebrews
         desc1: Added homebrew feats and subclasses
-      pf:
-        title1: Spells management
-        title2: Static feats
-        title3: Rest options
-        title4: Bonuses
-        title5: Pets
-        title6: Ability boosts
-        desc1: Added the ability to learn/prepare simple and spontaneous spells, and manage innate and focal spells (automatically and manually)
-        desc2: Added automatic feats progression for ancestries and classes based on level
-        desc3: Added the ability to start a rest with automatic application of rest effects
-        desc4: Added the ability to add static or dynamic bonuses to character stats
-        desc5: Added the basic ability to create pets/familiars
-        desc6: Improved management of primary stats
     '4019':
-      cosmere:
-        title1: Core integration
-        desc1: Cosmere RPG compatible characters support was added
     '4018':
-      dh:
-        title1: Loot tables
-        title2: Companion avatars
-        title3: Rally dice
-        desc1: characters can get random items like specified in core roolbook
-        desc2: you can upload avatar for character's companion
-        desc3: you can specify current Rally Dice for your characters provided by party bard
       dnd:
         title1: Homebrew spells
         desc1: you can create/copy/manage/share homebrew spells for any of your characters
@@ -72,19 +20,8 @@ es:
         desc1: you can create/copy/manage/share subclasses for any of your characters
         desc2: bonuses system was totally modified for better character customization
         desc3: rendering of saving throws was modified
-      pf:
-        title1: Leveling management
-        title2: Lore skills
-        desc1: characters can change their level and select general/skill/ancestry/class feats or any additional feats
-        desc2: you can manually manage lore skills for your characters
     '4015':
-      dc20:
-        title1: 0.10 support
-        desc1: total rebuilding DC20 characters management for better support 0.10 rules
     '4014':
-      fallout:
-        title1: Core integration
-        desc1: Fallout 2d20 compatible characters support was added
   forbidden: Prohibido
   not_found: Object is not found
   change_locale: Cambiar locale
@@ -101,13 +38,8 @@ es:
     p1: Charkeeper no utiliza cookies de terceros, solo una única cookie interna.
     p2: No se envían datos a terceros.
   providerss:
-    daggerheart: Daggerheart
     dnd5: D&D 5
     dnd2024: D&D 2024
-    pathfinder2: Pathfinder 2
-    dc20: DC20
-    fate: Fate
-    fallout: Fallout 2D20
   commands:
     campaigns_context:
       join_campaign:
@@ -122,15 +54,7 @@ es:
       items:
         consume:
           done: "%{value} es consumimdo, tira - %{roll}"
-      fallout:
-        talents:
-          add:
-            full_rank: Достигнут максимальный ранг
     homebrew_context:
-      daggerheart:
-        items:
-          add:
-            invalid_formula: Invalid formula
   services:
     sheets_context:
       level: Nivel
@@ -150,17 +74,9 @@ es:
         backpack: En la mochila
         storage: Almacenado
       gold:
-        coins: Monedas
-        handfuls: Puñado
-        bags: Bolsas
-        chests: Cofres
         copper: Cobre
         silver: Plata
         gold: Oro
-      pathfinder:
-        armor_class: Clase de armadura
-        perception: Percepción
-        speed: Velocidad
       dnd:
         initiative: Iniciativa
         armor_class: Clase de armadura
@@ -219,28 +135,8 @@ es:
           debuff: Penalización
           heal: Curar
           damage: Daño
-      daggerheart:
-        proficiency: Competencia
-        evasion: Evasión
-        armor_score: Puntuación de armadura
-        armor_slots: ARMADURA
-        hp: PV
-        stress: ESTRÉS
-        hope: ESPERANZA
-        experience: EXPERIENCIA
-        health: SALUD
-        minor: Menor
-        major: Mayor
-        severe: Severo
-        domain_cards: CARTAS DE DOMINIO
-        level: "%{value} nivel"
     bot_context:
       representers:
-        cosmere:
-          light_complication: Complication +2
-          heavy_complication: Complication +4
-          opportunity: Opportunity
-          blank: Blank
         check:
           result: Resultado de tirada - %{result}
           dnd:
@@ -252,18 +148,6 @@ es:
             skill: hace una tirada de habilidad de, %{attr}
             attack: hace una tirada de ataque con, %{target}
             initiative: hace una tirada de iniciativa
-          daggerheart:
-            crit_success: Éxito crítico
-            with_hope: "%{result} con esperanza"
-            with_fear: "%{result} con miedo"
-            attr: hace una tirada de %{attr}
-            attack: hace una tirada de ataque con, %{target}
-          fate:
-            skill: hace una tirada de habilidad de, %{attr}
-            stunt: hace una prueba de acrobacia de, %{attr}
-          fallout:
-            result: Successes - %{successes}, Complications - %{complications}
-            skill: hace una tirada de habilidad de, %{attr}
         roll:
           result: Resultado
           rolls: hace tiradas de dados
@@ -277,10 +161,6 @@ es:
           show:
             characters: "Personajes de la campaña"
   decorators:
-    pathfinder2:
-      boosts: "Puedes mejorar habilidades: %{ability_boosts_text}.\nPuedes aprender habilidades: %{skill_boosts_text}"
-      free: libre
-      int: + modificador Int
   frontend:
     characters:
       bonuses:
@@ -295,10 +175,8 @@ es:
         switch_ru: Cambiar a RU
         switch_eu: Cambiar a EU
         ttrpgs: Soporte para varios juegos de rol de mesa
-        ttrpgs_desc: "CharKeeper es compatible actualmente con varios sistemas de juego de mesa: D&D 2014 y 2024, Daggerheart, Pathfinder 2, Fate, DC20, Cosmere RPG y Fallout 2d20. Puedes guardar los datos de tu personaje sin limitaciones."
-        ttrpgs_desc2: 'Data for Pathfinder 2 is provided by <a href="https://pf2.ru/" target="_blank" rel="noopener noreferrer" class="underline">Pathfinder 2E</a>.'
+        ttrpgs_desc: "CharKeeper es compatible actualmente con D&D 2014 y 2024. Puedes guardar los datos de tu personaje sin limitaciones."
         ttrpgs_desc3: This is unofficial fan content, created and shared for non-commercial use.
-        ttrpgs_desc4: "Cosmere RPG note: It has not been reviewed by Dragonsteel Entertainment, LLC or Brotherwise Games, LLC."
         extensión: Extensiones para navegador
         descripción de la extensión: CharKeeper permite importar personajes de D&D Beyond mediante extensiones específicas para navegador. Simplemente instala la extensión, visita la página del personaje y descarga el archivo del personaje a través de la extensión.
         extensión para: Extensión para
@@ -341,147 +219,6 @@ es:
         create: Iniciar sesión
         logout: Cerrar sesión
   tags:
-    cosmere:
-      weapon:
-        cumbersome: To wield this weapon easily, your Strength score must be equal to or greater than the number indicated in brackets. If your Strength is lower than that number, you gain a disadvantage on all attacks using this weapon and are Slowed while wielding it.
-        dangerous: The GM can spend Complication from an attack with this weapon to cause you to also accidentally graze an ally within the weapon's reach or range. This deals the usual damage for a graze.
-        deadly: When you hit a target with this weapon, you can spend Opportunity to cause the target to immediately suffer an injury.
-        defensive: While wielding this weapon, you can use the Brace action without cover nearby.
-        discreet: This weapon is less obtrusive than others, and thus less likely to be confiscated in secure settings. In non-combat scenes, you gain an advantage on any test you make to disguise this weapon, to hide it on your person, or to convince others not to take it from you.
-        fragile: When you attack with this weapon, the GM can spend Complication to cause it to break after the attack is resolved.
-        indirect: This ranged weapon can arc shots over cover and obscuring terrain. If a target isn't in your line of effect but you can sense them, you can still attack them with this weapon if there's a reasonably open path for your projectile to indirectly arc to them. Your target can't benefit from the Brace action against attacks made with this weapon.
-        loaded: This weapon stores ammunition equal to the number indicated in brackets. To make a ranged attack with this weapon, you must spend 1 stored ammunition. As action, you can reload this weapon to full ammunition. The GM can spend Complication from an attack with this weapon to reduce your stored ammunition; after they do, the weapon only has only one shot remaining.
-        momentum: When you attack using this weapon, if you already moved at least 10 feet in a straight line toward your target on this turn, you gain an advantage on the attack.
-        offhand: While wielding this weapon in your offhand, it only costs you 1 focus (instead of 2) to Strike with it.
-        pierce: This weapon's damage can't be reduced by the target's deflect value.
-        quickdraw: You can use the Interact action as free action to draw this weapon.
-        thrown: You can throw this weapon at a target, making a ranged attack when you do. The two numbers in brackets express the weapon's short and long range; as with ranged weapons, you gain a disadvantage when attacking a target outside short range. Once the weapon is thrown, it is lost until you recover it from your target.
-        two_handed: You must wield this weapon in two hands, not just one. When you attack with it, it uses both hands.
-        impact: Impact
-        keen: Keen
-        spirit: Spirit
-        title:
-          cumbersome: Cumbersome
-          dangerous: Dangerous
-          deadly: Deadly
-          defensive: Defensive
-          discreet: Discreet
-          fragile: Fragile
-          indirect: Indirect
-          loaded: Loaded [%{value}]
-          momentum: Momentum
-          offhand: Offhand
-          pierce: Pierce
-          quickdraw: Quickdraw
-          thrown: Thrown %{value}
-          two_handed: Two-Handed
-          impact: Impact
-          keen: Keen
-          spirit: Spirit
-    pathfinder:
-      general:
-        acid: Acid
-        air: Air
-        alchemist: Alchemist
-        animist: Animist
-        arcane: Arcane
-        archetype: Archetype
-        attack: Attack
-        auditory: Auditory
-        aura: Aura
-        barbarian: Barbarian
-        bard: Bard
-        cantrip: Cantrip
-        cleric: Cleric
-        cold: Cold
-        composition: Composition
-        concentrate: Concentrate
-        consecration: Consecration
-        curse: Curse
-        darkness: Darkness
-        death: Death
-        dedication: Dedication
-        detection: Detection
-        disease: Disease
-        divine: Divine
-        downtime: Downtime
-        druid: Druid
-        dwarf: Dwarf
-        earth: Earth
-        electricity: Electricity
-        elf: Elf
-        emotion: Emotion
-        exemplar: Exemplar
-        exploration: Exploration
-        extradimensional: Extradimensional
-        fear: Fear
-        fighter: Fighter
-        fire: Fire
-        flourish: Flourish
-        focus: Focus
-        force: Force
-        fortune: Fortune
-        general: General
-        gnome: Gnome
-        goblin: Goblin
-        gunslinger: Gunslinger
-        halfling: Halfling
-        healing: Healing
-        hex: Hex
-        holy: Holy
-        human: Human
-        illusion: Illusion
-        incapacitation: Incapacitation
-        investigator: Investigator
-        leshy: Leshy
-        light: Light
-        linguistic: Linguistic
-        magus: Magus
-        manipulate: Manipulate
-        mental: Mental
-        misfortune: Misfortune
-        morph: Morph
-        move: Move
-        multiclass: Multiclass
-        nonlethal: Nonlethal
-        olfactory: Olfactory
-        oracle: Oracle
-        orc: Orc
-        plant: Plant
-        poison: Poison
-        polymorph: Polymorph
-        prediction: Prediction
-        press: Press
-        primal: Primal
-        psychic: Psychic
-        ranger: Ranger
-        revelation: Revelation
-        rogue: Rogue
-        sanctified: Sanctified
-        scrying: Scrying
-        secret: Secret
-        shadow: Shadow
-        skill: Skill
-        sleep: Sleep
-        sonic: Sonic
-        sorcerer: Sorcerer
-        spellshape: Spellshape
-        spirit: Spirit
-        stance: Stance
-        subtle: Subtle
-        summon: Summon
-        swashbuckler: Swashbuckler
-        teleportation: Teleportation
-        thaumaturge: Thaumaturge
-        uncommon: Uncommon
-        unholy: Unholy
-        visual: Visual
-        vitality: Vitality
-        void: Void
-        water: Water
-        witch: Witch
-        wizard: Wizard
-        wood: Wood
     dnd:
       weapon:
         ammo: Solo puedes usar un arma que tenga la munición adecuada para realizar un ataque a distancia si tienes munición para disparar con el arma.
@@ -529,241 +266,3 @@ es:
           topple: Derribar
           vex: Vex
           psychic: Psíquico
-    daggerheart:
-      weapon:
-        physical: El daño físico proviene de cualquier arma que corte, apuñale o golpee.
-        magic: El daño mágico es causado o potenciado por la magia.
-        Two-Handed: El arma requiere 2 manos cuando atacas con ella.
-        primary_weapon: Las armas principales son las armas con las que tu personaje probablemente luchará durante un encuentro. Un personaje solo puede llevar una arma principal a la vez.
-        secondary_weapon: Las armas secundarias suelen ser piezas auxiliares del equipamiento que aumentan la capacidad de combate de tu personaje, como escudos, dagas o espadas pequeñas. Si el arma principal de un personaje es de una sola mano, te recomendamos que también lleves un arma secundaria (pero no podrás empuñar tu arma secundaria si cambias a un arma principal que requiera dos manos).
-        title:
-          physical: Daño físico
-          magic: Daño mágico
-          Two-Handed: A dos manos
-          primary_weapon: Principal
-          secondary_weapon: Secundaria
-    pathfinder2:
-      weapon:
-        acid: Acid damage.
-        bludge: Cosas que te golpean con contundencia, como un martillo o un puño.
-        pierce: Cosas que te perforan, como una flecha o unos colmillos.
-        slash: Cosas que te cortan, como una espada o una garra.
-        agile: La penalización por ataque múltiple que recibes con esta arma en el segundo ataque de tu turno es de –4 en lugar de –5.
-        backstabber: Cuando golpeas a una criatura desprevenida, esta arma inflige 1 punto de daño de precisión además de su daño normal. El daño de precisión aumenta a 2 si el arma es un arma +3.
-        backswing: Después de fallar con esta arma en tu turno, obtienes una bonificación circunstancial de +1 a tu siguiente ataque con esta arma antes de que termine tu turno.
-        concealable: Obtienes una bonificación circunstancial de +2 a las tiradas de Sigilo y a las DCs para ocultar o disimular un arma con esta característica.
-        deadly: "En un golpe crítico, el arma añade un dado de daño de arma del tamaño indicado. Tira este dado después de duplicar el daño del arma. Esto aumenta a dos dados si el arma tiene una runa de golpe grandioso y a tres dados si el arma tiene una runa de golpe mayor"
-        disarm: "Puedes usar esta arma para desarmar con la habilidad Atletismo aunque no tengas una mano libre. Esto utiliza el alcance del arma (si es diferente al tuyo) y añade la bonificación del arma a las tiradas de ataque (si la hay) como bonificación a la tirada de Atletismo. Si fallas críticamente una tirada para desarmar usando el arma, puedes soltar el arma para sufrir los efectos de un fallo en lugar de un fallo crítico. En caso de éxito crítico, seguirás necesitando una mano libre si quieres coger el objeto."
-        fatal: El rasgo fatal incluye un tamaño de dado. En caso de golpe crítico, el dado de daño del arma aumenta a ese tamaño de dado en lugar del tamaño normal, y el arma añade un dado de daño adicional del tamaño indicado.
-        finesse: You can use your Dexterity modifier instead of your Strength modifier on attack rolls using this melee weapon.
-        forceful: Cuando atacas con ella más de una vez en tu turno, el segundo ataque obtiene una bonificación circunstancial al daño igual al número de dados de daño del arma, y cada ataque posterior obtiene una bonificación circunstancial al daño igual al doble del número de dados de daño.
-        free_hand: "Esta arma no ocupa tu mano, normalmente porque está integrada en tu armadura. Un arma de mano libre no puede ser desarmada. Puedes usar la mano cubierta por tu arma de mano libre para empuñar otros objetos, realizar acciones de manipulación, etc. No puedes atacar con un arma de mano libre si estás empuñando algo con esa mano o utilizándola para otra cosa. Cuando no estás empuñando nada y no estás utilizando la mano para otra cosa, puedes usar habilidades que requieran tener una mano libre, así como aquellas que requieran empuñar un arma con esa mano. Cada una de tus manos solo puede tener un arma de mano libre."
-        grapple: "Puedes usar esta arma para agarrar con la habilidad Atletismo aunque no tengas una mano libre. Esto usa el alcance del arma (si es diferente al tuyo) y añade la bonificación del arma a las tiradas de ataque como bonificación a la tirade de Atletismo. Si fallas críticamente una tirada para agarrar usando el arma, puedes soltar el arma para sufrir los efectos de un fallo en lugar de un fallo crítico."
-        jousting: cuando estés montado, si te has movido al menos 10 pies en la acción anterior a tu ataque, añade una bonificación circunstancial al daño de ese ataque igual al número de dados de daño del arma. Además, mientras estés montado, puedes empuñar el arma con una sola mano, cambiando el dado de daño al valor indicado.
-        monk: Muchos monjes aprenden a usar estas armas.
-        nonlethal: Los ataques con esta arma no son letales y se utilizan para dejar inconscientes a las criaturas en lugar de matarlas. Puedes usar un arma no letal para realizar un ataque letal con una penalización circunstancial de -2.
-        parry: Mientras empuñas esta arma, si tu competencia con ella es entrenada o superior, puedes gastar una sola acción para colocar tu arma en posición defensiva, obteniendo una bonificación circunstancial de +1 a la CA hasta el comienzo de tu siguiente turno.
-        ranged_trip: "El arma se puede usar para derribar con la habilidad de Atletismo dentro del primer incremento de alcance del arma. La tirada de habilidad tiene una penalización circunstancial de -2. Puedes añadir la bonificación del objeto del arma a las tiradas de ataque como bonificación a la prueba. Un arma para derribar a distancia no inflige ningún daño cuando se usa para derribar. Estas armas suelen lanzarse"
-        shove: "Puedes usar esta arma para empujar con la habilidad de Atletismo incluso si no tienes una mano libre. Esto usa el alcance del arma (si es diferente al tuyo) y añade la bonificación del objeto del arma a las tiradas de ataque como bonificación del objeto a la tirade de Atletismo. Si fallas críticamente una tirada para empujar usando el arma, puedes soltar el arma para sufrir los efectos de un fallo en lugar de un fallo crítico"
-        sweep: Cuando atacas con esta arma, obtienes una bonificación circunstancial de +1 a tu tirada de ataque si ya has intentado atacar a otro objetivo en este turno con esta arma.
-        thrown: Puedes lanzar esta arma como un ataque a distancia; cuando se lanza, se considera un arma a distancia.
-        trip: "Puedes usar esta arma para derribar con la habilidad Atletismo aunque no tengas una mano libre. Esto usa el alcance del arma (si es diferente al tuyo) y añade la bonificación del arma a las tiradas de ataque como bonificación de objeto a la tirada de Atletismo. Si fallas críticamente una tirada para derribar usando el arma, puedes soltar el arma para sufrir los efectos de un fallo en lugar de un fallo crítico"
-        twin: "Cuando atacas con un arma gemela, añades una bonificación circunstancial a la tirada de daño igual al número de dados de daño del arma si has atacado previamente con un arma diferente del mismo tipo en este turno. Las armas deben ser del mismo tipo, pero no es necesario que tengan las mismas runas"
-        two_hand: "Esta arma se puede empuñar con las dos manos para cambiar su dado de daño al valor indicado. Este cambio se aplica a todos los dados de daño del arma."
-        unarmed: An unarmed attack uses your body rather than a manufactured weapon.
-        volley: Tus ataques contra objetivos que se encuentran a una distancia dentro del rango indicado reciben una penalización de -2.
-        dwarf: Member of the dwarf ancestry
-        elf: Member of the elf ancestry
-        uncommon: Uncommon
-        versatile: A versatile weapon can be used to deal a different type of damage than its listed type.
-        orc: Member of the orc ancestry
-        gnome: Member of the gnome ancestry
-        goblin: Member of the goblin ancestry
-        halfling: Member of the halfling ancestry
-        propulsive: You add half your Strength modifier (if positive) to damage rolls with a propulsive ranged weapon.
-        title:
-          acid: Acid
-          bludge: Contundente
-          pierce: Perforante
-          slash: Cortante
-          agile: Ágil
-          backstabber: Ataque sorpresa
-          backswing: Contragolpe
-          concealable: Ocultable
-          deadly: Mortal %{value}
-          disarm: Desarmar
-          fatal: Fatal %{value}
-          finesse: Finesse
-          forceful: Forzoso
-          free_hand: Mano libre
-          grapple: Agarre
-          jousting: Combate montado %{value}
-          monk: Monje
-          nonlethal: No letal
-          parry: Parry
-          ranged_trip: Derribar a distancia
-          shove: Empujar
-          sweep: Barrido
-          thrown: Lanzar %{value}
-          trip: Derribar
-          twin: Gemela
-          two_hand: A dos manos %{value}
-          unarmed: Unarmed
-          volley: Volley %{value}
-          dwarf: Dwarf
-          elf: Elf
-          uncommon: Uncommon
-          versatile: Versatile
-          orc: Orc
-          gnome: Gnome
-          goblin: Goblin
-          halfling: Halfling
-          propulsive: Propulsive
-    dc20:
-      spell_tags:
-        aberration: Aberration
-        ailment: Ailment
-        air: Air
-        bleeding: Bleeding
-        blinded: Blinded
-        blood: Blood
-        bludgeoning: Bludgeoning
-        burning: Burning
-        chaos: Chaos
-        charmed: Charmed
-        cleansing: Cleansing
-        cold: Cold
-        communication: Communication
-        corrosion: Corrosion
-        curse: Curse
-        dazed: Dazed
-        deafened: Deafened
-        death: Death
-        disoriented: Disoriented
-        doomed: Doomed
-        earth: Earth
-        embolden: Embolden
-        emotion: Emotion
-        emotions: Emotions
-        enfeeble: Enfeeble
-        exhaustion: Exhaustion
-        exposed: Exposed
-        fire: Fire
-        frightened: Frightened
-        gravity: Gravity
-        healing: Healing
-        hindered: Hindered
-        illusion: Illusion
-        immobilized: Immobilized
-        impaired: Impaired
-        incapacitated: Incapacitated
-        intimidated: Intimidated
-        invisible: Invisible
-        light: Light
-        lightning: Lightning
-        madness: Madness
-        metamorphosis: Metamorphosis
-        motion: Motion
-        paralyzed: Paralyzed
-        piercing: Piercing
-        planes: Planes
-        plants: Plants
-        poison: Poison
-        psychic: Psychic
-        radiant: Radiant
-        restrained: Restrained
-        scent: Scent
-        sense: Sense
-        shadow: Shadow
-        slashing: Slashing
-        slowed: Slowed
-        sound: Sound
-        spirit: Spirit
-        strike: Strike
-        stunned: Stunned
-        summoning: Summoning
-        taunted: Taunted
-        teleportation: Teleportation
-        terrified: Terrified
-        tethered: Tethered
-        thoughts: Thoughts
-        time: Time
-        trap: Trap
-        "true": "True"
-        umbral: Umbral
-        unconscious: Unconscious
-        undead: Undead
-        ward: Ward
-        water: Water
-        weakened: Weakened
-        weapon: Weapon
-      focus:
-        Long-Ranged: Los hechizos que lances con un alcance superior a 1 aumentarán su alcance en 5 espacios.
-      weapon:
-        Axe: "The target makes a Repeated Physical Save. Failure: The target begins Bleeding."
-        Bow:" The target makes an Agility Save. Failure: The target is Slowed until the end of its next turn."
-        Crossbow: You add a d4 to your Attack Check.
-        Fist: "Fist Weapons are considered to be a free hand for the purposes of Grappling. Grapple: The target makes a Physical Save. Failure: The target becomes Grappled by you."
-        Hammer: "The target makes a Might Save. Failure: The target is pushed 1 Space away. Each time you use this Enhancement, the target is pushed 1 additional Space."
-        Pick: "The target makes an Agility Save. Failure: The target becomes Hindered until the end of their next turn."
-        Sling: "The target makes an Agility Save. Failure: The target becomes Hindered until the end of their next turn."
-        Spear: "The target makes an Agility Save. Failure: The target becomes Slowed until the end of their next turn."
-        Staff: "The target makes a Physical Save. Failure: The target falls Prone."
-        Sword: You add a d4 to your Attack Check.
-        Whip: "The target makes a Might Save. Failure: The target is moved horizontally 1 Space toward you or to your left or right. Each time you use this Enhancement, the target is moved 1 additional Space."
-        Ammo: Puedes cargar un arma como parte de un ataque realizado con ella.
-        Concealable: Desenvainar el arma no provoca ataques de oportunidad. Si desenvainas el arma como parte de un ataque, tienes ventaja en el ataque. Solo puedes obtener esta ventaja una vez contra cada criatura por combate.
-        Cumbersome: It takes 1 AP to draw, stow, or pick up this Weapon.
-        Deft: Ranged Attacks with this Weapon don't have DisADV as a result of you being Prone.
-        Guard: Ganas +1 DF mientras empuñas el arma.
-        Heavy: The Weapon's damage increases by 1.
-        Impact: Infliges +1 de daño situacional con los Golpes Pesados.
-        Multi-Faceted: Debes elegir qué Estilo de arma utilizar. El Estilo de arma elegido determina el tipo de daño del Etaque.
-        Reach: Esta arma añade 1 espacio a tu Melee cuando atacas con ella.
-        Reload: You must spend 1 AP or 1 SP and use a free hand to reload the Weapon. If the Weapon stops being held, it must be loaded again.
-        Silent: Cuando realizas un ataque a distancia con el arma mientras estás Oculto, sigues sin ser Oído por las criaturas de las que te Ocultas.
-        Toss: Puedes lanzar el arma para realizar un ataque marcial a distancia.
-        Thrown: Puedes lanzar el arma para realizar un ataque marcial a distancia.
-        Two-Handed: El arma requiere 2 manos cuando atacas con ella.
-        Unwieldy: Tienes Desventaja en los Ataques realizados con el arma contra objetivos que se encuentren a 1 espacio de distancia de ti.
-        Versatile: Esta arma se puede empuñar con 1 o 2 manos. Cuando la empuñas con 2 manos, obtienes una bonificación situacional de +2 para golpear con ella.
-        Returning: When you Miss a Ranged Attack with the Weapon, it returns to your hand.
-        Grasp: The Shield is considered to be a free hand when Grappling, Reloading a Weapon, or Attacking with Versatile Weapon.
-        Mounted: The Shield's Bonus also applies to your Mount's Defense.
-        b: Cosas que te golpean con contundencia, como un martillo o un puño.
-        p: Cosas que te perforan, como una flecha o unos colmillos.
-        s: Cosas que te cortan, como una espada o una garra.
-        title:
-          Axe: Hacha
-          Bow: Arco
-          Crossbow: Crossbow
-          Fist: Fist
-          Hammer: Martillo
-          Pick: Pica
-          Sling: Sling
-          Spear: Lanza
-          Staff: Bastón
-          Sword: Espada
-          Whip: Whip
-          Ammo: Munición
-          Concealable: Ocultable
-          Cumbersome: Cumbersome
-          Deft: Deft
-          Guard: Guardia
-          Heavy: Heavy
-          Impact: Impacto
-          Multi-Faceted: Multifaceta
-          Reach: Alcance
-          Reload: Reload
-          Silent: Silenciosa
-          Toss: Tirar
-          Thrown: Lanzar
-          Two-Handed: A dos manos
-          Unwieldy: Díficil de manejar
-          Versatile: Versatíl
-          Returning: Returning
-          Grasp: Grasp
-          Mounted: Mounted
-          b: Contundente
-          p: Perforante
-          s: Cortante

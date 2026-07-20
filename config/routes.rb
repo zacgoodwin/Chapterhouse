@@ -17,48 +17,12 @@ Rails.application.routes.draw do
     resources :feedbacks, only: %i[index]
     resources :notifications, only: %i[index new create]
 
-    namespace :cosmere do
-      resources :characters, only: %i[index]
-    end
-    namespace :fallout do
-      resources :characters, only: %i[index]
-    end
-    namespace :fate do
-      resources :characters, only: %i[index]
-    end
-    namespace :dc20 do
-      resources :characters, only: %i[index]
-    end
     namespace :dnd5 do
       resources :characters, only: %i[index]
     end
     namespace :dnd2024 do
       resources :characters, only: %i[index]
       resources :recipes, only: %i[index new create]
-    end
-    namespace :pathfinder2 do
-      resources :characters, only: %i[index]
-    end
-    namespace :cthulhu7 do
-      resources :characters, only: %i[index]
-    end
-    namespace :daggerheart do
-      resources :characters, only: %i[index]
-      resources :recipes, only: %i[index new create]
-
-      namespace :homebrew do
-        resources :books, only: %i[index]
-        resources :races, only: %i[index]
-        resources :communities, only: %i[index]
-        resources :transformations, only: %i[index]
-        resources :domains, only: %i[index]
-        resources :specialities, only: %i[index]
-        resources :subclasses, only: %i[index]
-        resources :domains, only: %i[index]
-        resources :mechanics, only: %i[index]
-        resources :feats, only: %i[index]
-        resources :items, only: %i[index]
-      end
     end
 
     resources :items, except: %i[show]
@@ -85,7 +49,6 @@ Rails.application.routes.draw do
       resources :notes, only: %i[index create update destroy], module: 'characters'
       resources :resources, only: %i[create update destroy], module: 'characters'
       resources :custom_resources, only: %i[index create update destroy], module: 'characters'
-      resources :reset, only: %i[create], module: 'characters'
 
       scope ':provider' do
         resources :items, only: %i[index create update destroy], module: 'characters' do
@@ -138,98 +101,12 @@ Rails.application.routes.draw do
       resources :spells, only: %i[index show]
     end
 
-    namespace :pathfinder2 do
-      resources :characters, only: %i[create update] do
-        scope module: :characters do
-          resources :spells, only: %i[index create update destroy]
-          resources :health, only: %i[create]
-          resources :talents, only: %i[index create destroy]
-          resources :rest, only: %i[create]
-          resource :companions, only: %i[show create update destroy]
-          resource :animals, only: %i[show create update destroy] do
-            post :upgrade, on: :collection
-          end
-        end
-      end
-      resources :spells, only: %i[index show]
-      resources :pet_feats, only: %i[index]
-    end
-
-    namespace :fate do
-      resources :characters, only: %i[create update]
-    end
-
-    namespace :cosmere do
-      resources :characters, only: %i[create update] do
-        scope module: :characters do
-          resources :rest, only: %i[create]
-          resources :talents, only: %i[index create destroy]
-        end
-      end
-    end
-
-    namespace :cthulhu7 do
-      resources :characters, only: %i[create update] do
-        resources :items, only: %i[], module: 'characters' do
-          post :load, on: :collection
-        end
-        resources :copy, only: %i[create], module: 'characters'
-      end
-    end
-
-    namespace :fallout do
-      resources :characters, only: %i[create update] do
-        resources :talents, only: %i[index create], module: 'characters'
-      end
-    end
-
-    namespace :dc20 do
-      namespace :config do
-        resources :conditions, only: %i[index]
-      end
-      resources :characters, only: %i[create update] do
-        scope module: :characters do
-          resources :ancestries, only: %i[index]
-          resources :spells, only: %i[index create update destroy]
-          namespace :talents do
-            resources :features, only: %i[index]
-          end
-        end
-        resources :talents, only: %i[index create], module: 'characters'
-        resources :rest, only: %i[create], module: 'characters'
-      end
-      resources :maneuvers, only: %i[index]
-      resources :ancestries, only: %i[index]
-      resources :spells, only: %i[index]
-    end
-
     scope ':provider' do
       namespace :tags do
         scope ':type' do
           get ':id', action: :show
         end
       end
-    end
-
-    namespace :daggerheart do
-      namespace :config do
-        resources :beastforms, only: %i[index]
-      end
-      resources :characters, only: %i[create update] do
-        scope module: :characters do
-          resources :projects, only: %i[index create update destroy]
-          resources :spells, only: %i[index create update destroy]
-          resources :rest, only: %i[create]
-          resources :craft, only: %i[index create]
-          resource :companions, only: %i[show create update destroy]
-          resources :homebrew_items, only: %i[create]
-          resources :items, only: %i[] do
-            resources :upgrade, only: %i[create], module: :items
-          end
-        end
-      end
-      resources :spells, only: %i[index]
-      resources :loots, only: %i[create]
     end
 
     resources :campaigns, only: %i[index show create destroy] do
@@ -249,23 +126,6 @@ Rails.application.routes.draw do
       post :batch_destroy, on: :collection
     end
     resources :publications, only: %i[index create destroy]
-
-    namespace :daggerheart do
-      resources :characters, only: %i[index show]
-      resources :ancestries, only: %i[show destroy]
-      resources :communities, only: %i[show destroy]
-      resources :transformations, only: %i[show destroy]
-      resources :specialities, only: %i[show destroy]
-      resources :subclasses, only: %i[show destroy]
-      resources :domains, only: %i[show destroy]
-      resources :mechanics, only: %i[show destroy]
-      resources :books, only: %i[index show create update destroy] do
-        get :for_items, on: :collection
-      end
-      resources :items, only: %i[index show destroy] do
-        post :batch_destroy, on: :collection
-      end
-    end
 
     namespace :dnd2024 do
       resources :races, only: %i[show destroy]

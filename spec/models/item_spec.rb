@@ -8,8 +8,8 @@ describe Item do
   end
 
   describe '.clear_itemable' do
-    let!(:feat) { create :daggerheart_feat }
-    let!(:item) { create :item, :daggerheart, itemable: feat }
+    let!(:feat) { create :feat, :rally, :dnd5 }
+    let!(:item) { create :item, itemable: feat }
 
     context 'when deleting feat' do
       it 'clears itemable' do

@@ -33,12 +33,7 @@ module Frontend
 
       def characters_relation
         case params[:provider]
-        when 'dnd5', 'dnd2024' then authorized_scope(Character.all).dnd
-        when 'pathfinder2' then authorized_scope(Character.all).pathfinder2
-        when 'daggerheart' then authorized_scope(Character.all).daggerheart
-        when 'dc20' then authorized_scope(Character.all).dc20
-        when 'cosmere' then authorized_scope(Character.all).cosmere
-        else Character.none
+        when 'dnd5', 'dnd2024' then authorized_scope(Character.all).dnd else Character.none
         end
       end
     end

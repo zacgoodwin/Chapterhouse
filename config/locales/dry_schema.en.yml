@@ -2,8 +2,6 @@ en:
   dry_schema:
     rules:
       dnd5_character: D&D 5 character
-      pathfinder2_character: Pathfinder 2 character
-      daggerheart_character: Daggerheart character
     errors:
       unexpected_key: Unknown param
       included_in?: Unknown value
@@ -16,31 +14,6 @@ en:
       size?: Size must be %{num}
       int?: Must be integer
       uuid_v4?: Invalid uuid format
-      pathfinder2_animal_companion:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          caption:
-            max_size?: The caption cannot be longer than 50 characters
-          kind:
-            filled?: Kind is required
-      pathfinder2_pet:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          caption:
-            max_size?: The caption cannot be longer than 50 characters
-      daggerheart_item_upgrade:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          upgrades:
-            empty: Upgrades are required
-            invalid_key: Unknown upgrade
-            feature_exist: Feature already exists
       note:
         rules:
           title:
@@ -49,21 +22,6 @@ en:
           description:
             filled?: A description is required
             max_size?: The description cannot be longer than 500 characters
-      daggerheart_project:
-        rules:
-          title:
-            filled?: A title is required
-            max_size?: The title cannot be longer than 100 characters
-          description:
-            filled?: A description is required
-            max_size?: The description cannot be longer than 1000 characters
-          complexity:
-            filled?: A complexity is required
-            gt?: Сomplexity must be positive
-      daggerheart_rest:
-        rules:
-          options:
-            too_many_expectations: Select only 2 options
       campaign:
         rules:
           name:
@@ -143,16 +101,6 @@ en:
           locale:
             filled?: Locale must be filled
             included_in?: Invalid locale value
-      cosmere_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-            max_size?: Name's length cannot be more than 50
-          attribute_points:
-            gteq?: Attribute points value cannot be negative
-          skill_points:
-            gteq?: Skill points value cannot be negative
       dnd5_character:
         rules:
           name:
@@ -197,88 +145,3 @@ en:
             invalid_value: Coins values should not be negative
           health:
             invalid_value: Health values should not be negative
-      pathfinder2_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-          race:
-            key?: Race is required
-            filled?: Race must be filled
-            included_in?: Invalid race value
-          main_class:
-            key?: Class is required
-            filled?: Class must be filled
-            included_in?: Invalid class value
-          classes:
-            invalid_class_name: Invalid class name
-            invalid_level: Invalid level
-          subrace:
-            key?: Subrace is required
-            filled?: Subrace must be filled
-            invalid: Invalid subrace
-          health:
-            invalid_value: Health values should not be negative
-          background:
-            key?: Background is required
-            filled?: Background must be filled
-            included_in?: Invalid background value
-      dc20_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-          main_class:
-            key?: Class is required
-            filled?: Class must be filled
-            included_in?: Invalid class value
-      fallout_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-          origin:
-            key?: Origin is required
-            filled?: Origin must be filled
-            included_in?: Invalid origin value
-      daggerheart_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-          community:
-            key?: Community is required
-            filled?: Community must be filled
-          heritage:
-            key?: Heritage is required
-            filled?: Heritage must be filled
-            included_in?: Invalid heritage value
-            only_one_present: Too many heritages
-            at_least_one_present: Should be at least 1 heritage
-          heritage_features:
-            filled?: Heritage features must be filled
-          heritage_name:
-            filled?: Heritage name must be filled
-            only_one_present: Too many heritages
-            at_least_one_present: Should be at least 1 heritage
-          main_class:
-            key?: Class is required
-            filled?: Class must be filled
-            included_in?: Invalid class value
-          subclass:
-            key?: Subclass is required
-            filled?: Subclass must be filled
-            invalid: Invalid subclass name
-          classes:
-            invalid_class_name: Invalid class name
-            invalid_level: Invalid level
-          exp_name:
-            key?: Experience name is required
-            filled?: Experience name must be filled
-          exp_level:
-            key?: Experience level is required
-            filled?: Experience level must be filled
-          avatar_file:
-            only_one_present: Too many avatars
-          avatar_url:
-            only_one_present: Too many avatars

@@ -18,7 +18,7 @@ describe HomebrewsV2::Books::ItemsController do
       end
 
       context 'for valid data' do
-        let!(:homebrew) { create :homebrew, :daggerheart_transformation, user: user }
+        let!(:homebrew) { create :homebrew, :dnd2024_race, user: user }
         let(:request) {
           post :create, params: {
             book_id: book.id,

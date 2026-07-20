@@ -31,9 +31,7 @@ module Charkeeper
     # Rack::Brotli goes directly under Rack::Deflater, if Rack::Deflater is present
     config.middleware.use Rack::Brotli
 
-    I18n.available_locales = [:en, :ru, :es, :'ru-DHM'] # rubocop: disable Style/SymbolArray
-    # ru-DHM - Daggerheart Modno
-    config.i18n.fallbacks = { 'ru-DHM': :ru }
+    I18n.available_locales = %i[en ru es]
     config.i18n.default_locale = Rails.env.ru_production? ? :ru : :en
 
     config.time_zone = 'UTC'

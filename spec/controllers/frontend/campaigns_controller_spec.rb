@@ -7,8 +7,8 @@ describe Frontend::CampaignsController do
   describe 'GET#index' do
     context 'for logged users' do
       let!(:campaign1) { create :campaign, :dnd5, user: user }
-      let!(:campaign2) { create :campaign, :daggerheart }
-      let!(:character) { create :character, :daggerheart, user: user }
+      let!(:campaign2) { create :campaign, :dnd2024 }
+      let!(:character) { create :character, :dnd2024, user: user }
 
       before do
         create :campaign, :dnd2024
@@ -31,7 +31,7 @@ describe Frontend::CampaignsController do
 
   describe 'GET#show' do
     context 'for logged users' do
-      let!(:campaign) { create :campaign, :daggerheart }
+      let!(:campaign) { create :campaign, :dnd2024 }
 
       context 'for unexisting campaign' do
         it 'returns error' do
@@ -54,7 +54,7 @@ describe Frontend::CampaignsController do
   describe 'POST#create' do
     context 'for logged users' do
       let(:request) {
-        post :create, params: { campaign: { name: name, provider: 'daggerheart' }, charkeeper_access_token: access_token }
+        post :create, params: { campaign: { name: name, provider: 'dnd2024' }, charkeeper_access_token: access_token }
       }
 
       context 'for invalid params' do
@@ -79,7 +79,7 @@ describe Frontend::CampaignsController do
 
   describe 'DELETE#destroy' do
     context 'for logged users' do
-      let!(:campaign) { create :campaign, :daggerheart }
+      let!(:campaign) { create :campaign, :dnd2024 }
 
       context 'for unexisting campaign' do
         it 'returns error' do
@@ -90,7 +90,7 @@ describe Frontend::CampaignsController do
       end
 
       context 'for not user campaign' do
-        let!(:character) { create :character, :daggerheart, user: user }
+        let!(:character) { create :character, :dnd2024, user: user }
 
         before { create :campaign_character, campaign: campaign, character: character }
 

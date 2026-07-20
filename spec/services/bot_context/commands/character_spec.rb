@@ -32,7 +32,7 @@ describe BotContext::Commands::Character do
     end
 
     context 'with existing character' do
-      before { create :character, :daggerheart, user: user }
+      before { create :character, :dnd2024, user: user }
 
       it 'returns list' do
         expect(service_call[:result]).not_to be_blank
@@ -41,7 +41,7 @@ describe BotContext::Commands::Character do
   end
 
   context 'for removed provider-only joinCampaign command' do
-    let!(:character) { create :character, :daggerheart, user: user, name: 'Characterio' }
+    let!(:character) { create :character, :dnd2024, user: user, name: 'Characterio' }
     let(:arguments) { ['joinCampaign', character.name] }
 
     it 'returns nil' do

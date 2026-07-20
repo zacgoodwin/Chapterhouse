@@ -94,56 +94,6 @@ describe Frontend::CharactersController do
           end
         end
       end
-
-      context 'for pathfinder 2' do
-        let!(:character) { create :character, :pathfinder2, user: user }
-
-        it 'returns data' do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-        end
-      end
-
-      context 'for daggerheart' do
-        let!(:character) { create :character, :daggerheart, user: user }
-
-        it 'returns data' do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-        end
-      end
-
-      context 'for dc20' do
-        let!(:character) { create :character, :dc20, user: user }
-
-        it 'returns data' do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-        end
-      end
-
-      context 'for cosmere' do
-        let!(:character) { create :character, :cosmere, user: user }
-
-        it 'returns data' do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-        end
-      end
-
-      context 'for fate' do
-        let!(:character) { create :character, :fate, user: user }
-
-        it 'returns data' do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-        end
-      end
     end
   end
 

@@ -13,13 +13,5 @@ FactoryBot.define do
     trait :dnd2024 do
       provider { 'dnd2024' }
     end
-
-    trait :daggerheart do
-      provider { 'daggerheart' }
-    end
-
-    trait :pathfinder2 do
-      provider { 'pathfinder2' }
-    end
   end
 end

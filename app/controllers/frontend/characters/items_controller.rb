@@ -78,28 +78,15 @@ module Frontend
         params.require(:character_item).permit!.to_h
       end
 
-      def characters_relation # rubocop: disable Metrics/AbcSize
+      def characters_relation
         case params[:provider]
-        when 'dnd5', 'dnd2024' then authorized_scope(Character.all).dnd
-        when 'pathfinder2' then authorized_scope(Character.all).pathfinder2
-        when 'daggerheart' then authorized_scope(Character.all).daggerheart
-        when 'dc20' then authorized_scope(Character.all).dc20
-        when 'fallout' then authorized_scope(Character.all).fallout
-        when 'cosmere' then authorized_scope(Character.all).cosmere
-        when 'cthulhu7' then authorized_scope(Character.all).cthulhu7
-        else Character.none
+        when 'dnd5', 'dnd2024' then authorized_scope(Character.all).dnd else Character.none
         end
       end
 
       def items_relation
         case params[:provider]
-        when 'dnd5', 'dnd2024' then ::Item.dnd
-        when 'pathfinder2' then ::Item.pathfinder2
-        when 'daggerheart' then ::Item.daggerheart
-        when 'dc20' then ::Item.dc20
-        when 'fallout' then ::Item.fallout
-        when 'cosmere' then ::Item.cosmere
-        else []
+        when 'dnd5', 'dnd2024' then ::Item.dnd else []
         end
       end
     end

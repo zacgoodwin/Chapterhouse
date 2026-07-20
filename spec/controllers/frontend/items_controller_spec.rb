@@ -22,46 +22,6 @@ describe Frontend::ItemsController do
         end
       end
 
-      context 'for pathfinder2' do
-        before { create :item, type: 'Pathfinder2::Item' }
-
-        it 'returns data', :aggregate_failures do
-          get :index, params: { provider: 'pathfinder2', charkeeper_access_token: access_token }
-
-          response_values = response.parsed_body.dig('items', 0)
-
-          expect(response).to have_http_status :ok
-          expect(response.parsed_body['items'].size).to eq 1
-          expect(response_values.keys).to(
-            contain_exactly('id', 'slug', 'kind', 'name', 'data', 'info', 'homebrew', 'has_description', 'original_name')
-          )
-        end
-      end
-
-      context 'for daggerheart' do
-        before do
-          create :item, type: 'Daggerheart::Item'
-          create :item, type: 'Daggerheart::Item', user: user
-
-          item = create :item, type: 'Daggerheart::Item'
-          book = create :homebrew_book
-          create :user_book, user: user, book: book
-          create :homebrew_book_item, homebrew_book: book, itemable: item
-        end
-
-        it 'returns data', :aggregate_failures do
-          get :index, params: { provider: 'daggerheart', charkeeper_access_token: access_token }
-
-          response_values = response.parsed_body.dig('items', 0)
-
-          expect(response).to have_http_status :ok
-          expect(response.parsed_body['items'].size).to eq 3
-          expect(response_values.keys).to(
-            contain_exactly('id', 'slug', 'kind', 'name', 'data', 'info', 'homebrew', 'has_description', 'original_name')
-          )
-        end
-      end
-
       context 'for unknown' do
         it 'returns data', :aggregate_failures do
           get :index, params: { provider: 'unknown', charkeeper_access_token: access_token }

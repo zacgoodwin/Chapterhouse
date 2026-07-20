@@ -12,10 +12,5 @@ FactoryBot.define do
         price: 1
       }
     }
-
-    trait :daggerheart do
-      type { 'Daggerheart::Item' }
-      data { {} }
-    end
   end
 end

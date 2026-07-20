@@ -16,14 +16,11 @@ module Charkeeper
     end
 
     register('cache.avatars') { Cache::Avatars.new }
-    register('cache.daggerheart_names') { Cache::DaggerheartNames.new }
     register('cache.dnd_names') { Cache::DndNames.new }
     register('feature_requirement') { FeatureRequirement.new }
     register('markdown') { ActiveMarkdown.new }
     register('to_bool') { ToBool.new }
     register('roll') { Roll.new }
-    register('duality_roll') { DualityRoll.new }
-    register('rolls.fate') { Rolls::Fate.new }
     register('formula') { Formula.new }
     register('monitoring.providers.rails') { Monitoring::Providers::Rails.new }
     register('monitoring.client') { Monitoring::Client.new }
@@ -47,27 +44,6 @@ module Charkeeper
     register('commands.characters_context.items.add') { CharactersContext::Items::AddCommand.new }
     register('commands.characters_context.items.consume') { CharactersContext::Items::ConsumeCommand.new }
     register('commands.characters_context.change_feat') { CharactersContext::ChangeFeatCommand.new }
-
-    register('commands.characters_context.cthulhu7.create') { CharactersContext::Cthulhu7::CreateCommand.new }
-    register('commands.characters_context.cthulhu7.update') { CharactersContext::Cthulhu7::UpdateCommand.new }
-    register('commands.characters_context.cthulhu7.copy') { CharactersContext::Cthulhu7::CopyCommand.new }
-
-    register('commands.characters_context.cthulhu7.items.create') { CharactersContext::Cthulhu7::Items::CreateCommand.new }
-
-    register('commands.characters_context.cosmere.create') { CharactersContext::Cosmere::CreateCommand.new }
-    register('commands.characters_context.cosmere.update') { CharactersContext::Cosmere::UpdateCommand.new }
-    register('commands.characters_context.cosmere.rest.perform') { CharactersContext::Cosmere::Rest::PerformCommand.new }
-    register('commands.characters_context.cosmere.feats.add') { CharactersContext::Cosmere::Feats::AddCommand.new }
-
-    register('commands.characters_context.dc20.create') { CharactersContext::Dc20::CreateCommand.new }
-    register('commands.characters_context.dc20.update') { CharactersContext::Dc20::UpdateCommand.new }
-
-    register('commands.characters_context.dc20.talents.add') { CharactersContext::Dc20::Talents::AddCommand.new }
-    register('commands.characters_context.dc20.feats.add') { CharactersContext::Dc20::Feats::AddCommand.new }
-    register('commands.characters_context.dc20.rest.perform') { CharactersContext::Dc20::Rest::PerformCommand.new }
-
-    register('commands.characters_context.dc20.spells.add') { CharactersContext::Dc20::Spells::AddCommand.new }
-    register('commands.characters_context.dc20.spells.change') { CharactersContext::Dc20::Spells::ChangeCommand.new }
 
     register('commands.characters_context.dnd5.create') { CharactersContext::Dnd5::CreateCommand.new }
     register('commands.characters_context.dnd5.update') { CharactersContext::Dnd5::UpdateCommand.new }
@@ -94,76 +70,12 @@ module Charkeeper
 
     register('commands.characters_context.dnd2024.bonuses.add') { CharactersContext::Dnd2024::Bonuses::AddCommand.new }
     register('commands.characters_context.dnd2024.bonuses.add_v3') { CharactersContext::Dnd2024::Bonuses::AddV3Command.new }
-    register('commands.characters_context.daggerheart.bonuses.add') { CharactersContext::Daggerheart::Bonuses::AddCommand.new }
-    register('commands.characters_context.daggerheart.bonuses.add_companion') {
-      CharactersContext::Daggerheart::Bonuses::AddCompanionCommand.new
-    }
-    register('commands.characters_context.dc20.bonuses.add') { CharactersContext::Dc20::Bonuses::AddCommand.new }
 
-    register('commands.characters_context.pathfinder2.create') { CharactersContext::Pathfinder2::CreateCommand.new }
-    register('commands.characters_context.pathfinder2.update') { CharactersContext::Pathfinder2::UpdateCommand.new }
-    register('commands.characters_context.pathfinder2.change_health') { CharactersContext::Pathfinder2::ChangeHealthCommand.new }
-
-    register('commands.characters_context.pathfinder2.feats.add') { CharactersContext::Pathfinder2::Feats::AddCommand.new }
-
-    register('commands.characters_context.pathfinder2.spells.add') { CharactersContext::Pathfinder2::Spells::AddCommand.new }
-    register('commands.characters_context.pathfinder2.spells.change') {
-      CharactersContext::Pathfinder2::Spells::ChangeCommand.new
-    }
-
-    register('commands.characters_context.pathfinder2.pets.add') { CharactersContext::Pathfinder2::Pets::AddCommand.new }
-    register('commands.characters_context.pathfinder2.pets.change') { CharactersContext::Pathfinder2::Pets::ChangeCommand.new }
-    register('commands.characters_context.pathfinder2.animals.add') { CharactersContext::Pathfinder2::Animals::AddCommand.new }
-    register('commands.characters_context.pathfinder2.animals.change') {
-      CharactersContext::Pathfinder2::Animals::ChangeCommand.new
-    }
-    register('commands.characters_context.pathfinder2.animals.upgrade') {
-      CharactersContext::Pathfinder2::Animals::UpgradeCommand.new
-    }
-
-    register('commands.characters_context.pathfinder2.rest.perform') { CharactersContext::Pathfinder2::Rest::PerformCommand.new }
-    register('commands.characters_context.pathfinder2.bonuses.add') { CharactersContext::Pathfinder2::Bonuses::AddCommand.new }
-
-    register('commands.characters_context.cosmere.bonuses.add') { CharactersContext::Cosmere::Bonuses::AddCommand.new }
-
-    register('commands.characters_context.fate.create') { CharactersContext::Fate::CreateCommand.new }
-    register('commands.characters_context.fate.update') { CharactersContext::Fate::UpdateCommand.new }
-
-    register('commands.characters_context.fallout.create') { CharactersContext::Fallout::CreateCommand.new }
-    register('commands.characters_context.fallout.update') { CharactersContext::Fallout::UpdateCommand.new }
-
-    register('commands.characters_context.fallout.talents.add') { CharactersContext::Fallout::Talents::AddCommand.new }
-
-    register('commands.characters_context.daggerheart.reset') { CharactersContext::Daggerheart::Reset::PerformCommand.new }
-    register('commands.characters_context.daggerheart.craft.perform') {
-      CharactersContext::Daggerheart::Craft::PerformCommand.new
-    }
-    register('commands.characters_context.daggerheart.upgrade.perform') {
-      CharactersContext::Daggerheart::Upgrade::PerformCommand.new
-    }
-    register('commands.characters_context.daggerheart.create') { CharactersContext::Daggerheart::CreateCommand.new }
-    register('commands.characters_context.daggerheart.update') { CharactersContext::Daggerheart::UpdateCommand.new }
-    register('commands.characters_context.daggerheart.add_bonus') { CharactersContext::Daggerheart::AddBonusCommand.new }
-    register('commands.characters_context.daggerheart.add_spell') { CharactersContext::Daggerheart::AddSpellCommand.new }
-    register('commands.characters_context.daggerheart.change_spell') { CharactersContext::Daggerheart::ChangeSpellCommand.new }
-    register('commands.characters_context.daggerheart.change_energy') { CharactersContext::Daggerheart::ChangeEnergyCommand.new }
-    register('commands.characters_context.daggerheart.add_companion') { CharactersContext::Daggerheart::AddCompanionCommand.new }
-    register('commands.characters_context.daggerheart.change_companion') {
-      CharactersContext::Daggerheart::ChangeCompanionCommand.new
-    }
-    register('commands.characters_context.daggerheart.homebrew.add_item') {
-      CharactersContext::Daggerheart::Homebrew::AddItemCommand.new
-    }
     register('commands.characters_context.dnd2024.homebrew.add_item') {
       CharactersContext::Dnd2024::Homebrew::AddItemCommand.new
     }
     register('commands.characters_context.dnd2024.upgrade.perform') {
       CharactersContext::Dnd2024::Upgrade::PerformCommand.new
-    }
-
-    register('commands.characters_context.daggerheart.projects.add') { CharactersContext::Daggerheart::Projects::AddCommand.new }
-    register('commands.characters_context.daggerheart.projects.change') {
-      CharactersContext::Daggerheart::Projects::ChangeCommand.new
     }
 
     register('commands.image_processing.attach_avatar_by_file') { ImageProcessingContext::AttachAvatarByFileCommand.new }
@@ -173,13 +85,6 @@ module Charkeeper
     register('commands.homebrew_context.books.change') { HomebrewContext::Books::ChangeCommand.new }
 
     register('commands.homebrews_v2_context.publications.create') { HomebrewsV2Context::Publications::CreateCommand.new }
-
-    register('commands.homebrews_v2_context.import.daggerheart.feats.add') {
-      HomebrewsV2Context::Import::Daggerheart::Feats::AddCommand.new
-    }
-    register('commands.homebrews_v2_context.import.daggerheart.feats.change') {
-      HomebrewsV2Context::Import::Daggerheart::Feats::ChangeCommand.new
-    }
 
     register('commands.campaigns_context.add_campaign') { CampaignsContext::AddCampaignCommand.new }
     register('commands.campaigns_context.join_campaign') { CampaignsContext::JoinCampaignCommand.new }
@@ -197,22 +102,16 @@ module Charkeeper
     register('commands.resources_context.refresh') { ResourcesContext::RefreshCommand.new }
 
     # services
-    register('services.characters_context.pathfinder2.refresh_feats') { CharactersContext::Pathfinder2::RefreshFeats.new }
-    register('services.characters_context.daggerheart.refresh_feats') { CharactersContext::Daggerheart::RefreshFeats.new }
     register('services.characters_context.dnd5.refresh_feats') { CharactersContext::Dnd5::RefreshFeats.new }
     register('services.characters_context.dnd2024.refresh_feats') { CharactersContext::Dnd2024::RefreshFeats.new }
-    register('services.characters_context.dc20.refresh_feats') { CharactersContext::Dc20::RefreshFeats.new }
 
     register('services.bot_context.handle') { BotContext::HandleService.new }
 
     register('services.bot_context.handle_command') { BotContext::HandleCommandService.new }
     register('services.bot_context.commands.roll') { BotContext::Commands::Roll.new }
-    register('services.bot_context.commands.duality_roll') { BotContext::Commands::DualityRoll.new }
     register('services.bot_context.commands.check') { BotContext::Commands::Check.new }
     register('services.bot_context.commands.campaign') { BotContext::Commands::Campaign.new }
     register('services.bot_context.commands.character') { BotContext::Commands::Character.new }
-
-    register('services.bot_context.commands.rolls.fate') { BotContext::Commands::Rolls::Fate.new }
 
     register('services.bot_context.represent_command') { BotContext::RepresentCommandService.new }
 
@@ -226,9 +125,6 @@ module Charkeeper
     register('services.bot_context_v2.commands.check') { BotContextV2::Commands::Check.new }
 
     register('services.bot_context_v2.commands.rolls.default') { BotContextV2::Commands::Rolls::Default.new }
-    register('services.bot_context_v2.commands.rolls.duality') { BotContextV2::Commands::Rolls::Duality.new }
-    register('services.bot_context_v2.commands.rolls.fate') { BotContextV2::Commands::Rolls::Fate.new }
-    register('services.bot_context_v2.commands.rolls.cosmere') { BotContextV2::Commands::Rolls::Cosmere.new }
   end
 end
 

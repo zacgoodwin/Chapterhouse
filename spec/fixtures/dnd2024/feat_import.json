@@ -1,0 +1,14 @@
+[
+  {
+    "title": {
+      "en": "Imported feat"
+    },
+    "description": {
+      "en": "Imported feat description"
+    },
+    "origin": "feat",
+    "origin_value": "general",
+    "kind": "static",
+    "level": 1
+  }
+]

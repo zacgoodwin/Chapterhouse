@@ -41,7 +41,7 @@ describe BotContext::Commands::Campaign do
     end
 
     context 'with existing campaign' do
-      before { create :campaign, :daggerheart, user: user }
+      before { create :campaign, :dnd2024, user: user }
 
       it 'returns list' do
         expect(service_call[:result]).not_to be_blank
@@ -57,7 +57,7 @@ describe BotContext::Commands::Campaign do
     end
 
     context 'with existing campaign' do
-      before { create :campaign, :daggerheart, user: user, name: 'TheEnd' }
+      before { create :campaign, :dnd2024, user: user, name: 'TheEnd' }
 
       it 'removes campaign' do
         expect { service_call }.to change(Campaign, :count).by(-1)

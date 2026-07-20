@@ -4,8 +4,8 @@ describe HomebrewsContext::FindAvailableService do
   subject(:service_call) { described_class.new.call(user_id: user.id) }
 
   let!(:user) { create :user }
-  let!(:own_race) { create :homebrew, :daggerheart_ancestry, user: user }
-  let!(:book_race) { create :homebrew, :daggerheart_ancestry, title: { en: 'Booked race' } }
+  let!(:own_race) { create :homebrew, :dnd2024_race, user: user }
+  let!(:book_race) { create :homebrew, :dnd2024_race, title: { en: 'Booked race' } }
 
   before do
     book = create :homebrew_book, shared: true
@@ -14,6 +14,6 @@ describe HomebrewsContext::FindAvailableService do
   end
 
   it 'returns data' do
-    expect(service_call.dig(:daggerheart, :races).keys).to contain_exactly(own_race.id, book_race.id)
+    expect(service_call.dig(:dnd2024, :races).keys).to contain_exactly(own_race.id, book_race.id)
   end
 end

@@ -4,57 +4,25 @@ FactoryBot.define do
   factory :homebrew do
     user
     info { {} }
-    type { 'Daggerheart::Homebrews::Ancestry' }
+    type { 'Dnd2024::Homebrews::Race' }
 
-    trait :daggerheart_transformation do
-      type { 'Daggerheart::Homebrews::Transformation' }
+    trait :dnd2024_race do
+      type { 'Dnd2024::Homebrews::Race' }
       title { { 'en' => 'Title' } }
       description { { 'en' => 'Description' } }
     end
 
-    trait :daggerheart_ancestry do
-      type { 'Daggerheart::Homebrews::Ancestry' }
+    trait :dnd2024_background do
+      type { 'Dnd2024::Homebrews::Background' }
       title { { 'en' => 'Title' } }
       description { { 'en' => 'Description' } }
     end
 
-    trait :daggerheart_community do
-      type { 'Daggerheart::Homebrews::Community' }
-      title { { 'en' => 'Title' } }
-      description { { 'en' => 'Description' } }
-    end
-
-    trait :daggerheart_class do
-      type { 'Daggerheart::Homebrews::Speciality' }
-      title { { 'en' => 'Title' } }
-      description { { 'en' => 'Description' } }
-      info { { 'domains' => %w[codex bone], 'evasion' => 5, 'health_max' => 5 } }
-    end
-
-    trait :daggerheart_subclass do
-      type { 'Daggerheart::Homebrews::Subclass' }
+    trait :dnd2024_subclass do
+      type { 'Dnd2024::Homebrews::Subclass' }
       title { { 'en' => 'Title' } }
       description { { 'en' => 'Description' } }
       info { { 'class_id' => '1' } }
-    end
-
-    trait :daggerheart_domain do
-      type { 'Daggerheart::Homebrews::Domain' }
-      title { { 'en' => 'Title' } }
-      description { { 'en' => 'Description' } }
-    end
-
-    trait :daggerheart_mechanic do
-      type { 'Daggerheart::Homebrews::Mechanic' }
-      title { { 'en' => 'Title' } }
-      description { { 'en' => 'Description' } }
-    end
-
-    trait :daggerheart_mechanic_item do
-      type { 'Daggerheart::Homebrews::MechanicItem' }
-      title { { 'en' => 'Title' } }
-      description { { 'en' => 'Description' } }
-      info { { 'tier' => '1' } }
     end
   end
 end
