@@ -99,6 +99,61 @@ premise gate pending the upstream-tracking decision.
    named extension point (new modifier type or decorator override) BEFORE Phase A
    is built. Output: table of trait → encoding → fits/needs-extension.
 
+#### A0-2 verdict — modifiers expressiveness (10 hairiest traits)
+
+**Verdict: the `{key:{type:add|set|concat, value:formula}}` + Dentaku pattern
+holds for scalar stat math (AC, speed, use-limits) but is not the vehicle for
+stored per-rest rolls, senses, attunement, per-roll dice riders, or
+multi-species selection.** Of the 10, 2 fit outright, 2 fit in part (one half is
+a modifier, the other needs an extension), and 6 need a named extension — every
+one already owned by a Phase C line item except the Hit-Dice-spend action, added
+to Phase C below. Zero rows unknown. Every "fits" formula and both
+"can't-be-a-modifier" claims were evaluated through the real `app/lib/formula.rb`
+(Dentaku 3.5.7) by `docs/reference/a0_modifier_formula_check.rb` —
+`ruby docs/reference/a0_modifier_formula_check.rb` → ALL CHECKS PASSED.
+
+Read paths (all in `app/decorators_v2/dnd2024_decorator.rb` unless noted): `set`
+→ `apply_set_modifiers` L108 (evaluates formula, takes `max(base, values…)`,
+supports dotted `primary.secondary` keys); `add`/`concat` → `apply_add_modifiers`
+L338 (add evaluates+sums, concat appends a raw value to an array, no Dentaku);
+abilities/`spell_save_dc`/`spell_attack_bonus` are `ONLY_ADD_MODIFIERS` L9 and
+take `.to_i` literals, not formulas; formula variables available =
+`formula_variables` L472 (`proficiency_bonus, level, no_body_armor, no_armor,
+armor_class`, the six ability **modifiers**, and `<class>_level`).
+
+| # | Trait / feature | Modifiers JSONB (or why none) | Decorator read path | Fits add/set/concat + Dentaku? | Extension point → owner |
+|---|---|---|---|---|---|
+| 1 | **Choose-one AC** (Pebbly Skin/Busaya/Voranos 13+Dex; Turtlefolk 13+Con) | `{"armor_class":{"type":"set","value":"13 + dex"}}` (Turtlefolk `"13 + con"`) | `apply_set_modifiers` L108 → `max(base_ac, 13+dex, 13+con…)` | **Yes.** Max-of-set = player-optimal "best of the choices" (§Code Quality L554); verified `13 + dex`→15, `13 + con`→16 | None. Turtlefolk's "cannot wear armor" is a separate no-armor flag (Phase C decorator, L219/L226), not AC math |
+| 2 | **Con-for-Dex AC** (Pebbly Skin armored option) | None — a modifier can't redirect which ability feeds the armored bonus | `find_armor_class` L486-497 hardcodes `min(max_dex, modifiers['dex'])` | **No** | `TlcDecorator#find_armor_class` override reading a trait ability-substitute flag → **Phase C decorator override "Con-for-Dex"** (L219, L226) |
+| 3 | **Variable attunement** (Turtlefolk Ancestral Carvings +1 slot) | `{"attunement_slots":{"type":"add","value":"1"}}` — but no such key exists | None — zero `attunement` in `app/`; the decorator never computes slot count | **No (no target key).** Once the field exists the +1 add is trivial | Expose `attunement_slots` (base 3) in `TlcDecorator` → **Phase C "variable attunement slots"** (L219, L227) |
+| 4 | **Snail's Pace** (−10 walk speed, free trait) | `{"speed":{"type":"add","value":"-10"}}` | `apply_add_modifiers` L338 → `update_speeds` L175 (exhaustion, clamp ≥0) | **Yes** (verified −10). Snailfolk+Turtlefolk-mix waiver = grant suppression in refresh (L189), not a modifier | None |
+| 5 | **Tremorsense 30** (Dwarf, replaces darkvision) | None — senses are not modifier-driven | `darkvision` is a scalar int (`character.rb:21`) set directly by species decorators; **no `tremorsense` field** on `CharacterData` | **No (no target key)** | `tremorsense` field + senses handling in `TlcDecorator` species-step override → **Phase C "Tremorsense/senses from traits"** (L221, L225) |
+| 6 | **Lucky Number** (Gambler: per-LR stored d20) | None — `d(20)` re-rolls on every `decorate()` (verified 60 evals → ~17-20 distinct) | n/a — a modifier can't hold a persisted value | **No** (stored roll) | Existing `character_resources`/`custom_resources` per-LR tracker → **Phase C subclass resources** (L217-218). No new extension |
+| 7 | **Vial of Sand** (Mirage: carried −10 speed + per-LR d6 ability → +1d4 saves) | Speed half: `{"speed":{"type":"add","value":"-10"}}` on the Vial item (active while carried) | Item modifiers via `all_modifiers` L545 when equipped | **Partial** — carried speed fits; the stored d6 and per-roll +1d4 do not | Stored d6 → `character_resources` (**Phase C** L217-218); "+1d4 on saves" per-roll rider → **deferred effects engine** (NOT-in-scope L384-386) |
+| 8 | **Rank-scaling Journal uses** (uses/LR = leyfarer_rank) | None — "uses/LR" is a `character_feats` limit, and rank isn't a formula var (verified `leyfarer_rank`→nil) | `feature_payload` limit L411 / `limit_refresh` enum (`feat.rb:33`); `formula_variables` L472 lacks `leyfarer_rank` | **No** | Add `leyfarer_rank` to `TlcDecorator#formula_variables` + drive Journal per-LR uses from it → **Phase C Leyfarer Rank** (L201-204, clause added) |
+| 9 | **Hit-Dice-as-currency** (Fabricated Self-Repair: BA spend HD+Con, PB/LR) | Use-limit half: `proficiency_bonus` (verified →3). The HD-drain is not a modifier | HD spend exists only inside short rest; no general spend path | **Partial** — PB/LR limit fits; spending a Hit Die as a cost has no home | **New** general "spend Hit Dice outside rests" action → **Phase C (added below)**. Recurs: Fire From Dust, Written in Blood, Withered Might, Adaptive Mycelia, limb regrowth |
+| 10 | **Mixed Ancestry** (Origin feat: two species, 4 pooled traits) | Per-trait modifiers unchanged; the two-species pool + 4-trait budget is a selection concern, not a modifier | `refresh_feats` attach + `data.mixed_species` in the origin-value list | **No (selection layer, not modifiers)** — individual traits still encode normally | `mixed_species` field (**Phase A** L108) + refresh from both pools (**Phase B** L189). No modifier-type/decorator change |
+
+**Reusable rules this exercise pins down (feed Phase B seeding + Phase C decorator):**
+1. `set` on `armor_class`/dotted keys is the AC vehicle; because it takes the
+   max over all applicable formulas, "choose-one AC" needs no picker — the best
+   formula auto-wins (already the plan's §Code Quality decision).
+2. Dentaku `if/and/or/max/min` are available (verified), so conditional and
+   capped formulas (e.g. unarmored-only AC) are expressible without new code.
+3. **A modifier re-evaluates on every decorate() call**, so any value that must
+   persist between rests (Lucky Number d20, Vial d6) is a `character_resources`
+   row, never a modifier — proven by the `d(20)` reroll spread.
+4. Senses (`tremorsense`) and `attunement_slots` have **no target key** in the
+   result today; they are decorator-exposed fields first, then optionally
+   modifier-addressable — not modifier-only.
+5. Per-roll dice riders ("+1d4 on saves") are not static stat math and belong to
+   the deferred effects engine, not the modifier pattern.
+6. `leyfarer_rank` is not a formula variable; rank-scaling anything requires
+   adding it to `formula_variables` (or computing in the decorator).
+7. Ability scores + `spell_save_dc`/`spell_attack_bonus` accept integer literals
+   only (`.to_i`), so those grants can't use formulas — irrelevant to these 10
+   but load-bearing for Phase B seeding of ability bonuses.
+
 ### Phase A — Provider skeleton (TLC characters exist)
 
 Backend:
@@ -202,6 +257,10 @@ Shared machinery:
   auto-granted; Focus choice (Explorer/Naturalist/Scholar) at Adept grants skill +
   ritual spell; Journal/Emblem items auto-added at creation. Rank is manually set
   (chapter-driven promotion is campaign bookkeeping, not sheet logic).
+  **Rank as a formula variable (A0-2):** expose `leyfarer_rank` in
+  `TlcDecorator#formula_variables` so rank-scaling values resolve — e.g. the
+  Leyfarer's Journal's per-LR uses = rank (A0-2 row 8; without this a
+  `leyfarer_rank` formula silently evaluates to nil).
 - Campaign chapter setting: a `chapter` field on TLC campaigns; drives the
   level-cap table (ch8→12 … ch16→20) soft warning and unlock-gate labels.
 - Session-based leveling: leveling stays manual; decorator emits a soft warning
@@ -216,6 +275,13 @@ Shared machinery:
   `rest_type=session` (or the GM) refreshes those.
 - Subclass resources (Rune Priest runes, Divine Code points, Lucky Number, etc.):
   model via existing `character_resources`/`custom_resources` seeded per subclass.
+  These are stored per-rest values, NOT modifiers (A0-2 rows 6-7): a modifier
+  re-rolls on every `decorate()` call, so a persisted d20/d6 must be a resource.
+- **General Hit-Dice-spend action (added by A0-2 row 9):** a command to spend
+  Hit Dice outside a rest as a feature cost — the inherited HD path only spends
+  inside short rest. Drives Fabricated Self-Repair, Fire From Dust, Written in
+  Blood, Withered Might, Adaptive Mycelia, and Lizardfolk limb regrowth; the
+  per-use cap reuses the existing `character_feats` limit (e.g. PB/LR).
 - Decorator overrides in `TlcDecorator`: alternate AC formulas (13+Dex, 13+Con,
   Con-for-Dex, handless shield) selected by trait modifiers; variable attunement
   slots; speed modifiers; Tremorsense/senses from traits; Human multiclass-prereq
