@@ -75,12 +75,13 @@ Adding TLC content (species, subclasses, feats, spells, items) follows a three-s
 
 #### Formula failure runbook
 
-Modifier syntax errors (malformed Dentaku formulas, missing variables) are caught at seed time and abort with a loud stacktrace naming the JSON file. To triage:
+Modifier syntax errors (malformed Dentaku formulas, missing variables) surface at runtime when a character sheet evaluates the modifiers, not during `rake tlc:seed`. To triage:
 
-1. Grep the error message for the row's `slug` field.
-2. Open `db/data/tlc/{type}.json`, find the row by slug, and inspect the `modifiers` or `eval_variables` JSONB fields for syntax errors or typos.
-3. Fix the JSON and re-run `rake tlc:seed` to verify the correction parses.
-4. Commit the fix.
+1. Reproduce the error on a character sheet using the affected trait/feat/spell/item.
+2. Note the exact error message and identify the row's `slug` field from the context (or narrow it down by reproduction).
+3. Open `db/data/tlc/{type}.json`, find the row by slug, and inspect the `modifiers` or `eval_variables` JSONB fields for syntax errors or typos.
+4. Fix the JSON and re-run `rake tlc:seed` to reload the corrected content into the database (re-runs are safe due to the partial unique index).
+5. Commit the fix.
 
 **Cache caveat:** `app/lib/platform_config.rb` caches the TLC config (`app/javascript/applications/CharKeeperApp/data/tlc.json`) per version (default `0.4.12`) for 3 days. After editing `tlc.json` in development, either bump the version in `platform_config.rb:6` or clear the cache via `Rails.cache.clear` in the console to pick up changes immediately. Production deploys use the same cache window; plan accordingly.
 
