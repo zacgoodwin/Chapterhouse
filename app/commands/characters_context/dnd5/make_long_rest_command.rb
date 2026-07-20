@@ -51,7 +51,7 @@ module CharactersContext
           value =
             case change
             when -1 then reset_direction.zero? ? 0 : max_value
-            when 0 then resource.value
+            when 0, nil then resource.value
             else
               reset_direction.zero? ? [resource.value - change.abs, 0].max : [resource.value + change.abs, max_value].min
             end

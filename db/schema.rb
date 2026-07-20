@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_20_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -200,11 +200,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_120000) do
     t.text "description"
     t.integer "max_value", default: 1, null: false
     t.string "name", null: false
+    t.string "origin_slug"
     t.integer "reset_direction", default: 0, null: false, comment: "0 - сброс к нулю, 1 - сброс к максимуму"
     t.jsonb "resets", default: {}, null: false
     t.uuid "resourceable_id", null: false
     t.string "resourceable_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["origin_slug"], name: "index_custom_resources_on_origin_slug"
     t.index ["resourceable_id", "resourceable_type"], name: "idx_on_resourceable_id_resourceable_type_718cca992a"
   end
 
