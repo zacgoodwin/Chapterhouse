@@ -131,7 +131,7 @@ export const Dnd5Skills = (props) => {
                 </Show>
               </div>
             </Show>
-            <div class="fallout-skills">
+            <div class="skills-grid">
               <For each={Object.keys(config.abilities)}>
                 {(slug) =>
                   <Show
@@ -139,7 +139,7 @@ export const Dnd5Skills = (props) => {
                     fallback={
                       <For each={character().skills.filter((item) => item.ability === slug)}>
                         {(skill) =>
-                          <div class="fallout-skill">
+                          <div class="skills-grid-item">
                             <Switch>
                               <Match when={character().provider === 'dnd5'}>
                                 <Levelbox classList="mr-2" value={skill.selected ? 1 : 0} />
@@ -165,11 +165,11 @@ export const Dnd5Skills = (props) => {
                   >
                     <For each={skillsData().filter((item) => item.ability === slug)}>
                       {(skill) =>
-                        <div class="fallout-skill">
+                        <div class="skills-grid-item">
                           <p class={`flex-1 flex items-center ${skill.level > 0 ? 'font-medium!' : ''}`}>
                             {localize(config.skills[skill.slug].name, locale())}
                           </p>
-                          <div class="fallout-skill-actions">
+                          <div class="skills-grid-item-actions">
                             <Show
                               when={character().provider === 'dnd2024'}
                               fallback={

@@ -1,13 +1,11 @@
-import { createSignal, createEffect, Show, batch } from 'solid-js';
+import { createSignal, createEffect, Show } from 'solid-js';
 
-import { Input, Button, Select, Checkbox } from '../components';
-import { useAppState, useAppLocale, useAppAlert } from '../context';
-import { signUpRequest } from '../requests/signUpRequest';
-import { signInRequest } from '../requests/signInRequest';
-import { writeToCache, readFromCache, localize } from '../helpers';
+import { Input, Button, Select } from '../components';
+import { Google, Discord } from '../assets';
+import { useAppState, useAppAlert, useAppLocale } from '../context';
+import { writeToCache, readFromCache, localize, supabase, supabaseConfigured } from '../helpers';
 
 const CHARKEEPER_HOST_CACHE_NAME = 'CharKeeperHost';
-const USER_CREDENTIALS_CACHE_NAME = 'UserCredentials';
 const TRANSLATION = {
   en: {
     region: 'Server region',
@@ -16,12 +14,13 @@ const TRANSLATION = {
     regionHelp: 'The servers operate independently of each other.',
     signin: 'Sign in',
     signup: 'Sign up',
-    username: 'Username',
-    password: 'Password (minimum 10 characters)',
-    passwordConfirmation: 'Password confirmation',
+    email: 'Email',
+    password: 'Password',
     haveAccount: 'Already have account?',
     noAccount: "Don't have account?",
-    remember: 'Remember password'
+    orContinueWith: 'Or continue with',
+    confirmEmail: 'Check your inbox to confirm the email address.',
+    notConfigured: 'Supabase is not configured: fill supabaseConfig.js.'
   },
   ru: {
     region: 'Регион сервера',
@@ -30,12 +29,13 @@ const TRANSLATION = {
     regionHelp: 'Серверы работают независимо от друг друга.',
     signin: 'Вход',
     signup: 'Регистрация',
-    username: 'Имя пользователя',
-    password: 'Пароль (минимум 10 символов)',
-    passwordConfirmation: 'Подтверждение пароля',
+    email: 'Электронная почта',
+    password: 'Пароль',
     haveAccount: 'Уже есть аккаунт?',
     noAccount: 'Еще нет аккаунта?',
-    remember: 'Запомнить пароль'
+    orContinueWith: 'Или войти через',
+    confirmEmail: 'Проверьте почту, чтобы подтвердить адрес.',
+    notConfigured: 'Supabase не настроен: заполните supabaseConfig.js.'
   },
   es: {
     region: 'Región del servidor',
@@ -44,37 +44,25 @@ const TRANSLATION = {
     regionHelp: 'Los servidores funcionan de forma independiente entre sí.',
     signin: 'Iniciar sesión',
     signup: 'Registrarse',
-    username: 'Nombre de usuario',
-    password: 'Contraseña (al menos 10 caracteres)',
-    passwordConfirmation: 'Confirmación de contraseña',
+    email: 'Correo electrónico',
+    password: 'Contraseña',
     haveAccount: '¿Ya tienes una cuenta?',
     noAccount: '¿No tienes una cuenta?',
-    remember: 'Remember password'
+    orContinueWith: 'O continuar con',
+    confirmEmail: 'Revisa tu correo para confirmar la dirección.',
+    notConfigured: 'Supabase no está configurado: completa supabaseConfig.js.'
   }
 }
 
 export const LoginPage = () => {
   const [page, setPage] = createSignal('signin');
-  const [username, setUsername] = createSignal('');
+  const [email, setEmail] = createSignal('');
   const [password, setPassword] = createSignal('');
-  const [passwordConfirmation, setPasswordConfirmation] = createSignal('');
   const [region, setRegion] = createSignal('charkeeper.org');
-  const [remember, setRemember] = createSignal(true);
 
-  const [, { changeUserInfo, setAccessToken }] = useAppState();
-  const [{ renderAlerts }] = useAppAlert();
-  const [locale,, { setLocale }] = useAppLocale();
-
-  const readUserCredentials = async () => {
-    const cacheValue = await readFromCache(USER_CREDENTIALS_CACHE_NAME);
-    if (cacheValue) {
-      const credentials = JSON.parse(cacheValue);
-      batch(() => {
-        setUsername(credentials.username || '');
-        setPassword(credentials.password || '');
-      });
-    }
-  }
+  const [, { setAccessToken }] = useAppState();
+  const [{ renderAlerts, renderNotice }] = useAppAlert();
+  const [locale] = useAppLocale();
 
   const readRegion = async () => {
     const cacheValue = await readFromCache(CHARKEEPER_HOST_CACHE_NAME);
@@ -82,69 +70,51 @@ export const LoginPage = () => {
   }
 
   createEffect(() => {
-    readUserCredentials();
     readRegion();
   });
 
-  const fetchPlatformData = () => {
-    if (!window.__TAURI_INTERNALS__) return null;
+  const guardConfigured = () => {
+    if (supabaseConfigured()) return true;
 
-    try {
-      const { platform } = window.__TAURI__.os;
-      return platform();
-    } catch(e) {
-      console.log(e.message);
-      return null;
-    }
+    renderAlerts([localize(TRANSLATION, locale()).notConfigured]);
+    return false;
   }
 
-  const signUp = async () => {
-    if (window.__TAURI_INTERNALS__) {
-      writeToCache(CHARKEEPER_HOST_CACHE_NAME, region());
-      writeToCache(
-        USER_CREDENTIALS_CACHE_NAME,
-        JSON.stringify(remember() ? { username: username(), password: password() } : {})
-      );
-    }
-
-    const platformData = fetchPlatformData();
-    const result = await signUpRequest(
-      {
-        user: { username: username(), password: password(), password_confirmation: passwordConfirmation() },
-        platform: platformData
-      }
-    );
-    checkSignResult(result);
+  const rememberRegion = () => {
+    if (window.__TAURI_INTERNALS__) writeToCache(CHARKEEPER_HOST_CACHE_NAME, region());
   }
 
   const signIn = async () => {
-    if (window.__TAURI_INTERNALS__) {
-      writeToCache(CHARKEEPER_HOST_CACHE_NAME, region());
-      writeToCache(
-        USER_CREDENTIALS_CACHE_NAME,
-        JSON.stringify(remember() ? { username: username(), password: password() } : {})
-      );
-    }
+    if (!guardConfigured()) return;
+    rememberRegion();
 
-    const platformData = fetchPlatformData();
-    const result = await signInRequest({ user: { username: username(), password: password() }, platform: platformData });
-    checkSignResult(result);
+    const { data, error } = await supabase().auth.signInWithPassword({ email: email(), password: password() });
+    if (error) return renderAlerts([error.message]);
+
+    // onAuthStateChange updates appState; set directly for immediate render
+    setAccessToken(data.session.access_token);
   }
 
-  const checkSignResult = (result) => {
-    if (result.errors_list === undefined) {
-      batch(() => {
-        setLocale(result.locale);
-        setAccessToken(result.access_token);
-        changeUserInfo({
-          username: result.username,
-          isAdmin: result.admin,
-          colorSchema: result.color_schema
-        });
-      });
-    } else {
-      renderAlerts(result.errors_list);
-    }
+  const signUp = async () => {
+    if (!guardConfigured()) return;
+    rememberRegion();
+
+    const { data, error } = await supabase().auth.signUp({ email: email(), password: password() });
+    if (error) return renderAlerts([error.message]);
+
+    // session is null when email confirmations are enabled in the project
+    if (data.session) setAccessToken(data.session.access_token);
+    else renderNotice(localize(TRANSLATION, locale()).confirmEmail);
+  }
+
+  const signInWithProvider = async (provider) => {
+    if (!guardConfigured()) return;
+
+    const { error } = await supabase().auth.signInWithOAuth({
+      provider: provider,
+      options: { redirectTo: `${window.location.origin}/dashboard` }
+    });
+    if (error) renderAlerts([error.message]);
   }
 
   return (
@@ -166,9 +136,9 @@ export const LoginPage = () => {
         </Show>
         <Input
           containerClassList="form-field mb-2"
-          labelText={localize(TRANSLATION, locale()).username}
-          value={username()}
-          onInput={setUsername}
+          labelText={localize(TRANSLATION, locale()).email}
+          value={email()}
+          onInput={setEmail}
         />
         <Input
           password
@@ -176,23 +146,6 @@ export const LoginPage = () => {
           labelText={localize(TRANSLATION, locale()).password}
           value={password()}
           onInput={setPassword}
-        />
-        <Show when={page() === 'signup'}>
-          <Input
-            password
-            containerClassList="form-field mb-2"
-            labelText={localize(TRANSLATION, locale()).passwordConfirmation}
-            value={passwordConfirmation()}
-            onInput={setPasswordConfirmation}
-          />
-        </Show>
-        <Checkbox
-          labelText={localize(TRANSLATION, locale()).remember}
-          labelPosition="right"
-          labelClassList="text-sm ml-4"
-          classList="mb-2"
-          checked={remember()}
-          onToggle={() => setRemember(!remember())}
         />
         <Show
           when={page() === 'signin'}
@@ -215,6 +168,17 @@ export const LoginPage = () => {
         <Button default textable classList="mt-2" onClick={page() === 'signin' ? signIn : signUp}>
           {localize(TRANSLATION, locale())[page()]}
         </Button>
+        <Show when={!window.__TAURI_INTERNALS__}>
+          <p class="mt-4 mb-2 text-sm">{localize(TRANSLATION, locale()).orContinueWith}</p>
+          <div class="flex gap-4">
+            <span class="cursor-pointer opacity-75 hover:opacity-100" onClick={() => signInWithProvider('google')}>
+              <Google />
+            </span>
+            <span class="cursor-pointer opacity-75 hover:opacity-100" onClick={() => signInWithProvider('discord')}>
+              <Discord />
+            </span>
+          </div>
+        </Show>
       </div>
     </div>
   );

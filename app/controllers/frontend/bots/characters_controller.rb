@@ -6,9 +6,6 @@ module Frontend
       include Deps[bot_service: 'services.bot_context_v2.character_bot']
 
       # /roll d12 d12
-      # /dualityRoll d12 d20
-      # /fateRoll 1
-      # /plotRoll 2
       # /check attack Цеп --bonus 4
       def create
         render json: { result: bot_service.call(messages: params[:values], character: character) }, status: :ok

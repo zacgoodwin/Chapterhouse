@@ -20,14 +20,9 @@ export * from './molecules/CharacterNavigation';
 export * from './molecules/FeatureTitle';
 export * from './molecules/ItemsTable';
 export * from './molecules/Dice';
-export * from './molecules/DualityDice';
 export * from './molecules/Loading';
 
-export * from './molecules/ItemUpgrades/Daggerheart';
 export * from './molecules/ItemUpgrades/Dnd2024';
-
-export * from './rolls/Fate';
-export * from './rolls/Fallout';
 
 export * from './substances/Avatar';
 export * from './substances/AvatarInput';

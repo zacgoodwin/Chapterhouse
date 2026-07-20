@@ -3,10 +3,6 @@
 module Adminbook
   module Users
     class NotificationsController < Adminbook::BaseController
-      include Deps[
-        telegram_api: 'api.telegram.client'
-      ]
-
       def index
         @pagy, @notifications = pagy(User::Notification.order(created_at: :desc), limit: 25)
       end
@@ -20,8 +16,7 @@ module Adminbook
       end
 
       def create
-        notification = User::Notification.new(notification_params)
-        send_telegram_notification(notification) if notification.save
+        User::Notification.new(notification_params).save
         redirect_to adminbook_users_notifications_path
       end
 
@@ -38,21 +33,6 @@ module Adminbook
       end
 
       private
-
-      def send_telegram_notification(notification)
-        telegram_identity = notification.user.identities.telegram.first
-        return unless telegram_identity
-
-        telegram_api.send_message(
-          bot_secret: bot_secret,
-          chat_id: telegram_identity.uid,
-          text: "#{notification.title}\n\n#{notification.value}"
-        )
-      end
-
-      def bot_secret
-        Rails.application.credentials.dig(Rails.env.to_sym, :web_telegram_bot_token)
-      end
 
       def notification_params
         params.require(:notification).permit!.to_h

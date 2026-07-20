@@ -11,17 +11,18 @@
   },
   "dependencies": {
     "@babel/core": "^7.20.12",
-    "@rails/actioncable": "^8.1.300",
     "@solid-primitives/i18n": "^2.1.1",
     "@solid-primitives/keyed": "^1.5.1",
     "@solid-primitives/resize-observer": "^2.1.1",
+    "@supabase/supabase-js": "2",
     "babel-preset-solid": "^1.6.9",
     "solid-js": "^1.8.21"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",
     "eslint": "^9.9.0",
-    "eslint-plugin-solid": "^0.14.2"
+    "eslint-plugin-solid": "^0.14.2",
+    "globals": "^17.7.0"
   },
   "eslintConfig": {
     "globals": {

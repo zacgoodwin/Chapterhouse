@@ -1,19 +1,14 @@
-import { Show, createEffect, createSignal, createMemo, batch, For, Switch, Match } from 'solid-js';
+import { Show, createEffect, createSignal, batch } from 'solid-js';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
-import { PageHeader, IconButton, Input, Button, Select, Label } from '../../components';
-import { Arrow, Google, Discord, Telegram, Close, Yandex } from '../../assets';
+import { PageHeader, IconButton, Input, Button, Select } from '../../components';
+import { Arrow } from '../../assets';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
 import { updateUserRequest } from '../../requests/updateUserRequest';
-import { removeIdentityRequest } from '../../requests/removeIdentityRequest';
-import { localize, performResponse, writeToCache, readFromCache } from '../../helpers';
+import { localize, performResponse } from '../../helpers';
 
-const USER_CREDENTIALS_CACHE_NAME = 'UserCredentials';
 const TRANSLATION = {
   en: {
-    existingIdentities: 'Existing identities',
-    availableIdentities: 'Available identities',
-    connected: 'Everything is connected',
     light: 'Light',
     dark: 'Dark',
     username: 'Username',
@@ -21,16 +16,9 @@ const TRANSLATION = {
     colorSchema: 'Color schema',
     profile: 'Profile',
     save: 'Save',
-    alternatives: 'Alternative translations',
-    updated: 'Profile is updated',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
+    updated: 'Profile is updated'
   },
   ru: {
-    existingIdentities: 'Подключенные сервисы',
-    availableIdentities: 'Доступные сервисы',
-    connected: 'Всё подключено',
     light: 'Светлая',
     dark: 'Тёмная',
     username: 'Имя пользователя',
@@ -38,16 +26,9 @@ const TRANSLATION = {
     colorSchema: 'Цветовая палитра',
     profile: 'Профиль',
     save: 'Сохранить',
-    alternatives: 'Альтернативные переводы',
-    updated: 'Профиль обновлён',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
+    updated: 'Профиль обновлён'
   },
   es: {
-    existingIdentities: 'Identidades existentes',
-    availableIdentities: 'Identidades disponibles',
-    connected: 'Todo está conectado',
     light: 'Claro',
     dark: 'Oscuro',
     username: 'Nombre de usuario',
@@ -55,20 +36,7 @@ const TRANSLATION = {
     colorSchema: 'Esquema de colores',
     profile: 'Perfil',
     save: 'Guardar',
-    alternatives: 'Traducciones alternativas',
-    updated: 'Perfil actualizado',
-    providers: {
-      daggerheart: 'Daggerheart'
-    }
-  }
-}
-
-const PROVIDER_LOCALES = {
-  'ru': {
-    'daggerheart': {
-      'ru': 'Стандартный (daggerheart.su)',
-      'ru-DHM': 'Modno (dagger-heart.ru)'
-    }
+    updated: 'Perfil actualizado'
   }
 }
 
@@ -78,7 +46,6 @@ export const UsernameTab = (props) => {
   const [username, setUsername] = createSignal('');
   const [colorSchema, setColorSchema] = createSignal('');
   const [localeValue, setLocaleValue] = createSignal(undefined);
-  const [providerLocales, setProviderLocales] = createSignal({});
 
   const [appState, { changeUserInfo }] = useAppState();
   const [{ renderAlerts, renderNotice }] = useAppAlert();
@@ -89,57 +56,26 @@ export const UsernameTab = (props) => {
       setUsername(appState.username);
       setColorSchema(appState.colorSchema);
       setLocaleValue(locale());
-      setProviderLocales(appState.providerLocales);
     });
-  });
-
-  const refreshCredentials = async () => {
-    const cacheValue = await readFromCache(USER_CREDENTIALS_CACHE_NAME);
-    if (cacheValue) {
-      const credentials = JSON.parse(cacheValue);
-      writeToCache(
-        USER_CREDENTIALS_CACHE_NAME,
-        JSON.stringify({ username:username(), password: credentials.password })
-      );
-    }
-  }
-
-  const identityProviders = createMemo(() => {
-    if (appState.identities === undefined) return [];
-
-    return appState.identities.map((item) => item.provider);
-  });
-
-  const availableProviders = createMemo(() => {
-    if (appState.oauthLinks === undefined) return [];
-
-    return Object.keys(appState.oauthLinks).concat(Object.keys(appState.oauthCredentials));
   });
 
   const updateProfile = async () => {
     let payload = { color_schema: colorSchema(), locale: localeValue() };
     if (username() !== appState.username) payload = { ...payload, username: username() };
-    if (providerLocales() !== appState.providerLocales) payload = { ...payload, provider_locales: providerLocales() };
 
     const result = await updateUserRequest(appState.accessToken, payload);
 
     performResponse(
       result,
       function() { // eslint-disable-line solid/reactivity
-        if (username() !== appState.username) refreshCredentials();
         batch(() => {
-          changeUserInfo({ username: username(), colorSchema: colorSchema(), providerLocales: providerLocales() });
+          changeUserInfo({ username: username(), colorSchema: colorSchema() });
           setLocale(localeValue());
         });
         renderNotice(localize(TRANSLATION, locale()).updated);
       },
       function() { renderAlerts(result.errors_list) }
     );
-  }
-
-  const removeIdentity = async (id) => {
-    await removeIdentityRequest(appState.accessToken, id);
-    window.location.href = '/';
   }
 
   return (
@@ -176,86 +112,6 @@ export const UsernameTab = (props) => {
           selectedValue={colorSchema()}
           onSelect={setColorSchema}
         />
-        <Show when={PROVIDER_LOCALES[locale()]}>
-          <div>
-            <Label labelText={localize(TRANSLATION, locale()).alternatives} />
-            <For each={Object.entries(PROVIDER_LOCALES[locale()])}>
-              {([provider, values]) =>
-                <Select
-                  containerClassList="mb-2"
-                  labelText={localize(TRANSLATION, locale()).providers[provider]}
-                  items={values}
-                  selectedValue={providerLocales()[provider] === null || providerLocales()[provider] === undefined ? 'ru' : providerLocales()[provider]}
-                  onSelect={(value) => setProviderLocales({ ...providerLocales(), [provider]: value })}
-                />
-              }
-            </For>
-          </div>
-        </Show>
-        <Show when={appState.identities !== undefined}>
-          <div class="mb-2 grid grid-cols-1 emd:grid-cols-2 gap-2">
-            <div>
-              <Label labelText={localize(TRANSLATION, locale()).existingIdentities} />
-              <table class="table border border-gray-200 bg-white dark:bg-neutral-700 dark:border-gray-500 dark:text-snow">
-                <tbody>
-                  <For each={appState.identities}>
-                    {(identity) =>
-                      <tr>
-                        <td class="flex p-1">
-                          <Switch>
-                            <Match when={identity.provider === 'discord'}><Discord /></Match>
-                            <Match when={identity.provider === 'google'}><Google /></Match>
-                            <Match when={identity.provider === 'telegram'}><Telegram /></Match>
-                            <Match when={identity.provider === 'yandex'}><Yandex /></Match>
-                          </Switch>
-                          <p class="dark:text-snow ml-4">{identity.uid}</p>
-                        </td>
-                        <td class="p-1">
-                          <IconButton onClick={() => removeIdentity(identity.id)}>
-                            <Close />
-                          </IconButton>
-                        </td>
-                      </tr>
-                    }
-                  </For>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <Label labelText={localize(TRANSLATION, locale()).availableIdentities} />
-              <Show
-                when={availableProviders().filter((item) => !identityProviders().includes(item)).length > 0}
-                fallback={
-                  <p class="dark:text-snow">{localize(TRANSLATION, locale()).connected}</p>
-                }
-              >
-                <div class="p-1">
-                  <For each={availableProviders().filter((item) => !identityProviders().includes(item))}>
-                    {(provider) =>
-                      <Switch>
-                        <Match when={provider === 'discord'}><a href={appState.oauthLinks.discord}><Discord /></a></Match>
-                        <Match when={provider === 'google'}><a href={appState.oauthLinks.google}><Google /></a></Match>
-                        <Match when={provider === 'yandex'}><a href={appState.oauthLinks.yandex}><Yandex /></a></Match>
-                        <Match when={provider === 'telegram'}>
-                          <script
-                            async
-                            src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login={appState.oauthCredentials.telegram.botName}
-                            data-size="medium"
-                            data-userpic="false"
-                            data-radius="0"
-                            data-auth-url={appState.oauthCredentials.telegram.redirectUrl}
-                            data-request-access="write"
-                          />
-                        </Match>
-                      </Switch>
-                    }
-                  </For>
-                </div>
-              </Show>
-            </div>
-          </div>
-        </Show>
         <Button default textable classList="mt-4" onClick={updateProfile}>{localize(TRANSLATION, locale()).save}</Button>
       </div>
     </>

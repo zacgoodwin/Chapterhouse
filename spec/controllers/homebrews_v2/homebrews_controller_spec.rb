@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::HomebrewsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
-  let!(:homebrew1) { create :homebrew, :daggerheart_ancestry, user: user_session.user }
-  let!(:homebrew2) { create :homebrew, :daggerheart_ancestry }
-  let!(:homebrew3) { create :homebrew, :daggerheart_ancestry, public: true }
+  let!(:homebrew1) { create :homebrew, :dnd2024_race, user: user }
+  let!(:homebrew2) { create :homebrew, :dnd2024_race }
+  let!(:homebrew3) { create :homebrew, :dnd2024_race, public: true }
 
   describe 'GET#index' do
     context 'for logged users' do
-      let(:request) { get :index, params: { type: 'Daggerheart::Homebrews::Ancestry', charkeeper_access_token: access_token } }
+      let(:request) { get :index, params: { type: 'Dnd2024::Homebrews::Race', charkeeper_access_token: access_token } }
 
       it 'returns data', :aggregate_failures do
         request
@@ -27,7 +27,7 @@ describe HomebrewsV2::HomebrewsController do
   describe 'GET#show' do
     context 'for logged users' do
       let(:request) {
-        get :show, params: { id: homebrew1.id, type: 'Daggerheart::Homebrews::Ancestry', charkeeper_access_token: access_token }
+        get :show, params: { id: homebrew1.id, type: 'Dnd2024::Homebrews::Race', charkeeper_access_token: access_token }
       }
 
       it 'returns data', :aggregate_failures do
@@ -36,7 +36,10 @@ describe HomebrewsV2::HomebrewsController do
         expect(response).to have_http_status :ok
         expect(response.parsed_body['homebrews'].size).to eq 1
         expect(response.parsed_body.dig('homebrews', 0).keys).to(
-          contain_exactly('id', 'title', 'description', 'public', 'features')
+          contain_exactly(
+            'id', 'title', 'description', 'public', 'resistance', 'immunity', 'vulnerability',
+            'size', 'vision', 'speed', 'speeds', 'features'
+          )
         )
       end
     end
@@ -46,15 +49,15 @@ describe HomebrewsV2::HomebrewsController do
     context 'for logged users' do
       let(:request) {
         post :batch_destroy, params: {
-          type: 'Daggerheart::Homebrews::Ancestry',
+          type: 'Dnd2024::Homebrews::Race',
           ids: [homebrew1.id, homebrew2.id, homebrew3.id],
           charkeeper_access_token: access_token
         }
       }
 
       it 'returns data', :aggregate_failures do
-        expect { request }.to change(Daggerheart::Homebrews::Ancestry.kept, :count).by(-1)
-        expect(Daggerheart::Homebrews::Ancestry.count).to eq 3
+        expect { request }.to change(Dnd2024::Homebrews::Race.kept, :count).by(-1)
+        expect(Dnd2024::Homebrews::Race.count).to eq 3
         expect(response).to have_http_status :ok
       end
     end

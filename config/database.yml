@@ -1,54 +1,43 @@
 # frozen_string_literal: true
 
+# Non-test environments connect to Supabase hosted Postgres through the
+# Supavisor SESSION pooler (port 5432). Never point the app at the
+# transaction pooler (port 6543): GoodJob needs LISTEN/NOTIFY and
+# with_advisory_lock needs session-level advisory locks.
+# Connection values live in encrypted credentials under
+# <env>.supabase.db (host, port, database, username, password).
+# Test stays on localhost: the suite truncates its database.
+
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 20 } %>
+  pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 10 } %>
+
+supabase: &supabase
+  <<: *default
+  host: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :host) %>
+  port: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :port) || 5432 %>
+  database: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :database) || 'postgres' %>
+  username: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :username) %>
+  password: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :password) %>
+  sslmode: require
+
+development:
+  <<: *supabase
+
+local_production:
+  <<: *supabase
+
+test:
+  <<: *default
   host: localhost
   port: 5432
   username: postgres
   password: postgres
-
-development:
-  primary: &primary_development
-    <<: *default
-    database: charkeeper_development
-  errors:
-    <<: *primary_development
-    database: charkeeper_development_errors
-    migrations_paths: db/errors_migrate
-
-local_production:
-  <<: *default
-  database: charkeeper_development
-
-test:
-  primary: &primary_test
-    <<: *default
-    database: charkeeper_test
-  errors:
-    <<: *primary_test
-    database: charkeeper_test_errors
-    migrations_paths: db/errors_migrate
+  database: charkeeper_test
 
 production:
-  primary: &primary_production
-    <<: *default
-    database: charkeeper
-    username: charkeeper
-    password: <%= Rails.application.credentials[:database_password] %>
-  errors:
-    <<: *primary_production
-    database: charkeeper_errors
-    migrations_paths: db/errors_migrate
+  <<: *supabase
 
 ru_production:
-  primary: &primary_production
-    <<: *default
-    database: charkeeper
-    username: charkeeper
-    password: <%= Rails.application.credentials[:database_password] %>
-  errors:
-    <<: *primary_production
-    database: charkeeper_errors
-    migrations_paths: db/errors_migrate
+  <<: *supabase

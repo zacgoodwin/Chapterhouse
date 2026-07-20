@@ -35,10 +35,6 @@ module Adminbook
     def item_class
       case params[:provider]
       when 'dnd5', 'dnd2024' then ::Dnd5::Item
-      when 'daggerheart' then ::Daggerheart::Item
-      when 'pathfinder2' then ::Pathfinder2::Item
-      when 'dc20' then ::Dc20::Item
-      when 'cosmere' then ::Cosmere::Item
       end
     end
 

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="Keywords" content="Digital, interactive, character sheet, character builder, dungeons & dragons, pathfinder, daggerheart, dc20, fate">
-    <meta name="Description" content="CharKeeper - create and manage your characters and homebrews for various tabletop roleplaying games D&D, Daggerheart, DC20, Pathfinder, Fate, Fallout, mobile application available">
-    <meta property="og:title" content="CharKeeper | Character  builder for various tabletop games" />
-    <meta property="og:description" content="CharKeeper - create and manage your characters and homebrews for various tabletop roleplaying games D&D, Daggerheart, DC20, Pathfinder, Fate, Fallout, mobile application available" />
+    <meta name="Keywords" content="Digital, interactive, character sheet, character builder, dungeons & dragons">
+    <meta name="Description" content="CharKeeper - create and manage your characters and homebrews for D&D, mobile application available">
+    <meta property="og:title" content="CharKeeper | Character builder for D&D" />
+    <meta property="og:description" content="CharKeeper - create and manage your characters and homebrews for D&D, mobile application available" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://charkeeper.org" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -28,12 +28,7 @@
             <%= image_tag 'icon.png', alt: 'charkeeper', width: 24, height: 24 %>
           <% end %>
           <div>
-            <% if current_user %>
-              <%= link_to t('web.users.signin.logout'), logout_path, class: 'underline' %>
-            <% else %>
-              <%= link_to t('web.users.signin.title'), new_signin_path, class: 'mr-4 underline', data: { 'test-id' => 'signin-link' } %>
-              <%= link_to t('web.users.signup.title'), new_signup_path, class: 'underline' %>
-            <% end %>
+            <%= link_to t('web.welcome.index_v2.dashboard_link'), dashboard_path, class: 'underline', data: { 'test-id' => 'signin-link' } %>
           </div>
         </div>
       </div>

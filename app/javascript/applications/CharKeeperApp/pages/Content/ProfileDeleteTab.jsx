@@ -5,7 +5,7 @@ import { PageHeader, IconButton, Button, createModal } from '../../components';
 import { Arrow } from '../../assets';
 import { useAppState, useAppLocale } from '../../context';
 import { removeProfileRequest } from '../../requests/removeProfileRequest';
-import { localize } from '../../helpers';
+import { localize, supabase } from '../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -40,6 +40,7 @@ export const ProfileDeleteTab = (props) => {
 
   const confirmProfileDeleting = async () => {
     await removeProfileRequest(appState.accessToken);
+    await supabase()?.auth.signOut();
 
     setAccessToken(null);
     window.location.href = '/';

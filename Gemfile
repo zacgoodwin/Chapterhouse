@@ -51,7 +51,6 @@ gem 'props_template'
 
 # auth
 gem 'action_policy'
-gem 'authkeeper', '0.1.21'
 gem 'jwt', '~> 2.5'
 
 # Work with JSON-backed attributes
@@ -64,17 +63,13 @@ gem 'faraday', '~> 2.0'
 gem 'pghero'
 gem 'skylight'
 
-# bugs tracking
-gem 'solid_errors'
-
 # Uploading to S3
 gem 'aws-sdk-s3', require: false
 
 # using csv
 gem 'csv'
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.7'
+# Ed25519 signature verification for Discord webhooks
 gem 'rbnacl'
 
 # PDF generating
@@ -99,6 +94,12 @@ gem 'discard', '~> 2.0'
 
 # advisory locking for processes
 gem 'with_advisory_lock'
+
+# timezone data for Windows development machines
+gem 'tzinfo-data', platforms: %i[windows jruby]
+
+# get_process_mem backend for Windows development machines
+gem 'sys-proctable', platforms: %i[windows jruby]
 
 group :development, :production, :ru_production do
   gem 'get_process_mem'

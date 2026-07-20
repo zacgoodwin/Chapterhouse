@@ -15,15 +15,5 @@ FactoryBot.define do
     trait :dnd2024 do
       type { 'Dnd2024::Spell' }
     end
-
-    trait :daggerheart do
-      type { 'Daggerheart::Spell' }
-      data {
-        {
-          level: 1,
-          domain: 'bone'
-        }
-      }
-    end
   end
 end

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 describe HomebrewsV2::Dnd2024::SpellsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
       let(:request) { get :index, params: { charkeeper_access_token: access_token } }
 
       before do
-        create :dnd2024_spell, user: user_session.user
+        create :dnd2024_spell, user: user
         create :dnd2024_spell, public: true
         create :dnd2024_spell
       end
@@ -28,7 +28,7 @@ describe HomebrewsV2::Dnd2024::SpellsController do
 
   describe 'GET#show' do
     context 'for logged users' do
-      let!(:feat) { create :dnd2024_spell, user: user_session.user }
+      let!(:feat) { create :dnd2024_spell, user: user }
       let(:request) { get :show, params: { id: feat.id, charkeeper_access_token: access_token } }
 
       it 'returns data', :aggregate_failures do

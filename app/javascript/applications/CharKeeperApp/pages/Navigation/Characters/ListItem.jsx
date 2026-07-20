@@ -3,33 +3,21 @@ import * as i18n from '@solid-primitives/i18n';
 
 import { IconButton } from '../../../components';
 import { Dots, Avatar } from '../../../assets';
-import pathfinder2Config from '../../../data/pathfinder2.json';
 import dnd2024Config from '../../../data/dnd2024.json';
 import dnd5Config from '../../../data/dnd5.json';
-import dc20Config from '../../../data/dc20.json';
-import falloutConfig from '../../../data/fallout.json';
-import { useAppState, useAppLocale, useAppAlert } from '../../../context';
-import { clickOutside, copyToClipboard, localize } from '../../../helpers';
+import { useAppLocale } from '../../../context';
+import { clickOutside, localize } from '../../../helpers';
 
-const AVAILABLE_COPY = ['cthulhu7'];
-const AVAILABLE_JSON = ['daggerheart', 'pathfinder2'];
-const AVAILABLE_PDF = ['daggerheart', 'dnd5', 'dnd2024', 'pathfinder2'];
-const AVAILABLE_RESET = ['daggerheart'];
+const AVAILABLE_PDF = ['dnd5', 'dnd2024'];
 const TRANSLATION = {
   en: {
-    delete: 'Delete',
-    reset: 'Reset',
-    copy: 'Copy'
+    delete: 'Delete'
   },
   ru: {
-    delete: 'Удалить',
-    reset: 'Сбросить',
-    copy: 'Копировать'
+    delete: 'Удалить'
   },
   es: {
-    delete: 'Eliminar',
-    reset: 'Restablecer',
-    copy: 'Copy'
+    delete: 'Eliminar'
   }
 }
 
@@ -38,8 +26,6 @@ export const CharactersListItem = (props) => {
 
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const [appState] = useAppState();
-  const [{ renderNotice }] = useAppAlert();
   const [locale, dict] = useAppLocale();
 
   const t = i18n.translator(dict);
@@ -62,45 +48,12 @@ export const CharactersListItem = (props) => {
     props.onDeleteCharacter(event);
   }
 
-  const resetClick = (event) => {
-    setIsOpen(false);
-    props.onResetCharacter(event);
-  }
-
-  const copyClick = (event) => {
-    setIsOpen(false);
-    props.onCopyCharacter(event);
-  }
-
-  const copy = (event) => {
-    event.stopPropagation();
-
-    copyToClipboard(`https://${appState.rootHost}/characters/${character().id}.json`);
-    renderNotice(t('alerts.copied'));
-    setIsOpen(false);
-  }
-
   const firstText = createMemo(() => {
     if (character().provider === 'dnd5') {
       return `${t('charactersPage.level')} ${character().level} | ${character().subrace ? localize(dnd5Config.races[character().race].subraces[character().subrace].name, locale()) : localize(dnd5Config.races[character().race].name, locale())}`;
     }
     if (character().provider === 'dnd2024') {
       return `${t('charactersPage.level')} ${character().level} | ${character().legacy ? localize(props.dnd2024Races[character().species].legacies[character().legacy].name, locale()) : localize(props.dnd2024Races[character().species].name, locale())}`;
-    }
-    if (character().provider === 'pathfinder2') {
-      return `${t('charactersPage.level')} ${character().level} | ${character().subrace ? localize(pathfinder2Config.races[character().race].subraces[character().subrace].name, locale()) : localize(pathfinder2Config.races[character().race].name, locale())}`;
-    }
-    if (character().provider === 'daggerheart') {
-      return `${t('charactersPage.level')} ${character().level} | ${character().names.ancestry_name}`;
-    }
-    if (character().provider === 'fallout') {
-      return `${t('charactersPage.level')} ${character().level} | ${localize(falloutConfig.origins[character().origin].name, locale())}`;
-    }
-    if (character().provider === 'cosmere') {
-      return `${t('charactersPage.level')} ${character().level}`;
-    }
-    if (character().provider === 'dc20') {
-      return `${t('charactersPage.level')} ${character().level} | ${character().ancestries.map((item) => localize(dc20Config.ancestries[item].name, locale())).join(' * ')}`;
     }
   });
 
@@ -110,15 +63,6 @@ export const CharactersListItem = (props) => {
     }
     if (character().provider === 'dnd2024') {
       return Object.keys(character().classes).map((item) => localize(dnd2024Config.classes[item].name, locale())).join(' * ');
-    }
-    if (character().provider === 'pathfinder2') {
-      return Object.keys(character().classes).map((item) => localize(pathfinder2Config.classes[item].name, locale())).join(' * ');
-    }
-    if (character().provider === 'daggerheart') {
-      return Object.keys(character().names.subclass_names).join(' * ');
-    }
-    if (character().provider === 'dc20') {
-      return localize(dc20Config.classes[character().main_class].name, locale());
     }
   });
 
@@ -149,15 +93,6 @@ export const CharactersListItem = (props) => {
           <Show when={isOpen()}>
             <div class="character-item-dots-dropdown">
               <p class="dots-item" onClick={deleteClick}>{localize(TRANSLATION, locale()).delete}</p>
-              <Show when={AVAILABLE_RESET.includes(character().provider)}>
-                <p class="dots-item" onClick={resetClick}>{localize(TRANSLATION, locale()).reset}</p>
-              </Show>
-              <Show when={AVAILABLE_COPY.includes(character().provider)}>
-                <p class="dots-item" onClick={copyClick}>{localize(TRANSLATION, locale()).copy}</p>
-              </Show>
-              <Show when={AVAILABLE_JSON.includes(character().provider)}>
-                <p class="dots-item" onClick={copy}>{t('charactersPage.onCopyCharacter')}</p>
-              </Show>
               <Show when={!window.__TAURI_INTERNALS__ && AVAILABLE_PDF.includes(character().provider)}>
                 <p class="dots-item" onClick={(e) => viewClick(e)}>PDF</p>
               </Show>

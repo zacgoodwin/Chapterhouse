@@ -1,15 +1,13 @@
-import { createMemo, Show, For } from 'solid-js';
+import { Show, For } from 'solid-js';
 
-import { Button, Dice } from '../../components';
-import { useAppLocale, useAppAlert, useAppState } from '../../context';
-import { updateCharacterRequest } from '../../requests/updateCharacterRequest';
-import { PlusSmall, Minus, Campfire, LongCampfire, Moon, Picnic, Combat, Ability, Spell, Grimoire } from '../../assets';
-import { localize, performResponse } from '../../helpers';
+import { Button } from '../../components';
+import { useAppLocale } from '../../context';
+import { PlusSmall, Minus, Campfire, LongCampfire, Moon, Picnic, Combat } from '../../assets';
+import { localize } from '../../helpers';
 
 const FEATURE_ICONS = {
   'one_at_short_rest': Picnic, 'short_rest': Campfire, 'long_rest': LongCampfire, 'session': Moon, 'combat': Combat
 }
-const TYPE_ICONS = { 'ability': Ability, 'spell': Spell, 'grimoire': Grimoire }
 const TRANSLATION = {
   en: {
     one_at_short_rest: 'Short - 1, long - full',
@@ -63,109 +61,36 @@ const TRANSLATION = {
     r: 'R'
   }
 }
-const SPENDING_RESOURCES_PROVIDERS = ['daggerheart'];
 const PRICE_WITHOUT_VALUE = ['r'];
 
 export const FeatureTitle = (props) => {
-  const character = () => props.character;
   const feature = () => props.feature;
 
   const IconComponent = FEATURE_ICONS[feature().limit_refresh]; // eslint-disable-line solid/reactivity
-  const InfoComponent = character().provider === 'daggerheart' ? TYPE_ICONS[feature().info.type] : null; // eslint-disable-line solid/reactivity
 
-  const [appState] = useAppState();
-  const [{ renderAlerts, renderNotice }] = useAppAlert();
   const [locale] = useAppLocale();
-
-  const daggerheartResource = () => {
-    return {
-      hope: { free: character().hope_marked, attribute: 'hope_marked', modifier: -1 },
-      stress: { free: character().stress_max - character().stress_marked, attribute: 'stress_marked', modifier: 1 },
-      health: { free: character().health_max - character().health_marked, attribute: 'health_marked', modifier: 1 },
-      armor: { free: character().armor_slots - character().spent_armor_slots, attribute: 'spent_armor_slots', modifier: 1 }
-    }
-  }
-
-  const resources = createMemo(() => {
-    if (character().provider === 'daggerheart') return daggerheartResource();
-
-    return {};
-  });
-
-  const enoughResources = createMemo(() => {
-    if (Object.keys(resources()).length === 0) return false;
-
-    return Object.entries(feature().price).filter(([slug, value]) => resources()[slug] ? resources()[slug].free < value : false).length === 0;
-  });
-
-  const spendResources = async (e) => {
-    e.stopPropagation();
-
-    const payload = Object.entries(feature().price).reduce((acc, [slug, value]) => {
-      acc[resources()[slug].attribute] = character()[resources()[slug].attribute] + value * resources()[slug].modifier;
-      return acc;
-    }, {});
-
-    const result = await updateCharacterRequest(
-      appState.accessToken, character().provider, character().id, { character: payload, only_head: true }
-    );
-    performResponse(
-      result,
-      function() { // eslint-disable-line solid/reactivity
-        props.onReplaceCharacter(payload);
-        renderNotice(localize(TRANSLATION, locale()).spent);
-      },
-      function() { renderAlerts(result.errors_list) }
-    );
-  }
 
   return (
     <div class="flex">
       <div class="flex-1">
         <p class="flex items-center">
-          <Show when={InfoComponent}>
-            <span class="mr-2"><InfoComponent /></span>
-          </Show>
           {feature().title}
         </p>
         <div class="flex items-center gap-x-4">
-          <Show when={character().provider === 'daggerheart'}>
-            <Show when={feature().info.hope_dice}>
-              <Dice width="24" height="24" textClassList="text-sm!" mode="hope" text={feature().info.hope_dice} />
-            </Show>
-            <Show when={feature().info.fear_dice}>
-              <Dice width="24" height="24" textClassList="text-sm!" mode="fear" text={feature().info.fear_dice} />
-            </Show>
-          </Show>
           <Show when={Object.keys(feature().price).length > 0}>
-            <Show
-              when={SPENDING_RESOURCES_PROVIDERS.includes(character().provider)}
-              fallback={
-                <div class="flex gap-x-2">
-                  <For each={Object.entries(feature().price)}>
-                    {([slug, value]) =>
-                      <Show when={localize(TRANSLATION, locale())[slug]}>
-                        <p class="text-xs">
-                          <Show when={!PRICE_WITHOUT_VALUE.includes(slug)} fallback={localize(TRANSLATION, locale())[slug]}>
-                            {localize(TRANSLATION, locale())[slug]} {value}
-                          </Show>
-                        </p>
+            <div class="flex gap-x-2">
+              <For each={Object.entries(feature().price)}>
+                {([slug, value]) =>
+                  <Show when={localize(TRANSLATION, locale())[slug]}>
+                    <p class="text-xs">
+                      <Show when={!PRICE_WITHOUT_VALUE.includes(slug)} fallback={localize(TRANSLATION, locale())[slug]}>
+                        {localize(TRANSLATION, locale())[slug]} {value}
                       </Show>
-                    }
-                  </For>
-                </div>
-              }
-            >
-              <div
-                class="resource"
-                classList={{ 'enough': enoughResources() }}
-                onClick={(e) => enoughResources() ? spendResources(e) : null}
-              >
-                <p class="text-xs">
-                  {Object.entries(feature().price).map(([slug, value]) => localize(TRANSLATION, locale())[slug] ? `${localize(TRANSLATION, locale())[slug]} ${value}` : null).filter((item) => item).join(', ')}
-                </p>
-              </div>
-            </Show>
+                    </p>
+                  </Show>
+                }
+              </For>
+            </div>
           </Show>
         </div>
       </div>

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe Frontend::Bots::CharactersController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'POST#create' do
-    let!(:character) { create :character, user: user_session.user }
+    let!(:character) { create :character, user: user }
 
     context 'for logged users' do
       context 'without character' do
@@ -38,14 +38,14 @@ describe Frontend::Bots::CharactersController do
           context 'for valid params' do
             let(:values) { ['/roll d20'] }
 
-            before { allow(BotContext::Channels::SendToTelegramJob).to receive(:perform_later) }
+            before { allow(BotContext::Channels::SendToCampaignJob).to receive(:perform_later) }
 
             it 'returns result', :aggregate_failures do
               request
 
               expect(response.parsed_body[:errors]).to be_nil
               expect(response).to have_http_status :ok
-              expect(BotContext::Channels::SendToTelegramJob).not_to have_received(:perform_later)
+              expect(BotContext::Channels::SendToCampaignJob).not_to have_received(:perform_later)
             end
 
             context 'when channel is present' do
@@ -56,85 +56,14 @@ describe Frontend::Bots::CharactersController do
                 create :channel, campaign: campaign
               end
 
-              it 'returns result', :aggregate_failures do
+              it 'returns result and broadcasts to owlbear channel', :aggregate_failures do
                 request
 
                 expect(response.parsed_body[:errors]).to be_nil
                 expect(response).to have_http_status :ok
-                expect(BotContext::Channels::SendToTelegramJob).to have_received(:perform_later)
+                expect(BotContext::Channels::SendToCampaignJob).to have_received(:perform_later).with(campaign.id,
+                                                                                                      kind_of(String))
               end
-            end
-          end
-        end
-
-        context 'for /dualityRoll' do
-          context 'for invalid command' do
-            let(:values) { ['/dualityROll d12 d12'] }
-
-            it 'returns errors messages', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :errors)).to eq(['Invalid command'])
-              expect(response).to have_http_status :ok
-            end
-          end
-
-          context 'for valid params' do
-            let(:values) { ['/dualityRoll d12 d12'] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for /fateRoll' do
-          context 'for invalid command' do
-            let(:values) { ['/fateROll 1'] }
-
-            it 'returns errors messages', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :errors)).to eq(['Invalid command'])
-              expect(response).to have_http_status :ok
-            end
-          end
-
-          context 'for valid params' do
-            let(:values) { ['/fateRoll'] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for /plotRoll' do
-          context 'for invalid command' do
-            let(:values) { ['/plotROll 1'] }
-
-            it 'returns errors messages', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :errors)).to eq(['Invalid command'])
-              expect(response).to have_http_status :ok
-            end
-          end
-
-          context 'for valid params' do
-            let(:values) { ['/plotRoll 2'] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
             end
           end
         end
@@ -142,78 +71,6 @@ describe Frontend::Bots::CharactersController do
         context 'for dnd checks' do
           %w[save attr skill attack initiative].each do |attr|
             let(:values) { ["/check #{attr} athletics --bonus 1"] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :result).keys).to(
-                contain_exactly('rolls', 'total', 'final_roll', 'status')
-              )
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for daggerheart checks' do
-          let!(:character) { create :character, :daggerheart, user: user_session.user }
-
-          %w[attr attack].each do |attr|
-            let(:values) { ["/check #{attr} presence --bonus 1"] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :result).keys).to(
-                contain_exactly('rolls', 'total', 'status')
-              )
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for pathfinder2 checks' do
-          let!(:character) { create :character, :pathfinder2, user: user_session.user }
-
-          %w[save attr skill attack initiative].each do |attr|
-            let(:values) { ["/check #{attr} will --bonus 1"] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :result).keys).to(
-                contain_exactly('rolls', 'total', 'final_roll', 'status')
-              )
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for fate checks' do
-          let!(:character) { create :character, :fate, user: user_session.user }
-
-          %w[skill stunt].each do |attr|
-            let(:values) { ["/check #{attr} will --bonus 1"] }
-
-            it 'returns result', :aggregate_failures do
-              request
-
-              expect(response.parsed_body.dig(:result, 0, :result).keys).to(
-                contain_exactly('rolls', 'total')
-              )
-              expect(response.parsed_body[:errors]).to be_nil
-              expect(response).to have_http_status :ok
-            end
-          end
-        end
-
-        context 'for dc20 checks' do
-          let!(:character) { create :character, :dc20, user: user_session.user }
-
-          %w[attr save skill trade language initiative attack].each do |attr|
-            let(:values) { ["/check #{attr} empty --bonus 2"] }
 
             it 'returns result', :aggregate_failures do
               request

@@ -5,21 +5,16 @@ module BotContext
     class Campaign
       include Deps[
         add_campaign_command: 'commands.campaigns_context.add_campaign',
-        remove_campaign_command: 'commands.campaigns_context.remove_campaign',
-        add_channel: 'commands.channels_context.add_channel'
+        remove_campaign_command: 'commands.campaigns_context.remove_campaign'
       ]
 
-      TELEGRAM_SOURCES = %i[telegram_bot telegram_group_bot].freeze
-
-      def call(source:, arguments:, data:)
+      def call(arguments:, data:)
         return if data[:user].nil?
 
         case arguments.shift
         when 'create' then create_campaign(*arguments, data)
         when 'list' then fetch_campaigns(data)
         when 'remove' then remove_campaign(*arguments, data)
-        when 'show' then show_active_campaign(data, source)
-        when 'set' then set_campaign(*arguments, data, source)
         end
       end
 
@@ -28,14 +23,6 @@ module BotContext
       def create_campaign(*arguments, data)
         values = BotContext::Commands::Parsers::CreateCampaign.new.call(arguments: arguments)
         result = add_campaign_command.call(user: data[:user], name: values[:name], provider: values[:system])
-
-        if result[:errors_list].blank?
-          external_id = data.dig(:raw_message, :chat, :id)
-          if external_id
-            channel = add_channel.call(provider: 'telegram', external_id: external_id.to_s)[:result]
-            channel.update!(campaign: result[:result])
-          end
-        end
 
         {
           type: 'create',
@@ -58,36 +45,6 @@ module BotContext
           type: 'remove',
           result: result[:result],
           errors: result[:errors_list]
-        }
-      end
-
-      def show_active_campaign(data, source)
-        return unless source.in?(TELEGRAM_SOURCES)
-
-        external_id = data.dig(:raw_message, :chat, :id)
-        channel = Channel.find_or_create_by!(provider: 'telegram', external_id: external_id.to_s)
-
-        {
-          type: 'show',
-          result: channel.campaign,
-          errors: nil
-        }
-      end
-
-      def set_campaign(name, data, source)
-        return unless source.in?(TELEGRAM_SOURCES)
-
-        external_id = data.dig(:raw_message, :chat, :id)
-        channel = Channel.find_or_create_by!(provider: 'telegram', external_id: external_id.to_s)
-
-        if channel.campaign_id.nil?
-          campaign = data[:user].campaigns.find_by!(name: name)
-          channel.update!(campaign: campaign)
-        end
-        {
-          type: 'set',
-          result: channel.campaign,
-          errors: nil
         }
       end
     end

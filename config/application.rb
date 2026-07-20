@@ -13,7 +13,6 @@ require 'action_mailer/railtie'
 # require 'action_mailbox/engine'
 # require 'action_text/engine'
 require 'action_view/railtie'
-require 'action_cable/engine'
 # require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 
@@ -32,9 +31,7 @@ module Charkeeper
     # Rack::Brotli goes directly under Rack::Deflater, if Rack::Deflater is present
     config.middleware.use Rack::Brotli
 
-    I18n.available_locales = [:en, :ru, :es, :'ru-DHM'] # rubocop: disable Style/SymbolArray
-    # ru-DHM - Daggerheart Modno
-    config.i18n.fallbacks = { 'ru-DHM': :ru }
+    I18n.available_locales = %i[en ru es]
     config.i18n.default_locale = Rails.env.ru_production? ? :ru : :en
 
     config.time_zone = 'UTC'
@@ -74,7 +71,6 @@ module Charkeeper
     # Catch 404s
     config.after_initialize do |app|
       app.routes.append do
-        match 'web_telegram/*path', to: 'frontend/base#not_found', via: :all
         match '*path', to: 'application#not_found', via: :all
       end
     end

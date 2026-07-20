@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Users::InfosController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#show' do
     context 'for logged users' do
@@ -13,11 +13,10 @@ describe Frontend::Users::InfosController do
 
         expect(response).to have_http_status :ok
         expect(response.parsed_body).to eq({
-          'locale' => user_session.user.locale,
-          'username' => user_session.user.username,
-          'admin' => user_session.user.admin?,
-          'color_schema' => user_session.user.color_schema,
-          'provider_locales' => {}
+          'locale' => user.locale,
+          'username' => user.username,
+          'admin' => user.admin?,
+          'color_schema' => user.color_schema
         })
       end
     end

@@ -7,7 +7,7 @@ module BotContextV2
       represent_character_command: 'services.bot_context_v2.represent_character_bot'
     ]
 
-    ALLOWED_COMMANDS = %w[/check /roll /dualityRoll /fateRoll /plotRoll].freeze
+    ALLOWED_COMMANDS = %w[/check /roll].freeze
     PROVIDER_BASED_COMMANDS = %w[/check].freeze
 
     def call(messages:, character:)
@@ -63,32 +63,19 @@ module BotContextV2
     def send_to_channels(character, formatted_result)
       character.channels.uniq.each do |channel|
         case channel.provider
-        when Channel::TELEGRAM then send_telegram_message(channel.external_id, formatted_result)
         when Channel::OWLBEAR then send_owlbear_message(channel.campaign, formatted_result)
         end
       end
     end
 
-    def send_telegram_message(external_id, formatted_result)
-      BotContext::Channels::SendToTelegramJob.perform_later(
-        external_id,
-        formatted_result[:errors] ? formatted_result.dig(:errors, 0) : formatted_result[:result]
-      )
-    end
-
     def character_provider(name)
       case name
-      when 'Dnd5::Character', 'Dnd2024::Character', 'Dc20::Character', 'Pathfinder2::Character', 'Cosmere::Character'
-        'dnd'
-      when 'Daggerheart::Character' then 'daggerheart'
-      when 'Fate::Character' then 'fate'
-      when 'Fallout::Character' then 'fallout'
-      when 'Cthulhu7::Character' then 'cthulhu7'
+      when 'Dnd5::Character', 'Dnd2024::Character' then 'dnd'
       end
     end
 
     def send_owlbear_message(campaign, formatted_result)
-      CampaignChannel.broadcast_to(campaign, { message: formatted_result[:result] })
+      BotContext::Channels::SendToCampaignJob.perform_later(campaign.id, formatted_result[:result])
     end
   end
 end

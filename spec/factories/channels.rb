@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :channel do
-    provider { 'telegram' }
+    provider { 'owlbear' }
     external_id { '1234567890' }
   end
 end

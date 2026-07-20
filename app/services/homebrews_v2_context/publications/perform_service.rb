@@ -19,11 +19,7 @@ module HomebrewsV2Context
       private
 
       def command_object(publication)
-        @command_object ||=
-          case publication.provider
-          when 'dnd2024' then dnd2024_commands(publication)
-          else daggerheart_commands(publication)
-          end
+        @command_object ||= dnd2024_commands(publication)
       end
 
       def dnd2024_commands(publication)
@@ -33,23 +29,6 @@ module HomebrewsV2Context
         when 'spell' then HomebrewsV2Context::Import::Dnd2024::Spells::AddCommand.new
         when 'race' then HomebrewsV2Context::Import::Dnd2024::Races::PerformCommand.new
         when 'subclass' then HomebrewsV2Context::Import::Dnd2024::Subclasses::PerformCommand.new
-        end
-      end
-
-      def daggerheart_commands(publication) # rubocop: disable Metrics/CyclomaticComplexity
-        case publication.parent_type
-        when 'character' then HomebrewsV2Context::Import::Daggerheart::Characters::AddCommand.new
-        when 'transformation' then HomebrewsV2Context::Import::Daggerheart::Transformations::PerformCommand.new
-        when 'ancestry' then HomebrewsV2Context::Import::Daggerheart::Ancestries::PerformCommand.new
-        when 'community' then HomebrewsV2Context::Import::Daggerheart::Communities::PerformCommand.new
-        when 'speciality' then HomebrewsV2Context::Import::Daggerheart::Specialities::PerformCommand.new
-        when 'subclass' then HomebrewsV2Context::Import::Daggerheart::Subclasses::PerformCommand.new
-        when 'domain' then HomebrewsV2Context::Import::Daggerheart::Domains::PerformCommand.new
-        when 'mechanic' then HomebrewsV2Context::Import::Daggerheart::Mechanics::PerformCommand.new
-        when 'armor' then HomebrewsV2Context::Import::Daggerheart::Items::Armors::AddCommand.new
-        when 'consumables' then HomebrewsV2Context::Import::Daggerheart::Items::Consumables::AddCommand.new
-        when 'item' then HomebrewsV2Context::Import::Daggerheart::Items::Items::AddCommand.new
-        when 'weapon' then HomebrewsV2Context::Import::Daggerheart::Items::Weapons::AddCommand.new
         end
       end
     end

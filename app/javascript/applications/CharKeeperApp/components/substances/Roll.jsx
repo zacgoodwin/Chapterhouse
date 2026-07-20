@@ -1,11 +1,11 @@
 import { Portal } from 'solid-js/web';
-import { createEffect, createSignal, createMemo, Show, Switch, Match, For, batch } from 'solid-js';
+import { createSignal, createMemo, Show, Switch, Match, For, batch } from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 
-import { ErrorWrapper, Dice, DualityDice, Button } from '../../components';
+import { ErrorWrapper, Dice, Button } from '../../components';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
-import { clickOutside, modifier, localize, readFromCache, writeToCache } from '../../helpers';
-import { Close, Edit } from '../../assets';
+import { clickOutside, modifier, localize } from '../../helpers';
+import { Close } from '../../assets';
 import { createCharacterBotRequest } from '../../requests/createCharacterBotRequest';
 
 const TRANSLATION = {
@@ -14,84 +14,36 @@ const TRANSLATION = {
     disadvantage: 'Disadvantage',
     roll: 'Roll',
     crit: 'Crit',
-    hope: 'Hope',
-    fear: 'Fear',
     critFailure: 'Crit fail',
     attack: 'Attack',
-    damage: 'Damage',
-    plotDice: 'Raising the stakes',
-    cthulhuStatuses: {
-      fumble: 'Fumble',
-      crit: 'Crit',
-      extreme_success: 'Extreme success',
-      hard_success: 'Hard success',
-      regular_success: 'Success',
-      failure: 'Failure'
-    }
+    damage: 'Damage'
   },
   ru: {
     advantage: 'Преимущество',
     disadvantage: 'Помеха',
     roll: 'Бросить',
     crit: 'Крит',
-    hope: 'Надежда',
-    fear: 'Страх',
     critFailure: 'Крит провал',
     attack: 'Атака',
-    damage: 'Урон',
-    plotDice: 'Повышение ставок',
-    cthulhuStatuses: {
-      fumble: 'Крит провал',
-      crit: 'Крит успех',
-      extreme_success: 'Полный успех',
-      hard_success: 'Трудный успех',
-      regular_success: 'Успех',
-      failure: 'Провал'
-    }
+    damage: 'Урон'
   },
   es: {
     advantage: 'Ventaja',
     disadvantage: 'Desventaja',
     roll: 'Tirar',
     crit: 'Crítico',
-    hope: 'Esperanza',
-    fear: 'Miedo',
     critFailure: 'Fallo crítico',
     attack: 'Ataque',
-    damage: 'Daño',
-    plotDice: 'Raising the stakes',
-    cthulhuStatuses: {
-      fumble: 'Fumble',
-      crit: 'Crit success',
-      extreme_success: 'Extreme success',
-      hard_success: 'Hard success',
-      regular_success: 'Success',
-      failure: 'Failure'
-    }
+    damage: 'Daño'
   }
 }
-const SINGLE_ADVANTAGE_PROVIDERS = ['dnd', 'cosmere', 'pathfinder'];
-const D20_TESTS_PROVIDERS = ['dnd', 'cosmere', 'pathfinder'];
-const DH_DICES_CACHE_NAME = 'DhDicesSettings';
+const SINGLE_ADVANTAGE_PROVIDERS = ['dnd'];
+const D20_TESTS_PROVIDERS = ['dnd'];
 
 export const createRoll = () => {
   // данные для проверки D20
   const [d20Test, setD20Test] = createStore({});
   const [d20TestResult, setD20TestResult] = createSignal(undefined);
-
-  // Данные для проверки Cosmere
-  const [plotDices, setPlotDices] = createSignal(0);
-  const [plotResult, setPlotResult] = createSignal(undefined);
-
-  // Данные для проверки Cthulhu
-  const [cthulhuTest, setCthulhuTest] = createStore({});
-  const [cthulhuTestResult, setCthulhuTestResult] = createSignal(undefined);
-
-  // данные для проверки Daggerheart
-  const [dualityDices, setDualityDices] = createStore({});
-  const [showDhSettings, setShowDhSettings] = createSignal(false);
-  const [dualityTest, setDualityTest] = createStore({});
-  const [dualityTestResult, setDualityTestResult] = createSignal(undefined);
 
   // данные для общих бросков
   const [dices, setDices] = createStore({});
@@ -100,16 +52,6 @@ export const createRoll = () => {
   const [appState] = useAppState();
   const [{ renderAlerts }] = useAppAlert();
   const [locale] = useAppLocale();
-
-  const readDhDicesSettings = async () => {
-    const cacheValue = await readFromCache(DH_DICES_CACHE_NAME);
-    const settings = cacheValue === null || cacheValue === undefined ? { hopeDice: 'D12', fearDice: 'D12' } : JSON.parse(cacheValue);
-    setDualityDices(settings);
-  }
-
-  createEffect(() => {
-    readDhDicesSettings();
-  });
 
   return {
     openD20Test(command, title, bonus, maxAdv = 1) {
@@ -126,34 +68,6 @@ export const createRoll = () => {
         setDicesResult(undefined);
       });
     },
-    openCthulhuTest(command, title, dc) {
-      batch(() => {
-        setCthulhuTest({ command: command, title: title, maxAdv: 2, adv: 0, dc: dc });
-        setCthulhuTestResult(undefined);
-      });
-    },
-    openDualityTest(command, title, bonus) {
-      batch(() => {
-        setDualityTest({ command: command, title: title, bonus: bonus, maxAdv: 1, adv: 0, addBonus: 0 });
-        setDualityTestResult(undefined);
-      });
-    },
-    openDualityAttack(command, title, bonus, dices, damageBonus) {
-      batch(() => {
-        setDualityTest({ command: command, title: title, bonus: bonus, maxAdv: 1, adv: 0, addBonus: 0 });
-        setDices({ dices: dices, damageBonus: damageBonus, title: localize(TRANSLATION, locale()).damage, open: true });
-        setDualityTestResult(undefined);
-        setDicesResult(undefined);
-      });
-    },
-    openCosmereTest(command, title, bonus, maxAdv = 1) {
-      batch(() => {
-        setD20Test({ command: command, title: title, bonus: bonus, maxAdv: maxAdv, adv: 0, addBonus: 0 });
-        setD20TestResult(undefined);
-        setPlotDices(0);
-        setPlotResult(undefined);
-      });
-    },
     openDices(dices, damageBonus) {
       batch(() => {
         setDices({ dices: dices, damageBonus: damageBonus, title: localize(TRANSLATION, locale()).damage, open: true });
@@ -162,7 +76,7 @@ export const createRoll = () => {
     },
     Roll(props) {
       const open = createMemo(() => {
-        return d20Test.command || dualityTest.command || cthulhuTest.command || plotDices() > 0 || dices.open;
+        return d20Test.command || dices.open;
       });
 
       const openRolls = () => {
@@ -186,93 +100,20 @@ export const createRoll = () => {
         });
       }
 
-      const openCthulhuTest = () => {
-        batch(() => {
-          setCthulhuTest({ command: '/check attr empty', title: null, maxAdv: 2, adv: 0 });
-          setCthulhuTestResult(undefined);
-        });
-      }
-
-      const closeCthulhuTest = () => {
-        batch(() => {
-          setCthulhuTest(reconcile({}));
-          setCthulhuTestResult(undefined);
-        });
-      }
-
-      const openDualityTest = () => {
-        batch(() => {
-          setDualityTest({ command: '/check attr empty', title: null, bonus: 0, maxAdv: 1, adv: 0, addBonus: 0 });
-          setDualityTestResult(undefined);
-        });
-      }
-
-      const closeDualityTest = () => {
-        batch(() => {
-          setDualityTest(reconcile({}));
-          setDualityTestResult(undefined);
-        });
-      }
-
-      const openCosmereTest = () => {
-        batch(() => {
-          setPlotDices(1);
-          setPlotResult(undefined);
-        });
-      }
-
-      const closeCosmereTest = () => {
-        batch(() => {
-          setPlotDices(0);
-          setPlotResult(undefined);
-        });
-      }
-
       const close = () => {
         if (!open()) return;
 
         batch(() => {
           setD20Test(reconcile({}));
           setD20TestResult(undefined);
-          setDualityTest(reconcile({}));
-          setDualityTestResult(undefined);
-          setCthulhuTest(reconcile({}));
-          setCthulhuTestResult(undefined);
-          setPlotDices(0);
-          setPlotResult(undefined);
           setDices(reconcile({}));
           setDicesResult(undefined);
         });
       }
 
-      const calculateDualityCritDamage = (result, crit = true) => {
-        if (!result) return;
-
-        let total = 0;
-        const rolls = result.rolls.map((item) => {
-          if (!item[0].includes('d')) return item;
-
-          const diceValue = parseInt(item[0].split('d')[1]);
-          const currentRoll = typeof item[1] === 'string' ? parseInt(item[1].split('+')[0]) : item[1];
-
-          if (crit) {
-            total += (diceValue + currentRoll);
-            return [item[0], `${currentRoll}+${diceValue}`];
-          } else {
-            total += currentRoll;
-            return [item[0], currentRoll];
-          }
-        });
-
-        setDicesResult({ rolls: rolls, total: total });
-      }
-
       const performRoll = async () => {
         const rolls = [];
         if (d20Test.command) rolls.push(generateD20Test());
-        if (dualityTest.command) rolls.push(generateDualityTest());
-        if (cthulhuTest.command) rolls.push(generateCthulhuTest());
-        if (plotDices() > 0) rolls.push(generatePlotTest())
         if (dices.dices) rolls.push(generateDiceRoll());
 
         const result = await createCharacterBotRequest(appState.accessToken, props.characterId, { values: rolls });
@@ -283,24 +124,8 @@ export const createRoll = () => {
               setD20TestResult(result.result[resultsIndex].result);
               resultsIndex += 1;
             }
-            if (dualityTest.command) {
-              setDualityTestResult(result.result[resultsIndex].result);
-              resultsIndex += 1;
-            }
-            if (cthulhuTest.command) {
-              setCthulhuTestResult(result.result[resultsIndex].result);
-              resultsIndex += 1;
-            }
-            if (plotDices() > 0) {
-              setPlotResult(result.result[resultsIndex].result);
-              resultsIndex += 1;
-            }
             if (dices.dices) {
-              if (dualityTest.command && result.result[0].result.status === 'crit_success') {
-                calculateDualityCritDamage(result.result[resultsIndex].result);
-              } else {
-                setDicesResult(result.result[resultsIndex].result);
-              }
+              setDicesResult(result.result[resultsIndex].result);
               resultsIndex += 1;
             }
           });
@@ -317,30 +142,6 @@ export const createRoll = () => {
         return options.length > 0 ? `${d20Test.command} ${options.join(' ')}` : d20Test.command;
       }
 
-      const generateCthulhuTest = () => {
-        const options = [];
-        if (cthulhuTest.adv > 0) options.push(`--adv ${cthulhuTest.adv}`);
-        if (cthulhuTest.adv < 0) options.push(`--dis ${Math.abs(cthulhuTest.adv)}`);
-        if (cthulhuTest.dc) options.push(`--dc ${cthulhuTest.dc}`);
-
-        return options.length > 0 ? `${cthulhuTest.command} ${options.join(' ')}` : cthulhuTest.command;
-      }
-
-      const generateDualityTest = () => {
-        const options = [];
-        if (dualityTest.adv > 0) options.push(`--adv ${dualityTest.adv}`);
-        if (dualityTest.adv < 0) options.push(`--dis ${Math.abs(dualityTest.adv)}`);
-        if (dualityTest.bonus + dualityTest.addBonus > 0) options.push(`--bonus ${dualityTest.bonus + dualityTest.addBonus}`);
-        if (dualityTest.bonus + dualityTest.addBonus < 0) options.push(`--penalty ${Math.abs(dualityTest.bonus + dualityTest.addBonus)}`);
-        if (dualityTest.adv > 0 && props.advantageDice) options.push(`--advDice ${props.advantageDice}`);
-        if (dualityDices.hopeDice !== 'D12') options.push(`--hopeDice ${dualityDices.hopeDice.toLowerCase()}`);
-        if (dualityDices.fearDice !== 'D12') options.push(`--fearDice ${dualityDices.fearDice.toLowerCase()}`);
-
-        return options.length > 0 ? `${dualityTest.command} ${options.join(' ')}` : dualityTest.command;
-      }
-
-      const generatePlotTest = () => `/plotRoll ${plotDices()}`;
-
       const generateDiceRoll = () => {
         let value = `/roll ${dices.dices.join(' ').toLowerCase()}`;
         if (dices.damageBonus !== 0) value += ` ${dices.damageBonus}`;
@@ -356,24 +157,6 @@ export const createRoll = () => {
           batch(() => {
             setD20Test({ ...d20Test, adv: d20Test.adv + advantageModifier });
             setD20TestResult(undefined);
-          });
-        } else if (props.provider === 'daggerheart') {
-          if (dualityTest.adv + advantageModifier > 1) advantageModifier = -1;
-          if (dualityTest.adv + advantageModifier < -1) advantageModifier = 1;
-
-          batch(() => {
-            setDualityTest({ ...dualityTest, adv: dualityTest.adv + advantageModifier });
-            setDualityTestResult(undefined);
-          });
-        } else if (props.provider === 'dc20') {
-          batch(() => {
-            setD20Test({ ...d20Test, adv: d20Test.adv + advantageModifier });
-            setD20TestResult(undefined);
-          });
-        } else if (props.provider === 'cthulhu7') {
-          batch(() => {
-            setCthulhuTest({ ...cthulhuTest, adv: cthulhuTest.adv + advantageModifier });
-            setCthulhuTestResult(undefined);
           });
         }
       }
@@ -441,57 +224,12 @@ export const createRoll = () => {
           if (result.errors_list === undefined) {
             const newDamageResults = [...dicesResult().rolls.slice(0, index), result.result[0].result.rolls[0], ...dicesResult().rolls.slice(index + 1)];
 
-            if (dualityTest.command) {
-              calculateDualityCritDamage({ rolls: newDamageResults }, dualityTestResult().status === 'crit_success');
-            } else {
-              const total = newDamageResults.reduce((acc, item) => acc + item[1], 0);
-              setDicesResult({ ...dicesResult(), rolls: newDamageResults, total: total });
-            }
+            const total = newDamageResults.reduce((acc, item) => acc + item[1], 0);
+            setDicesResult({ ...dicesResult(), rolls: newDamageResults, total: total });
           } else renderAlerts(result.errors_list);
         } else {
           removeDice(index);
         }
-      }
-
-      const changeDhDice = (attribute) => {
-        const dice = newDhDice(dualityDices[attribute]);
-        setDualityDices({ ...dualityDices, [attribute]: dice });
-        writeToCache(DH_DICES_CACHE_NAME, JSON.stringify(dualityDices));
-      }
-
-      const newDhDice = (value) => {
-        if (value === 'D12') return 'D20';
-        if (value === 'D20') return 'D8';
-        if (value === 'D8') return 'D10';
-
-        return 'D12';
-      }
-
-      const rerollDhDice = async (dice, index) => {
-        const result = await createCharacterBotRequest(appState.accessToken, props.characterId, { values: [`/roll ${dice}`] });
-
-        const newRollResults = [...dualityTestResult().rolls.slice(0, index), result.result[0].result.rolls[0], ...dualityTestResult().rolls.slice(index + 1)];
-
-        let total = newRollResults.slice(0, 2).reduce((acc, item) => acc + item[1], 0) + dualityTest.bonus + dualityTest.addBonus;
-        if (dualityTest.adv > 0) total += newRollResults[2][1];
-        if (dualityTest.adv < 0) total -= newRollResults[2][1];
-
-        let status;
-        if (newRollResults[0][1] === newRollResults[1][1]) status = 'crit_success';
-        if (newRollResults[0][1] > newRollResults[1][1]) status = 'with_hope';
-        if (newRollResults[0][1] < newRollResults[1][1]) status = 'with_fear';
-
-        setDualityTestResult({ ...dualityTestResult(), rolls: newRollResults, total: total, status: status });
-        calculateDualityCritDamage(dicesResult(), status === 'crit_success');
-      }
-
-      const representPlotRoll = (index) => {
-        const value = plotResult().rolls[index];
-
-        if (value === 'light_complication') return '+2';
-        if (value === 'heavy_complication') return '+4';
-        if (value === 'opportunity') return 'OP';
-        return '-';
       }
 
       return (
@@ -504,7 +242,7 @@ export const createRoll = () => {
             >
               <div class="dice-tests-box">
                 <div class="flex flex-col gap-2 flex-1">
-                  {/* Блок для тестов D20 - D&D, DC20, Cosmere, Pathfinder */}
+                  {/* Блок для тестов D20 - D&D */}
                   <Show when={d20Test.command}>
                     <div class="blockable dice-test">
                       <Show when={d20Test.title}><p>{d20Test.title}</p></Show>
@@ -575,171 +313,14 @@ export const createRoll = () => {
                       </div>
                     </div>
                   </Show>
-                  {/* Блок для бросков Cthulhu */}
-                  <Show when={cthulhuTest.command}>
-                    <div class="blockable dice-test">
-                      <Show when={cthulhuTest.title}><p>{cthulhuTest.title}</p></Show>
-                      <div class="dice-list">
-                        <Show
-                          when={cthulhuTestResult() === undefined}
-                          fallback={
-                            <Dice type="D10" text={cthulhuTestResult().rolls[0][1] === 10 ? '00' : `${cthulhuTestResult().rolls[0][1]}0`} />
-                          }
-                        >
-                          <Dice type="D10" text="x0" />
-                        </Show>
-                        <Show when={cthulhuTest.adv !== 0}>
-                          <For each={Array.from([...Array(Math.abs(cthulhuTest.adv)).keys()], (x) => x + 1)}>
-                            {(index) =>
-                              <Show
-                                when={cthulhuTestResult() === undefined}
-                                fallback={
-                                  <Dice type="D10" text={cthulhuTestResult().rolls[index + 1][1] === 10 ? '00' : `${cthulhuTestResult().rolls[index + 1][1]}0`} />
-                                }
-                              >
-                                <Dice type="D10" text={cthulhuTest.adv > 0 ? 'Adv' : 'Dis'} />
-                              </Show>
-                            }
-                          </For>
-                        </Show>
-                        <Show
-                          when={cthulhuTestResult() === undefined}
-                          fallback={
-                            <Dice type="D10" text={cthulhuTestResult().rolls[1][1] === 10 ? 0 : cthulhuTestResult().rolls[1][1]} />
-                          }
-                        >
-                          <Dice type="D10" text="x" />
-                        </Show>
-                        <Show when={cthulhuTestResult() !== undefined}>
-                          <div class="roll-results">
-                            <p class="font-medium! text-xl">{cthulhuTestResult().total}</p>
-                            <span class={`roll-result ${cthulhuTestResult().status}`}>
-                              {localize(TRANSLATION, locale()).cthulhuStatuses[cthulhuTestResult().status]}
-                            </span>
-                          </div>
-                        </Show>
-                      </div>
-                      <div class="flex gap-x-4">
-                        <div class="flex-1">
-                          <p
-                            class="mb-1 dice-button"
-                            onClick={() => cthulhuTest.adv >= cthulhuTest.maxAdv ? null : updateAdvantage(1)}
-                          >{localize(TRANSLATION, locale()).advantage}</p>
-                          <p
-                            class="dice-button"
-                            onClick={() => cthulhuTest.adv <= -cthulhuTest.maxAdv ? null : updateAdvantage(-1)}
-                          >{localize(TRANSLATION, locale()).disadvantage}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </Show>
-                  {/* Блок для бросков костей дуализма */}
-                  <Show when={dualityTest.command}>
-                    <div class="blockable dice-test">
-                      <Show when={props.provider === 'daggerheart'}>
-                        <Button default classList="weapon-settings min-w-6 min-h-6" onClick={() => setShowDhSettings(!showDhSettings())}><Edit /></Button>
-                      </Show>
-                      <Show when={dualityTest.title}><p>{dualityTest.title}</p></Show>
-                      <div class="dice-list">
-                        <Show
-                          when={dualityTestResult() === undefined}
-                          fallback={
-                            <>
-                              <Dice mode="hope" type={dualityDices.hopeDice} onClick={() => rerollDhDice(dualityDices.hopeDice.toLowerCase(), 0)} text={dualityTestResult().rolls[0][1]} />
-                              <Dice mode="fear" type={dualityDices.fearDice} onClick={() => rerollDhDice(dualityDices.fearDice.toLowerCase(), 1)} text={dualityTestResult().rolls[1][1]} />
-                            </>
-                          }
-                        >
-                          <Show when={showDhSettings()}>
-                            <p class="dice-button" onClick={() => changeDhDice('hopeDice')}>+</p>
-                          </Show>
-                          <Dice mode="hope" type={dualityDices.hopeDice} text={dualityDices.hopeDice} />
-                          <Show when={showDhSettings()}>
-                            <p class="dice-button" onClick={() => changeDhDice('fearDice')}>+</p>
-                          </Show>
-                          <Dice mode="fear" type={dualityDices.fearDice} text={dualityDices.fearDice} />
-                        </Show>
-                        <Show when={dualityTest.adv !== 0}>
-                          <div class="ml-2">
-                            <Show
-                              when={dualityTestResult() === undefined}
-                              fallback={
-                                <Dice type={dualityTest.adv > 0 ? props.advantageDice.toUpperCase() : 'D6'} onClick={() => rerollDhDice('d6', 2)} text={dualityTestResult().rolls[2][1]} />
-                              }
-                            >
-                              <Dice type={dualityTest.adv > 0 ? props.advantageDice.toUpperCase() : 'D6'} text={dualityTest.adv > 0 ? 'Adv' : 'Dis'} />
-                            </Show>
-                          </div>
-                        </Show>
-                        <Show when={dualityTest.bonus + dualityTest.addBonus !== 0}>
-                          <p class="text-xl ml-2 dark:text-snow">{modifier(dualityTest.bonus + dualityTest.addBonus)}</p>
-                        </Show>
-                        <Show when={dualityTestResult() !== undefined}>
-                          <div class="roll-results">
-                            <p class="font-medium! text-xl">{dualityTestResult().total}</p>
-                            <span class={`roll-result ${dualityTestResult().status}`}>
-                              <Switch>
-                                <Match when={dualityTestResult().status === 'crit_success'}>{localize(TRANSLATION, locale()).crit}</Match>
-                                <Match when={dualityTestResult().status === 'with_hope'}>{localize(TRANSLATION, locale()).hope}</Match>
-                                <Match when={dualityTestResult().status === 'with_fear'}>{localize(TRANSLATION, locale()).fear}</Match>
-                              </Switch>
-                            </span>
-                          </div>
-                        </Show>
-                      </div>
-                      <div class="flex gap-x-4">
-                        <div class="flex-1">
-                          <p
-                            class="mb-1 dice-button"
-                            onClick={() => dualityTest.adv >= dualityTest.maxAdv ? null : updateAdvantage(1)}
-                          >{localize(TRANSLATION, locale()).advantage}</p>
-                          <p
-                            class="dice-button"
-                            onClick={() => dualityTest.adv <= -dualityTest.maxAdv ? null : updateAdvantage(-1)}
-                          >{localize(TRANSLATION, locale()).disadvantage}</p>
-                        </div>
-                        <div class="flex-1">
-                          <p class="total-advantage">{dualityTest.addBonus}</p>
-                          <div class="flex gap-x-2">
-                            <p class="dice-button flex-1" onClick={() => setDualityTest({ ...dualityTest, addBonus: dualityTest.addBonus - 1 })}>-</p>
-                            <p class="dice-button flex-1" onClick={() => setDualityTest({ ...dualityTest, addBonus: dualityTest.addBonus + 1 })}>+</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Show>
-                  {/* Блок для бросков костей истории */}
-                  <Show when={plotDices() > 0}>
-                    <div class="blockable dice-test">
-                      <p>{localize(TRANSLATION, locale()).plotDice}</p>
-                      <div class="dice-list">
-                        <Show
-                          when={plotResult() === undefined}
-                          fallback={
-                            <>
-                              <Dice type="D6" text={representPlotRoll(0)} />
-                              <Show when={plotDices() === 2}><Dice type="D6" text={representPlotRoll(1)} /></Show>
-                            </>
-                          }
-                        >
-                          <Dice type="D6" />
-                          <Show when={plotDices() === 2}><Dice type="D6" /></Show>
-                        </Show>
-                      </div>
-                      <div class="flex gap-x-2">
-                        <p class="dice-button flex-1" onClick={() => plotDices() <= 1 ? null : setPlotDices(plotDices() - 1)}>-</p>
-                        <p class="dice-button flex-1" onClick={() => plotDices() >= 2 ? null : setPlotDices(plotDices() + 1)}>+</p>
-                      </div>
-                    </div>
-                  </Show>
                   {/* Блок для всевозможных бросков */}
                   <Show when={dices.open}>
                     <div class="blockable dice-test">
                       <Show when={dices.title}>
                         <p>
                           {dices.title}
-                          <Show when={d20Test.title || dualityTest.title}>
-                            , {d20Test.title || dualityTest.title}
+                          <Show when={d20Test.title}>
+                            , {d20Test.title}
                           </Show>
                         </p>
                       </Show>
@@ -778,25 +359,6 @@ export const createRoll = () => {
                         <Dice
                           onClick={() => d20Test.command ? closeD20Test() : openD20Test()}
                           text={d20Test.command ? <Close /> : 'D20'}
-                        />
-                      </div>
-                    </Show>
-                    <Show when={props.provider === 'daggerheart'}>
-                      <div class="blockable dice-opens-list" classList={{ 'w-auto': open() }}>
-                        <DualityDice onClick={() => dualityTest.command ? closeDualityTest() : openDualityTest()} />
-                      </div>
-                    </Show>
-                    <Show when={props.provider === 'cthulhu7'}>
-                      <div class="blockable dice-opens-list" classList={{ 'w-auto': open() }}>
-                        <Dice type="D10" text="D100" onClick={() => cthulhuTest.command ? closeCthulhuTest() : openCthulhuTest()} />
-                      </div>
-                    </Show>
-                    <Show when={props.provider === 'cosmere' && d20Test.command}>
-                      <div class="blockable dice-opens-list" classList={{ 'w-auto': open() }}>
-                        <Dice
-                          type="D6"
-                          onClick={() => plotDices() > 0 ? closeCosmereTest() : openCosmereTest()}
-                          text={plotDices() > 0 ? <Close /> : 'C'}
                         />
                       </div>
                     </Show>

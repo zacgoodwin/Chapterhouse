@@ -1,10 +1,7 @@
 import { createSignal, createEffect, createMemo, For, Switch, Match, Show, batch } from 'solid-js';
 import * as i18n from '@solid-primitives/i18n';
 
-import {
-  CharactersListItem, Dc20CharacterForm, DaggerheartCharacterForm, Dnd5CharacterForm, Dnd2024CharacterForm,
-  Pathfinder2CharacterForm, FateCharacterForm, FalloutCharacterForm, CosmereCharacterForm, Cthulhu7CharacterForm
-} from '../../pages';
+import { CharactersListItem, Dnd5CharacterForm, Dnd2024CharacterForm } from '../../pages';
 import { CharacterNavigation, createModal, PageHeader, Select, Input, Button, Loading } from '../../components';
 import { Plus } from '../../assets';
 import dnd2024Config from '../../data/dnd2024.json';
@@ -15,37 +12,23 @@ import { createCharacterRequest } from '../../requests/createCharacterRequest';
 import { importCharacterRequest } from '../../requests/importCharacterRequest';
 import { removeCharacterRequest } from '../../requests/removeCharacterRequest';
 import { fetchHomebrewsRequest } from '../../requests/fetchHomebrewsRequest';
-import { resetCharacterRequest } from '../../requests/resetCharacterRequest';
-import { copyCharacterRequest } from '../../requests/copyCharacterRequest';
 import { localize } from '../../helpers';
 
 const TRANSLATION = {
   en: {
     deleteCharacterConfirm: 'Are you sure need to remove this character?',
     deleteCharacterTitle: 'Deleting character',
-    delete: 'Delete',
-    resetCharacterConfirm1: 'Are you sure need to reset this character to 1 level?',
-    resetCharacterConfirm2: "Only character's equipment will not be reset.",
-    resetCharacterTitle: 'Reseting character',
-    reset: 'Reset'
+    delete: 'Delete'
   },
   ru: {
     deleteCharacterConfirm: 'Вы точно хотите избавиться от этого персонажа?',
     deleteCharacterTitle: 'Удаление персонажа',
-    delete: 'Удалить',
-    resetCharacterConfirm1: 'Вы точно хотите сбросить от этого персонажа до 1 уровня?',
-    resetCharacterConfirm2: "Только снаряжение персонажа не будет сброшено.",
-    resetCharacterTitle: 'Сброс персонажа',
-    reset: 'Сбросить'
+    delete: 'Удалить'
   },
   es: {
     deleteCharacterConfirm: '¿Estás seguro de que quieres eliminar este personaje?',
     deleteCharacterTitle: 'Eliminando personaje',
-    delete: 'Eliminar',
-    resetCharacterConfirm1: '¿Estás seguro de que quieres restablecer este personaje a nivel 1?',
-    resetCharacterConfirm2: "Solo el equipo del personaje no será restablecido.",
-    resetCharacterTitle: 'Restableciendo personaje',
-    reset: 'Restablecer'
+    delete: 'Eliminar'
   }
 }
 
@@ -55,7 +38,6 @@ export const CharactersTab = () => {
   const [characters, setCharacters] = createSignal(undefined);
   const [platform, setPlatform] = createSignal(undefined);
   const [deletingCharacterId, setDeletingCharacterId] = createSignal(undefined);
-  const [resetingCharacterId, setResetingCharacterId] = createSignal(undefined);
   const [adminCharacterId, setAdminCharacterId] = createSignal('');
   const [homebrews, setHomebrews] = createSignal(undefined);
 
@@ -122,17 +104,7 @@ export const CharactersTab = () => {
       return <Dnd2024CharacterForm onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} dnd2024Races={dnd2024Races} />;
     }
 
-    const HOMEBREW_COMPONENTS = { dnd5: Dnd5CharacterForm, pathfinder2: Pathfinder2CharacterForm, daggerheart: DaggerheartCharacterForm }
-    if (HOMEBREW_COMPONENTS[platform()]) {
-      const Component = HOMEBREW_COMPONENTS[platform()];
-      return <Component onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} />;
-    }
-
-    const COMPONENTS = {
-      fate: FateCharacterForm, dc20: Dc20CharacterForm, fallout: FalloutCharacterForm, cosmere: CosmereCharacterForm, cthulhu7: Cthulhu7CharacterForm
-    }
-    const Component = COMPONENTS[platform()];
-    return <Component onCreateCharacter={saveCharacter} setCurrentTab={setCurrentTab} />
+    return <Dnd5CharacterForm onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} />;
   });
 
   const deleteCharacter = (event, characterId) => {
@@ -140,15 +112,6 @@ export const CharactersTab = () => {
 
     batch(() => {
       setDeletingCharacterId(characterId);
-      openModal();
-    });
-  }
-
-  const resetCharacter = (event, characterId) => {
-    event.stopPropagation();
-
-    batch(() => {
-      setResetingCharacterId(characterId);
       openModal();
     });
   }
@@ -162,19 +125,6 @@ export const CharactersTab = () => {
         closeModal();
       });
       navigate(null, {});
-    } else renderAlerts(result.errors_list);
-  }
-
-  const confirmCharacterReseting = async () => {
-    const result = await resetCharacterRequest(appState.accessToken, resetingCharacterId());
-
-    if (result.errors_list === undefined) {
-      const refreshData = await fetchCharacters()
-      batch(() => {
-        setCharacters(refreshData.characters);
-        closeModal();
-        navigate(null, {});
-      });
     } else renderAlerts(result.errors_list);
   }
 
@@ -209,15 +159,6 @@ export const CharactersTab = () => {
     } else renderAlerts(result.errors_list);
   }
 
-   const copyCharacter = async (event, character) => {
-    event.stopPropagation();
-
-    const result = await copyCharacterRequest(appState.accessToken, character.provider, character.id);
-    if (result.errors_list === undefined) {
-      setCharacters([result.character, ...characters()]);
-    } else renderAlerts(result.errors_list);
-  }
-
   return (
     <>
       <Switch>
@@ -238,7 +179,7 @@ export const CharactersTab = () => {
             </Button>
           </Show>
           <CharacterNavigation
-            tabsList={['allFilter'].concat(['dnd5', 'dnd2024', 'pathfinder2', 'daggerheart', 'fate', 'fallout', 'cosmere', 'dc20', 'cthulhu7'].filter((item) => characterProviders().includes(item)))}
+            tabsList={['allFilter'].concat(['dnd5', 'dnd2024'].filter((item) => characterProviders().includes(item)))}
             activeTab={activeFilter()}
             setActiveTab={setActiveFilter}
           />
@@ -257,8 +198,6 @@ export const CharactersTab = () => {
                     onClick={() => navigate('character', { id: character.id })}
                     onViewClick={() => navigate('characterView', { id: character.id })}
                     onDeleteCharacter={(e) => deleteCharacter(e, character.id)}
-                    onResetCharacter={(e) => resetCharacter(e, character.id)}
-                    onCopyCharacter={(e) => copyCharacter(e, character)}
                   />
                 }
               </For>
@@ -285,7 +224,7 @@ export const CharactersTab = () => {
               containerClassList="mb-2"
               classList="w-full"
               labelText={t('newCharacterPage.platform')}
-              items={{ 'dnd5': 'D&D 5', 'dnd2024': 'D&D 2024', 'daggerheart': 'Daggerheart', 'pathfinder2': 'Pathfinder 2', 'fate': 'Fate', 'fallout': 'Fallout 2D20', 'cosmere': 'Cosmere', 'cthulhu7': 'Call of Cthulhu 7', 'dc20': 'DC20 0.10' }}
+              items={{ 'dnd5': 'D&D 5', 'dnd2024': 'D&D 2024' }}
               selectedValue={platform()}
               onSelect={(value) => setPlatform(value)}
               dataTestId="new-character-platform-select"
@@ -301,15 +240,6 @@ export const CharactersTab = () => {
           <div class="flex w-full">
             <Button outlined classList='flex-1 mr-2 text-sm md:text-base' onClick={closeModal}>{t('cancel')}</Button>
             <Button default classList='flex-1 ml-2 text-sm md:text-base' onClick={confirmCharacterDeleting}>{localize(TRANSLATION, locale()).delete}</Button>
-          </div>
-        </Show>
-        <Show when={resetingCharacterId()}>
-          <p class="mb-2 text-xl">{localize(TRANSLATION, locale()).resetCharacterTitle}</p>
-          <p class="mb-2">{localize(TRANSLATION, locale()).resetCharacterConfirm1}</p>
-          <p class="mb-2">{localize(TRANSLATION, locale()).resetCharacterConfirm2}</p>
-          <div class="flex w-full">
-            <Button outlined classList='flex-1 mr-2 text-sm md:text-base' onClick={closeModal}>{t('cancel')}</Button>
-            <Button default classList='flex-1 ml-2 text-sm md:text-base' onClick={confirmCharacterReseting}>{localize(TRANSLATION, locale()).reset}</Button>
           </div>
         </Show>
       </Modal>

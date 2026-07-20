@@ -1,26 +1,11 @@
 # frozen_string_literal: true
 
-require 'csv'
+# Deterministic content seeding for a fresh database. Every input file is
+# checked into db/data/** or db/data_prod/**; run once via `rails db:seed`
+# after `rails db:schema:load`. One-off ETL scratch that used to live here
+# is in git history (pre-Supabase seeds.rb).
 
-spells = CSV.parse(File.read(Rails.root.join('db/data/dnd2024/spells.csv')), headers: false, col_sep: ';')
-spells.map! do |spell|
-  {
-    type: 'Dnd2024::Spell',
-    slug: spell[1],
-    name: {
-      en: spell[2],
-      ru: spell[3]
-    },
-    data: {
-      level: spell[0].to_i,
-      school: spell[4],
-      available_for: spell[6].split(','),
-      source: spell[5]
-    },
-    available_for: spell[6].split(',')
-  }
-end
-Dnd2024::Spell.upsert_all(spells)
+require 'csv'
 
 spells = CSV.parse(File.read(Rails.root.join('db/data/dnd5/spells.csv')), headers: false, col_sep: ';')
 spells.map! do |spell|
@@ -59,19 +44,6 @@ items.map! do |item|
 end
 Dnd5::Item.upsert_all(items)
 
-items = CSV.parse(File.read(Rails.root.join('db/data/daggerheart/items.csv')), headers: false, col_sep: ';')
-items.map! do |item|
-  {
-    kind: item[0],
-    slug: item[1],
-    name: {
-      en: item[2],
-      ru: item[3]
-    }
-  }
-end
-Daggerheart::Item.upsert_all(items)
-
 # виды урона оружия
 # колющий - pierce
 # рубящий - slash
@@ -104,190 +76,32 @@ Dir[File.join(Rails.root.join('db/data/dnd2024/features/*.json'))].each do |file
   end
 end
 
-Dir[File.join(Rails.root.join('db/data/daggerheart/feats/*.json'))].each do |filename|
-  puts "seeding - #{filename}"
-  JSON.parse(File.read(filename)).each do |feat|
-    ::Daggerheart::Feat.create!(feat)
-  end
+# dnd2024 spells are Feat records with origin "spell" (origin 6), served by
+# Frontend::Dnd2024::SpellsController; the spells table is dnd5-only
+puts 'seeding - db/data/dnd2024/spells.json'
+JSON.parse(File.read(Rails.root.join('db/data/dnd2024/spells.json'))).each do |spell|
+  ::Dnd2024::Feat.create!(spell)
 end
 
-Dir[File.join(Rails.root.join('db/data/dc20/spells.json'))].each do |filename|
-  puts "seeding - #{filename}"
-  JSON.parse(File.read(filename)).each do |feat|
-    ::Dc20::Feat.create!(feat)
-  end
+psychic_blades_feat = ::Dnd5::Feat.find_by(slug: 'psychic_blades')
+if psychic_blades_feat
+  Dnd5::Item.create!(
+    slug: 'psychic_blades',
+    kind: 'weapon',
+    name: { en: 'Psychic Blades', ru: 'Психические клинки' },
+    data: {},
+    info: {
+      weapon_skill: 'light',
+      type: 'thrown',
+      dist: '60/120',
+      damage: '1d6',
+      damage_type: 'psychic',
+      caption: ['finesse'],
+      mastery: 'vex'
+    },
+    itemable: psychic_blades_feat
+  )
 end
-
-
-markdown = ActiveMarkdown.new
-file_content = File.read('db/data/dc20/spells.json')
-feats = JSON.parse(file_content)
-feats.each do |feat|
-  feat['info']['enhancements'].map! do |item|
-    item['description'].transform_values! { |value| markdown.call(value: value).strip }
-    item
-  end
-  ::Dc20::Feat.create!(feat)
-end
-
-markdown = ActiveMarkdown.new
-file_content = File.read('db/data/dc20/maneuvers.json')
-feats = JSON.parse(file_content)
-feats.each do |feat|
-  feat['info']['enhancements'].map! do |item|
-    item['description'].transform_values! { |value| markdown.call(value: value).strip }
-    item
-  end
-  ::Dc20::Feat.create!(feat)
-end
-
-Dir[File.join(Rails.root.join('db/data/pathfinder2/feats/**/*.json'))].each do |filename|
-  puts "seeding - #{filename}"
-  JSON.parse(File.read(filename)).each do |feat|
-    ::Pathfinder2::Feat.create!(feat)
-  end
-end
-
-Dir[File.join(Rails.root.join('db/data/fallout/perks/*.json'))].each do |filename|
-  puts "seeding - #{filename}"
-  JSON.parse(File.read(filename)).each do |feat|
-    ::Fallout::Feat.create!(feat)
-  end
-end
-
-file_content = File.read('db/data/daggerheart/feats.json')
-feats = JSON.parse(file_content)
-feats.each do |feat|
-  item = ::Daggerheart::Feat.find_by(slug: feat['slug'])
-  next unless item
-
-  item.update(title: feat['title'].compact_blank, description: feat['description'].compact_blank)
-end
-
-# file_content = File.read('db/data/daggerheart/domains-output.txt')
-# file_content.lines.each do |line|
-#   names = line.split('|')
-#   en_name = names[1]
-#   ru_name = names[2].strip
-#   feat = Daggerheart::Feat.where(origin: 7).find_by("title ->> 'en' = ?", en_name)
-#   next unless feat
-
-#   feat.update(title: feat.title.merge('ru-DHM' => ru_name)) if ru_name != feat.title['ru']
-# end
-
-# file_content = File.read('db/data/fallout/raw_data/weapons.json')
-# data_hash = JSON.parse(file_content)
-
-# ranges = { 'C' => 'close', 'M' => 'medium', 'L' => 'long' }
-
-# data_hash = data_hash.map do |item|
-#   {
-#     slug: item['imageName'].underscore.gsub(' ', '_'),
-#     kind: item['Weapon Type'].underscore.gsub(' ', '_'),
-#     name: { en: item['imageName'], ru: item['Name'] },
-#     data: {
-#       weight: item['Weight'] == '<1' ? 1 : item['Weight'].to_i,
-#       price: item['Cost'],
-#       rarity: item['Rarity']
-#     },
-#     info: {
-#       rating: item['Damage Rating'],
-#       effects: item['Damage Effects'].split(', ').map { |item| item.underscore.gsub(' ', '-') },
-#       damage: item['Damage Type'].split(' / ').map { |item| item.underscore },
-#       rate: item['Rate of Fire'],
-#       range: item['Range'].present? ? ranges[item['Range']] : nil,
-#       qualities: item['Qualities'].split(', ').map { |item| item.underscore.gsub(' ', '_') },
-#     }.compact
-#   }
-# end
-
-# beautified_json_string = JSON.pretty_generate(data_hash)
-# # # Write the beautified JSON string to a file
-# File.open('db/data/fallout/weapons.json', 'w') do |file|
-#   file.write(beautified_json_string)
-# end
-
-# file_content = File.read('db/data/daggerheart/spells-en.json')
-# data_hash_en = JSON.parse(file_content)['data']
-
-# data_hash = data_hash_en.map do |item|
-#   ru_item = data_hash_ru.find { |i| i['slug'] == item['slug'] }
-
-#   {
-#     slug: item['slug'],
-#     title: { en: item['name'], ru: ru_item['name'] },
-#     description: {
-#       en: item['features'][0]['main_body'],
-#       ru: ru_item['features'][0]['main_body']
-#     },
-#     origin: 'domain_card',
-#     origin_value: item['domain_slug'],
-#     kind: 'static',
-#     description_eval_variables: {
-#       limit: "1"
-#     },
-#     eval_variables: {
-#       damage_thresholds: "damage_thresholds.merge({ 'severe' => damage_thresholds['severe'] + 8 })"
-#     },
-#     limit_refresh: "long_rest",
-#     conditions: { level: item['level'] },
-#     continious: false
-#   }
-# end
-
-# client = HttpService::Client.new(url: 'https://new.ttg.club')
-# response = links.map do |url|
-#   sleep(1)
-#   client.get(path: "/api/v2/#{url}")[:body]
-# end
-
-# beautified_json_string = JSON.pretty_generate(response)
-# # # Write the beautified JSON string to a file
-# File.open('db/data/dnd2024/spells.json', 'w') do |file|
-#   file.write(beautified_json_string)
-# end
-
-json = {
-  "slug": "psychic_blades",
-  "kind": "weapon",
-  "name": { "en": "Psychic Blades", "ru": "Психические клинки" },
-  "data": {},
-  "info": {
-    "weapon_skill": "light",
-    "type": "thrown",
-    "dist": "60/120",
-    "damage": "1d6",
-    "damage_type": "psychic",
-    "caption": ["finesse"],
-    "mastery": "vex"
-  },
-  "itemable_id": "c886bdcc-7120-4f16-8367-259396766cc1",
-  "itemable_type": "Feat"
-}
-
-Dnd5::Item.create!(json)
-
-Dir[File.join(Rails.root.join('db/data/fallout/weapons.json'))].each do |filename|
-  puts "seeding - #{filename}"
-  weapons = JSON.parse(File.read(filename))
-  Fallout::Item.upsert_all(weapons) if weapons.any?
-end
-
-weapons_file = File.read(Rails.root.join('db/data/fallout/weapons/*.json'))
-weapons = JSON.parse(weapons_file)
-Dc20::Item.upsert_all(weapons) if weapons.any?
-
-weapons_file = File.read(Rails.root.join('db/data/dc20/weapons.json'))
-weapons = JSON.parse(weapons_file)
-Dc20::Item.upsert_all(weapons) if weapons.any?
-
-armor_file = File.read(Rails.root.join('db/data/dc20/armor.json'))
-armor = JSON.parse(armor_file)
-Dc20::Item.upsert_all(armor) if armor.any?
-
-shield_file = File.read(Rails.root.join('db/data/dc20/shield.json'))
-shield = JSON.parse(shield_file)
-Dc20::Item.upsert_all(shield) if shield.any?
 
 weapons_file = File.read(Rails.root.join('db/data/dnd5/weapons.json'))
 weapons = JSON.parse(weapons_file)
@@ -297,317 +111,17 @@ armor_file = File.read(Rails.root.join('db/data/dnd5/armor.json'))
 armor = JSON.parse(armor_file)
 Dnd5::Item.upsert_all(armor) if armor.any?
 
-armor_file = File.read(Rails.root.join('db/data/daggerheart/armor.json'))
-armor = JSON.parse(armor_file)
-Daggerheart::Item.upsert_all(armor) if armor.any?
-
-weapons_file = File.read(Rails.root.join('db/data/daggerheart/weapons.json'))
-weapons = JSON.parse(weapons_file)
-Daggerheart::Item.upsert_all(weapons) if weapons.any?
-
-spells_file = File.read(Rails.root.join('db/data/daggerheart/domain_cards.json'))
-spells = JSON.parse(spells_file)
-Daggerheart::Spell.upsert_all(spells) if spells.any?
-
-armor_file = File.read(Rails.root.join('db/data/pathfinder2/armor.json'))
-armor = JSON.parse(armor_file)
-Pathfinder2::Item.upsert_all(armor) if armor.any?
-
-weapons_file = File.read(Rails.root.join('db/data/pathfinder2/weapons.json'))
-weapons = JSON.parse(weapons_file)
-Pathfinder2::Item.upsert_all(weapons) if weapons.any?
-
-user = User.create! locale: 'ru', password: SecureRandom.alphanumeric(24)
-user.sessions.create!
-
 Item::Recipe.create(
   tool: Dnd5::Item.find_by(slug: 'herbalism'),
   item: Dnd5::Item.find_by(slug: 'potion_healing'),
   info: { output_per_day: 1 }
 )
 
-# client = HttpService::Client.new(url: 'https://sb.dccrit.com')
-# response = client.post(path: 'rest/v1/rpc/get_spell_list_v3', body: { p_per_page: 50, p_page: 3, p_sort_asc: true, p_sort_by: 'name' }, headers: { 'apiKey' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFudnNkcXBieXVqcGZnaGdhcGxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc1NTI2MjAsImV4cCI6MjA0MzEyODYyMH0.2stuMtZD0DcrX3pbIjKTMV3pJ0rRGrP0aJvS6bydG9U', 'Accept-Encoding' => 'identity' })
-
-# def formatted_price(item)
-#   price = item['cost'].except('mana')
-#   if item['cost']['mana']
-#     price['mp'] = item['cost']['mana'] if item['cost']['mana'].positive?
-#     price['mp'] = nil if item['cost']['mana'].negative?
-#   end
-#   price
-# end
-
-# def formatted_range(item)
-#   return 0 if item['range'] == 'Self'
-
-#   item['range'].split(' ')[0].to_i
-# end
-
-# def formatted_duration(item)
-#   return 'instant' if item['duration'] == 'Instantaneous'
-
-#   value = item['duration'].split(' ')[0]
-#   return "#{value},m" if item['duration'].include?('Minute')
-#   return "#{value},h" if item['duration'].include?('Hour')
-# end
-
-# def sustained(item)
-#   item['duration'].include?('Sustained')
-# end
-
-# def enhancements(item)
-#   item['enhancements']&.map do |enh|
-#     {
-#       name: { "en": enh['name'], "ru": enh['name'] },
-#       price: formatted_price(enh),
-#       sustained: enh['sustained'],
-#       repeatable: enh['repeatable'],
-#       description: { "en": enh['desc'], "ru": enh['desc'] }
-#     }
-#   end
-# end
-
-# data_hash = response['list'].filter_map do |data|
-#   item = data['data']
-#   next unless item['official']
-
-#   {
-#     slug: item['name'].underscore.gsub(' ', '_'),
-#     kind: 'static',
-#     title: { en: item['name'], ru: item['name'] },
-#     description: { en: item['desc'], ru: item['desc'] },
-#     origin: 'spell',
-#     origin_value: item['sources'].join(','),
-#     origin_values: item['tags'],
-#     price: formatted_price(item),
-#     triggers: item['triggers'],
-#     reactions: item['reactions'],
-#     passive: item['passive'],
-#     info: {
-#       school: item['schools'][0],
-#       range: formatted_range(item),
-#       duration: formatted_duration(item),
-#       sustained: sustained(item),
-#       enhancements: enhancements(item)
-#     }.compact
-#   }
-# end
-
-# beautified_json_string = JSON.pretty_generate(data_hash)
-# # # Write the beautified JSON string to a file
-# File.open('db/data/dc20/spells_3.json', 'w') do |file|
-#   file.write(beautified_json_string)
-# end
-
-
-# client = HttpService::Client.new(url: 'https://sb.dccrit.com')
-# response = client.post(path: 'rest/v1/rpc/get_maneuver_list_v3', body: { p_per_page: 50, p_page: 1, p_sort_asc: true, p_sort_by: 'name' }, headers: { 'apiKey' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFudnNkcXBieXVqcGZnaGdhcGxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc1NTI2MjAsImV4cCI6MjA0MzEyODYyMH0.2stuMtZD0DcrX3pbIjKTMV3pJ0rRGrP0aJvS6bydG9U', 'Accept-Encoding' => 'identity' })
-
-
-# def enhancements(item)
-#   item['enhancements']&.map do |enh|
-#     {
-#       name: { "en": enh['name'], "ru": enh['name'] },
-#       price: enh['cost'],
-#       repeatable: enh['repeatable'],
-#       description: { "en": enh['desc'], "ru": enh['desc'] }
-#     }
-#   end
-# end
-
-# data_hash = response['list'].filter_map do |data|
-#   item = data['data']
-#   next unless item['official']
-
-#   description = item['desc']
-#   description = "#{description}\n\n**Trigger:** #{item['trigger']}" if item['trigger']
-#   description = "#{description}\n\n**Reaction:** #{item['reaction']}" if item['reaction']
-
-#   {
-#     slug: item['name'].underscore.gsub(' ', '_'),
-#     kind: 'static',
-#     title: { en: item['name'], ru: item['name'] },
-#     description: { en: description, ru: description },
-#     origin: 'maneuver',
-#     price: item['cost'],
-#     origin_value: item['type'].split(' ')[0].underscore,
-    
-#     info: {
-#       range: { en: item['range'], ru: item['range'] },
-#       enhancements: enhancements(item)
-#     }.compact
-#   }
-# end
-
-# beautified_json_string = JSON.pretty_generate(data_hash)
-# # # Write the beautified JSON string to a file
-# File.open('db/data/dc20/maneuvers.json', 'w') do |file|
-#   file.write(beautified_json_string)
-# end
-
-file_content = File.read('db/data/pathfinder2/charkeeper_armor.json')
-weapons = JSON.parse(file_content)
-# feats = feats.select { |item| item['rus_traits'].include?('Волшебник') }
-
-data_hash = weapons.filter_map do |item|
-  {
-    slug: item['name'].underscore.gsub(' ', '_'),
-    kind: "weapon",
-    name: { en: item['name'], ru: item['rus_name'] },
-    data: { weight: 0, price: 0 },
-    info: {
-      group: group,
-      weapon_skill: category,
-      type: "melee",
-      damage: damages[0],
-      damage_type: damage_type,
-      burden: item['rus_bulk'].to_i,
-      tooltips: item['traits'].underscore.split(', ')
-    }
-  }
-
-  {
-    slug: item['name'].underscore.gsub(' ', '_'),
-    kind: "armor",
-    name: { en: item['name'], ru: item['rus_name'] },
-    data: {
-      weight: 0,
-      price: 10
-    },
-    info: {
-      group: "cloth",
-      armor_skill: "unarmored",
-      ac: 0,
-      str_req: null,
-      dex_max: 5,
-      skills_penalty: null,
-      speed_penalty: null,
-      tooltips: item['traits'].underscore.split(', ')
-    }
-  }
-end
-
-beautified_json_string = JSON.pretty_generate(data_hash)
-# # Write the beautified JSON string to a file
-File.open('db/data_prod/pathfinder2/armor.json', 'w') do |file|
-  file.write(beautified_json_string)
-end
-
-book = Homebrew::Book.create! name: 'Heroes of Faerun', provider: 'dnd', shared: true, public: true, user: User.first
-[
-  ['Коллегия Луны', 'bard', 'db/data/dnd2024/books/college_of_the_moon.json'],
-  # ['Домен знаний', 'cleric', 'db/data/dnd2024/books/knowledge_domain.json'],
-  ['Знаменосец', 'fighter', 'db/data/dnd2024/books/banneret.json'],
-  ['Клятва благородных гениев', 'paladin', 'db/data/dnd2024/books/oath_of_the_noble_genies.json'],
-  # ['Зимний странник', 'ranger', 'db/data/dnd2024/books/winter_walker.json'],
-  # ['Наследник Трёх', 'rogue', 'db/data/dnd2024/books/scion_of_the_three.json'],
-  # ['Чародейство чаропламени', 'sorcerer', 'db/data/dnd2024/books/spellfire_sorcery.json'],
-  # ['Певец клинка', 'wizard', 'db/data/dnd2024/books/bladesinger.json'],
-].each do |values|
-  subclass = Dnd2024::Homebrew::Subclass.create name: values[0], class_name: values[1], user: User.first
-  Homebrew::Book::Item.create homebrew_book: book, itemable: subclass
-  file_content = File.read(values[2])
-  feats = JSON.parse(file_content)
-  feats.each do |feat|
-    feat['origin_value'] = subclass.id
-    ::Dnd2024::Feat.create!(feat)
-  end
-end
-
-file_content = File.read('db/data/dnd2024/spells_v2.json')
+file_content = File.read(Rails.root.join('db/data/dnd2024/spells_v2.json'))
 spells = JSON.parse(file_content)
 spells.each do |spell|
   feat = ::Dnd2024::Feat.where(origin: 6).find_by(slug: spell['slug'])
   next unless feat
 
   feat.update(title: spell['title'])
-end
-
-user = User.first
-book = Homebrew::Book.create! name: "Player's Handbook", provider: 'dnd', shared: true, public: true, user: user
-slugs = %w[
-  aura_of_vitality aura_of_purity armor_of_agathys tasha_bubbling_cauldron swift_quiver witch_bolt yolande_regal_presence
-  destructive_wave arcane_vigor arcane_gate compelled_duel hunger_of_hadar hail_of_thorns thunderous_smite friends
-  beast_sense toll_the_dead banishing_smite crown_of_madness circle_of_power fount_of_moonlight word_of_radiance
-  blade_ward cloud_of_daggers cordon_of_arrows staggering_smite crusader_mantle conjure_barrage summon_aberration summon_fiend
-  summon_beast summon_construct summon_celestial summon_undead summon_fey summon_elemental conjure_volley mind_sliver
-  arms_of_hadar synaptic_static jallarzi_storm_of_radiance blinding_smite power_word_fortify elemental_weapon lightning_arrow
-  telepathy thorn_whip thunderclap steel_wind_strike feign_death grasping_vine wrathful_smite
-]
-phb_spells = ::Dnd2024::Feat.where(origin: 6, slug: slugs)
-phb_spells.each do |spell|
-  spell.update user: user
-  Homebrew::Book::Item.create homebrew_book: book, itemable: spell
-end
-
-
-book = Homebrew::Book.find_by name: 'Heroes of Faerun', provider: 'dnd'
-file_content = File.read('db/data/dnd2024/books/background_feats.json')
-JSON.parse(file_content).each do |feat|
-  item = ::Dnd2024::Feat.create!(feat.merge(user_id: User.first.id))
-  Homebrew::Book::Item.create homebrew_book: book, itemable: item
-end
-
-file_content = File.read('db/data/dnd2024/books/backgrounds.json')
-ids = JSON.parse(file_content).map do |item|
-  feat_slug = item.dig('data', 'selected_feats')[0]
-  feat = Dnd2024::Feat.find_by(slug: feat_slug)
-  item['data']['selected_feats'] = [feat.id]
-
-  ::Dnd2024::Homebrew::Background.create!(item.merge(user_id: User.first.id)).id
-end
-
-HomebrewContext::Dnd::Books::AddBackgroundsCommand.new.call(user: User.first, book: book, ids: ids)
-
-Homebrew.where(type: 'Daggerheart::Homebrews::Speciality').each do |item|
-  beautified_json_string = JSON.pretty_generate(item.to_homebrew_json)
-  # # Write the beautified JSON string to a file
-  File.open("db/data_prod/daggerheart/homebrews/classes/#{item.title['en']}_#{rand(10)}.json", 'w') do |file|
-    file.write(beautified_json_string)
-  end
-end
-
-es_file_content = JSON.parse(File.read('db/data/daggerheart/feats.json'))
-file_content = File.read('db/data_prod/daggerheart/feats.json')
-
-content = JSON.parse(file_content).map do |item|
-  es = es_file_content.find { item['slug'] == _1['slug'] }
-  next item unless es
-
-  item['title'] = item['title'].merge({ 'es' => es['title']['es'] }).compact
-  item['description'] = item['description'].merge({ 'es' => es['description']['es'] }).compact
-  item
-end
-
-feats = Daggerheart::Feat.where(user_id: nil).map { _1.attributes.except('id', 'type', 'created_at', 'updated_at') }
-beautified_json_string = JSON.pretty_generate(content)
-# # Write the beautified JSON string to a file
-File.open('db/data_prod/daggerheart/feats.json', 'w') do |file|
-  file.write(beautified_json_string)
-end
-
-
-relation = Dnd2024::Feat.where(origin: 0..5)
-
-relation = relation.where.not(description_eval_variables: {})
-  .or(
-    relation.where.not(eval_variables: {})
-  ).or(
-    relation.where.not(bonus_eval_variables: {})
-  )
-
-feats = relation.map { _1.attributes.slice('slug', 'title', 'description', 'kind', 'limit_refresh', 'description_eval_variables', 'eval_variables', 'bonus_eval_variables', 'continious', 'info', 'modifiers', 'tokens') }
-beautified_json_string = JSON.pretty_generate(feats)
-# # Write the beautified JSON string to a file
-File.open('db/data_prod/dnd2024/feats.json', 'w') do |file|
-  file.write(beautified_json_string)
-end
-
-file_content = File.read('db/data_prod/daggerheart/feats.json')
-JSON.parse(file_content).each do |item|
-  feat = Daggerheart::Feat.find_by(slug: item['slug'])
-  next unless feat
-
-  feat.update!(item.slice('description', 'kind', 'limit_refresh', 'description_eval_variables', 'eval_variables', 'continious', 'bonus_eval_variables', 'price', 'modifiers', 'tokens'))
 end

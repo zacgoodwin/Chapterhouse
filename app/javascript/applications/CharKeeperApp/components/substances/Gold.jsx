@@ -12,12 +12,6 @@ const TRANSLATION = {
     amount: 'Amount',
     negativeMoney: 'Money can not be negative',
     tooMuchMoney: 'Too much money :)',
-    daggerheart: {
-      coins: 'Coins',
-      handfuls: 'Handfuls',
-      bags: 'Bags',
-      chests: 'Chests'
-    },
     dnd: {
       copper: 'Copper',
       silver: 'Silver',
@@ -29,12 +23,6 @@ const TRANSLATION = {
     amount: 'Кол-во',
     negativeMoney: 'Деньги не могут быть отрицательными',
     tooMuchMoney: 'Указано слишком много денег :)',
-    daggerheart: {
-      coins: 'Монеты',
-      handfuls: 'Горсти',
-      bags: 'Мешочки',
-      chests: 'Сундучки'
-    },
     dnd: {
       copper: 'Медь',
       silver: 'Серебро',
@@ -46,12 +34,6 @@ const TRANSLATION = {
     amount: 'Cantidad',
     negativeMoney: 'El dinero no puede ser negativo',
     tooMuchMoney: 'Demasiado dinero :)',
-    daggerheart: {
-      coins: 'Monedas',
-      handfuls: 'Puñados',
-      bags: 'Bolsas',
-      chests: 'Cofres'
-    },
     dnd: {
       copper: 'Cobre',
       silver: 'Plata',
@@ -64,22 +46,14 @@ const divMod = (a, b) => [Math.trunc(a / b), a % b];
 
 export const Gold = (props) => {
   const character = () => props.character;
-  const goldFormat = () => props.character.provider === 'daggerheart' ? 'daggerheart' : 'dnd'
+  const goldFormat = () => 'dnd'
 
-  const [measure, setMeasure] = createSignal('coins');
+  const [measure, setMeasure] = createSignal('copper');
   const [coinsChange, setCoinsChange] = createSignal(0);
 
   const [appState] = useAppState();
   const [{ renderAlerts, renderAlert }] = useAppAlert();
   const [locale] = useAppLocale();
-
-  const daggerheartGoldFormat = () => {
-    let [chests, chestsless] = divMod(character().money, 1000);
-    let [bags, bagsless] = divMod(chestsless, 100);
-    let [handfuls, coins] = divMod(bagsless, 10);
-
-    return { chests: chests, bags: bags, handfuls: handfuls, coins: coins };
-  }
 
   const dndGoldFormat = () => {
     let [gold, silverless] = divMod(character().money, 100);
@@ -89,7 +63,6 @@ export const Gold = (props) => {
   }
 
   const gold = createMemo(() => {
-    if (goldFormat() === 'daggerheart') return daggerheartGoldFormat();
     if (goldFormat() === 'dnd') return dndGoldFormat();
   });
 
@@ -112,12 +85,7 @@ export const Gold = (props) => {
     <ErrorWrapper payload={{ character_id: character().id, key: 'Gold' }}>
       <GuideWrapper character={character()}>
         <div class="blockable blockable-padding mb-2">
-          <div
-            classList={{
-              'grid grid-cols-2 emd:grid-cols-4': goldFormat() === 'daggerheart',
-              'grid grid-cols-3': goldFormat() === 'dnd'
-            }}
-          >
+          <div class="grid grid-cols-3">
             <For each={Object.keys(localize(TRANSLATION, locale())[goldFormat()])}>
               {(item) =>
                 <div class="flex-1 flex flex-col items-center">

@@ -6,4 +6,9 @@ describe Channel do
 
     expect(channel).to be_valid
   end
+
+  # guards against silent enum renumbering after provider removals
+  it 'keeps provider enum mapping' do
+    expect(described_class.providers).to eq('owlbear' => 1)
+  end
 end

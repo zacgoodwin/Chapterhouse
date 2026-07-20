@@ -5,8 +5,6 @@ require 'active_support/core_ext/integer/time'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.action_cable.url = 'wss://charkeeper.ru/cable'
-  config.action_cable.disable_request_forgery_protection = true
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
@@ -100,11 +98,4 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
-  # Configure Solid Errors
-  config.solid_errors.connects_to = { database: { writing: :errors } }
-  config.solid_errors.send_emails = false
-  config.solid_errors.email_from = ''
-  config.solid_errors.email_to = ''
-  config.solid_errors.username = Rails.application.credentials.dig(:admin, :username)
-  config.solid_errors.password = Rails.application.credentials.dig(:admin, :password)
 end

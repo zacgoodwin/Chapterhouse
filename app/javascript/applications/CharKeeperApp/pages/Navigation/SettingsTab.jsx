@@ -2,11 +2,9 @@ import { createSignal, createEffect, Show } from 'solid-js';
 import * as i18n from '@solid-primitives/i18n';
 
 import { PageHeader, NotificationsBudge } from '../../components';
-import { Telegram, Discord, Vk, Boosty, BuyMeACoffee } from '../../assets';
+import { Discord, Vk, Boosty, BuyMeACoffee } from '../../assets';
 import { useAppState, useAppLocale } from '../../context';
-import { logoutRequest } from '../../requests/logoutRequest';
-import { readFromCache, localize } from '../../helpers';
-import { useTelegram } from '../../hooks';
+import { readFromCache, localize, supabase } from '../../helpers';
 
 const CHARKEEPER_HOST_CACHE_NAME = 'CharKeeperHost';
 const TRANSLATION = {
@@ -32,7 +30,6 @@ export const SettingsTab = () => {
 
   const [appState, { navigate, setAccessToken }] = useAppState();
   const [locale, dict] = useAppLocale();
-  const { webApp } = useTelegram();
 
   const t = i18n.translator(dict);
 
@@ -64,7 +61,7 @@ export const SettingsTab = () => {
   );
 
   const logout = async () => {
-    await logoutRequest(appState.accessToken);
+    await supabase()?.auth.signOut();
 
     setAccessToken(null);
     window.location.href = '/';
@@ -84,7 +81,6 @@ export const SettingsTab = () => {
           </Show>
           {renderSettingsLink(t('pages.settingsPage.profile'), 'profile')}
           {renderSettingsLink(localize(TRANSLATION, locale()).profileDeleting, 'profileDeleting')}
-          {renderSettingsLink(localize(TRANSLATION, locale()).changePassword, 'passwords')}
           {renderSettingsLink(t('pages.settingsPage.notifications'), 'notifications')}
           {renderSettingsLink(t('pages.settingsPage.feedback'), 'feedback')}
           <div class="flex py-3 px-4 gap-4 dark:text-snow">
@@ -101,18 +97,13 @@ export const SettingsTab = () => {
             <a href="https://vk.com/char_keeper" target="_blank" rel="noopener noreferrer" class="opacity-75 hover:opacity-100">
               <Vk />
             </a>
-            <a href="https://t.me/charkeeper" target="_blank" rel="noopener noreferrer" class="opacity-75 hover:opacity-100">
-              <Telegram />
-            </a>
           </div>
-          <Show when={webApp === undefined}>
-            <p
-              class="py-3 px-4 cursor-pointer rounded hover:bg-gray-100 dark:text-snow dark:hover:bg-dusty"
-              onClick={logout}
-            >
-              {t('pages.settingsPage.logout')}
-            </p>
-          </Show>
+          <p
+            class="py-3 px-4 cursor-pointer rounded hover:bg-gray-100 dark:text-snow dark:hover:bg-dusty"
+            onClick={logout}
+          >
+            {t('pages.settingsPage.logout')}
+          </p>
         </div>
         <p class="py-3 px-4 dark:text-snow">{t('pages.settingsPage.version')} 0.4.39, 2026.07.11</p>
       </div>

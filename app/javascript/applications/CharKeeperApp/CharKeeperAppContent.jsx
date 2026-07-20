@@ -4,16 +4,13 @@ import { createWindowSize } from '@solid-primitives/resize-observer';
 
 import { NavigationPage, ContentPage, LoginPage } from './pages';
 import { useAppState, useAppLocale } from './context';
-import { useTelegram } from './hooks';
 import { performResponse } from './helpers';
 
-import { fetchAccessTokenRequest } from './requests/fetchAccessTokenRequest';
 import { fetchUnreadNotificationsCountRequest } from './requests/fetchUnreadNotificationsCountRequest';
 import { fetchUserInfoRequest } from './requests/fetchUserInfoRequest';
 
 export const CharKeeperAppContent = () => {
   const size = createWindowSize();
-  const { webApp } = useTelegram();
 
   const [appState, { setAccessToken, navigate, changeUnreadNotificationsCount, changeUserInfo }] = useAppState();
 
@@ -24,43 +21,8 @@ export const CharKeeperAppContent = () => {
   createEffect(() => {
     if (appState.accessToken !== undefined) return;
     if (!appState.initialized) return;
-    if (webApp === undefined || webApp.initData === '') return setAccessToken(null);
 
-    const urlSearchParams = new URLSearchParams(webApp.initData);
-    const data = Object.fromEntries(urlSearchParams.entries());
-    const checkString = Object.keys(data).filter(key => key !== 'hash').map(key => `${key}=${data[key]}`).sort().join('\n');
-
-    // webApp.initDataUnsafe.user
-    // {
-    //   "id": 11110000,
-    //   "first_name": "",
-    //   "last_name": "",
-    //   "username": "kortirso",
-    //   "language_code": "ru",
-    //   "allows_write_to_pm": true,
-    //   "photo_url": ""
-    // }
-
-    const fetchAccessToken = async () => await fetchAccessTokenRequest(checkString, data.hash);
-
-    Promise.all([fetchAccessToken()]).then(
-      ([accessTokenData]) => {
-        if (accessTokenData.access_token) {
-          batch(() => {
-            setLocale(accessTokenData.locale);
-            setAccessToken(accessTokenData.access_token);
-            changeUserInfo({
-              username: accessTokenData.username,
-              isAdmin: accessTokenData.admin,
-              colorSchema: accessTokenData.color_schema,
-              providerLocales: accessTokenData.provider_locales
-            });
-          });
-        } else {
-          setAccessToken(null);
-        }
-      }
-    );
+    setAccessToken(null);
   });
 
   createEffect(() => {

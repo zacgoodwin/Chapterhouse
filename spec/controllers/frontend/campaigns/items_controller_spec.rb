@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe Frontend::Campaigns::ItemsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
-  let!(:campaign) { create :campaign, user: user_session.user, provider: 'dnd5' }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
+  let!(:campaign) { create :campaign, user: user, provider: 'dnd5' }
   let!(:character) { create :character }
 
   describe 'GET#index' do

@@ -90,11 +90,6 @@ module Frontend
       def items_relation
         case params[:provider]
         when 'dnd5', 'dnd2024' then ::Item.dnd
-        when 'pathfinder2' then ::Item.pathfinder2
-        when 'daggerheart' then ::Item.daggerheart
-        when 'dc20' then ::Item.dc20
-        when 'fallout' then ::Item.fallout
-        when 'cosmere' then ::Item.cosmere
         else []
         end
       end

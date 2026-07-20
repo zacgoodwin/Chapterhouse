@@ -10,21 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_17_173300) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
   enable_extension "uuid-ossp"
-
-  create_table "active_bot_objects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.jsonb "info", default: {}, null: false
-    t.string "object", null: false
-    t.string "source", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.index ["user_id", "source", "object"], name: "index_active_bot_objects_on_user_id_and_source_and_object", unique: true
-  end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "blob_id", null: false
@@ -216,20 +206,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_173300) do
     t.string "resourceable_type", null: false
     t.datetime "updated_at", null: false
     t.index ["resourceable_id", "resourceable_type"], name: "idx_on_resourceable_id_resourceable_type_718cca992a"
-  end
-
-  create_table "daggerheart_projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "character_id", null: false
-    t.integer "complexity", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.string "description"
-    t.uuid "goal_id"
-    t.string "goal_type"
-    t.integer "progress", default: 0, null: false
-    t.string "title", null: false
-    t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_daggerheart_projects_on_character_id"
-    t.index ["goal_id", "goal_type"], name: "index_daggerheart_projects_on_goal_id_and_goal_type", where: "((goal_id IS NOT NULL) AND (goal_type IS NOT NULL))"
   end
 
   create_table "feats", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Навыки", force: :cascade do |t|
@@ -509,20 +485,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_173300) do
     t.index ["user_id"], name: "index_user_homebrews_on_user_id"
   end
 
-  create_table "user_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "active", default: true, null: false
-    t.datetime "created_at", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.integer "provider", null: false
-    t.string "uid", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.string "username"
-    t.index ["provider", "uid"], name: "index_user_identities_on_provider_and_uid", unique: true
-    t.index ["user_id"], name: "index_user_identities_on_user_id"
-  end
-
   create_table "user_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "read", default: false, null: false
@@ -541,13 +503,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_173300) do
     t.index ["user_id", "name"], name: "index_user_platforms_on_user_id_and_name", unique: true
   end
 
-  create_table "user_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.index ["user_id"], name: "index_user_sessions_on_user_id"
-  end
-
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "admin", default: false, null: false
     t.integer "color_schema"
@@ -555,9 +510,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_173300) do
     t.datetime "discarded_at"
     t.datetime "homebrew_updated_at"
     t.string "locale", default: "en", null: false
-    t.string "password_digest"
     t.jsonb "provider_locales", default: {}, comment: "Альтернативные переводы"
-    t.boolean "russian_login", default: false, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

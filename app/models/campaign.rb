@@ -12,8 +12,4 @@ class Campaign < ApplicationRecord
 
   scope :dnd5, -> { where(provider: 'dnd5') }
   scope :dnd2024, -> { where(provider: 'dnd2024') }
-  scope :pathfinder2, -> { where(provider: 'pathfinder2') }
-  scope :daggerheart, -> { where(provider: 'daggerheart') }
-  scope :dc20, -> { where(provider: 'dc20') }
-  scope :cosmere, -> { where(provider: 'cosmere') }
 end

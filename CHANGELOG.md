@@ -6,11 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Added
+- leyfarers (tlc) implementation plan, reference digests, and source docs (docs/; PDFs via the reference-docs release)
 - homebrew upvotes
 - extending domains by homebrew for dh characters
 
 ### Modified
 - refreshing tokens for feats
+- database config targets Supabase hosted Postgres via the Supavisor session pooler (credentials under <env>.supabase.db); test stays on localhost
+- db/seeds.rb rewritten as a deterministic fresh-database content load (all inputs in-repo, dnd2024 spells now seeded from spells.json, seeds_prod.rb chained); old ETL scratch removed
+- login is Supabase Auth: email/password + Google/Discord OAuth via supabase-js; the SPA session lives in localStorage with automatic token refresh
+- ActiveStorage development/production services point at Supabase Storage's S3 endpoint
+- campaign dice rolls broadcast through Supabase Realtime (async job) instead of ActionCable; subscriber now unsubscribes on unmount
+
+### Removed
+- all non-D&D game systems (pathfinder2, daggerheart, dc20, fate, fallout, cosmere, cthulhu7): sheets, creation forms, platforms, builders, decorators, commands, controllers, serializers, bot checks and duality/fate/plot rolls, adminbook pages, homebrew editors, seeds, and specs; dnd5 + dnd2024 stay. RemoveNonDndSystemsData migration deletes their rows and drops daggerheart_projects
+- removed-system-only features: character reset, cthulhu7 character copy, daggerheart/pathfinder2 JSON sheet export, the ru-DHM locale and per-user provider_locales
+- authkeeper/bcrypt password + OAuth stack: signin/signup/identities endpoints, user_sessions and user_identities tables, users.password_digest; Rails now verifies Supabase Auth JWTs (ES256/RS256 via JWKS) and provisions app users keyed by the auth id on first request
+- all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
+- orphaned active_bot_objects table and ActiveBotObject model (dead code, no readers or writers)
+- Solid Errors and its second database (errors); production error visibility is logs until a replacement tracker is chosen
 
 ### Fixed
 - updating hb mechanics for dh characters

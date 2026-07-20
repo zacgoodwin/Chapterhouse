@@ -2,8 +2,6 @@ ru:
   dry_schema:
     rules:
       dnd5_character: D&D 5 персонаж
-      pathfinder2_character: Pathfinder 2 персонаж
-      daggerheart_character: Daggerheart персонаж
     errors:
       unexpected_key: Неизвестный параметр
       included_in?: Неизвестное значение
@@ -16,31 +14,6 @@ ru:
       size?: "Размер должен быть %{num}"
       int?: Должно быть числом
       uuid_v4?: Неверный формат uuid
-      pathfinder2_animal_companion:
-        rules:
-          name:
-            filled?: Необходимо указать имя
-            max_size?: Имя не может быть длиннее, чем 50 символов
-          caption:
-            max_size?: Описание не может быть длиннее, чем 1000 символов
-          kind:
-            filled?: Необходимо указать тип
-      pathfinder2_pet:
-        rules:
-          name:
-            filled?: Необходимо указать имя
-            max_size?: Имя не может быть длиннее, чем 50 символов
-          caption:
-            max_size?: Описание не может быть длиннее, чем 1000 символов
-      daggerheart_item_upgrade:
-        rules:
-          name:
-            filled?: Необходимо указать название
-            max_size?: Название не может быть длиннее, чем 50 символов
-          upgrades:
-            empty: Необходимо указать улучшения
-            invalid_key: Неизвестное улучшение
-            feature_exist: Уже существует свойство
       note:
         rules:
           title:
@@ -49,21 +22,6 @@ ru:
           value:
             filled?: Необходимо указать описание
             max_size?: Описание не может быть длиннее, чем 500 символов
-      daggerheart_project:
-        rules:
-          title:
-            filled?: Необходимо указать название
-            max_size?: Название не может быть длиннее, чем 100 символов
-          description:
-            filled?: Необходимо указать описание
-            max_size?: Описание не может быть длиннее, чем 1000 символов
-          complexity:
-            filled?: Необходимо указать сложность
-            gt?: Сложность должна быть больше, чем 0
-      daggerheart_rest:
-        rules:
-          options:
-            too_many_expectations: Выберите только 2 варианта
       campaign:
         rules:
           name:
@@ -143,16 +101,6 @@ ru:
           locale:
             filled?: Необходимо указать локаль
             included_in?: Недопустимое значение локали
-      cosmere_character:
-        rules:
-          name:
-            key?: Необходимо указать имя персонажа
-            filled?: Необходимо указать имя персонажа
-            max_size?: Имя персонажа не может быть больше, чем 50 символов
-          attribute_points:
-            gteq?: Очки атрибутов не могут быть меньше 0
-          skill_points:
-            gteq?: Очки навыков не могут быть меньше 0
       dnd5_character:
         rules:
           name:
@@ -197,88 +145,3 @@ ru:
             invalid_value: Значения монет не должны быть меньше 0
           health:
             invalid_value: Значения здоровья не должны быть меньше 0
-      pathfinder2_character:
-        rules:
-          name:
-            key?: Необходимо указать имя персонажа
-            filled?: Необходимо указать имя персонажа
-          race:
-            key?: Необходимо указать расу персонажа
-            filled?: Необходимо указать расу персонажа
-            included_in?: Недопустимая раса персонажа
-          main_class:
-            key?: Необходимо указать класс персонажа
-            filled?: Необходимо указать класс персонажа
-            included_in?: Недопустимый класс персонажа
-          classes:
-            invalid_class_name: Недопустимое название класса
-            invalid_level: Недопустимый уровень
-          subrace:
-            key?: Необходимо указать подрасу персонажа
-            filled?: Необходимо указать подрасу персонажа
-            invalid: Недопустимая подраса
-          health:
-            invalid_value: Значения здоровья не должны быть меньше 0
-          background:
-            key?: Необходимо указать происхождение персонажа
-            filled?: Необходимо указать происхождение персонажа
-            included_in?: Недопустимое происхождение персонажа
-      dc20_character:
-        rules:
-          name:
-            key?: Необходимо указать имя персонажа
-            filled?: Необходимо указать имя персонажа
-          main_class:
-            key?: Необходимо указать класс персонажа
-            filled?: Необходимо указать класс персонажа
-            included_in?: Недопустимый класс персонажа
-      fallout_character:
-        rules:
-          name:
-            key?: Необходимо указать имя персонажа
-            filled?: Необходимо указать имя персонажа
-          origin:
-            key?: Необходимо указать происхождение персонажа
-            filled?: Необходимо указать происхождение персонажа
-            included_in?: Недопустимое происхождение персонажа
-      daggerheart_character:
-        rules:
-          name:
-            key?: Необходимо указать имя персонажа
-            filled?: Необходимо указать имя персонажа
-          community:
-            key?: Необходимо указать общество
-            filled?: Необходимо указать общество
-          heritage:
-            key?: Необходимо указать расу персонажа
-            filled?: Необходимо указать расу персонажа
-            included_in?: Недопустимая раса персонажа
-            only_one_present: Указано несколько рас
-            at_least_one_present: Должна быть указана раса
-          heritage_features:
-            filled?: Необходимо указать способности расы
-          heritage_name:
-            filled?: Необходимо указать название расы
-            only_one_present: Указано несколько рас
-            at_least_one_present: Должна быть указана раса
-          main_class:
-            key?: Необходимо указать класс персонажа
-            filled?: Необходимо указать класс персонажа
-            included_in?: Недопустимый класс персонажа
-          subclass:
-            key?: Необходимо указать подкласс
-            filled?: Необходимо указать подкласс
-            invalid: Недопустимый подкласс
-          classes:
-            invalid_class_name: Недопустимое название класса
-            invalid_level: Недопустимый уровень
-          exp_name:
-            key?: Необходимо указать опыт
-            filled?: Необходимо указать опыт
-          exp_level:
-            key?: Необходимо указать уровень опыта
-            filled?: Необходимо указать уровень опыта
-          avatar_file:
-            only_one_present: Указано несколько аватаров
-          avatar_url:
-            only_one_present: Указано несколько аватаров

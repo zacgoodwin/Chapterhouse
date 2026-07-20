@@ -22,7 +22,6 @@ const TRANSLATION = {
     groupFeatures: 'Group features',
     showPassive: 'Show passive',
     expandAll: 'Expand all',
-    dc20Range: 'Range',
     repeatable: 'Repeatable',
     prices: {
       ap: 'AP',
@@ -41,7 +40,6 @@ const TRANSLATION = {
     groupFeatures: 'Группировать',
     showPassive: 'Показать пассивные',
     expandAll: 'Раскрывать все',
-    dc20Range: 'Дальность',
     repeatable: 'Многократное',
     prices: {
       ap: 'ОД',
@@ -60,7 +58,6 @@ const TRANSLATION = {
     groupFeatures: 'Agrupar características',
     showPassive: 'Mostrar pasivas',
     expandAll: 'Expandir todo',
-    dc20Range: 'Rango',
     repeatable: 'Repetible',
     prices: {
       ap: 'PA',
@@ -298,11 +295,6 @@ export const Feats = (props) => {
                       class="feat-markdown"
                       innerHTML={feature().description} // eslint-disable-line solid/no-innerhtml
                     />
-                    <Show when={character().provider === 'dc20'}>
-                      <Show when={feature().info.range}>
-                        <p class="text-sm">{localize(TRANSLATION, locale()).dc20Range}: {localize(feature().info.range, locale())}</p>
-                      </Show>
-                    </Show>
                     <Switch fallback={<></>}>
                       <Match when={feature().kind === 'text'}>
                         <TextArea

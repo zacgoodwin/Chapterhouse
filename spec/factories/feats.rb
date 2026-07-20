@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :feat do
     trait :rally do
-      type { 'Daggerheart::Feat' }
+      type { 'Dnd2024::Feat' }
       sequence(:slug) { |i| "rally-#{i}" }
       title {
         { en: 'Rally', ru: 'Rally' }
@@ -38,11 +38,6 @@ FactoryBot.define do
       limit_refresh { 'long_rest' }
     end
 
-    trait :daggerheart do
-      type { 'Daggerheart::Feat' }
-      limit_refresh { 'long_rest' }
-    end
-
     trait :dnd5_bardic_inspiration do
       type { 'Dnd5::Feat' }
       slug { 'bardic_inspiration' }
@@ -74,25 +69,6 @@ FactoryBot.define do
 
     trait :dnd2024 do
       type { 'Dnd2024::Feat' }
-      sequence(:slug) { |i| "slug-#{i}" }
-      title {
-        {
-          en: 'Name',
-          ru: 'Название'
-        }
-      }
-      description {
-        {
-          en: 'Description',
-          ru: 'Описание'
-        }
-      }
-      origin { 2 }
-      kind { 0 }
-    end
-
-    trait :pathfinder2 do
-      type { 'Pathfinder2::Feat' }
       sequence(:slug) { |i| "slug-#{i}" }
       title {
         {

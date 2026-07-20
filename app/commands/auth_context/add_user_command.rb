@@ -6,25 +6,15 @@ module AuthContext
       config.messages.namespace = :user
 
       params do
+        # id is the Supabase auth.users id (JWT sub); users.id mirrors it
+        required(:id).filled(:string)
         required(:username).filled(:string)
-        required(:password).filled(:string)
-        required(:password_confirmation).filled(:string)
         optional(:locale).maybe(:string)
       end
 
       rule(:username) do
         if value && !/[\w+\-\_]+/i.match?(value)
           key.failure(:invalid)
-        end
-      end
-
-      rule(:password, :password_confirmation) do
-        key(:passwords).failure(:different) if values[:password] != values[:password_confirmation]
-      end
-
-      rule(:password) do
-        if values[:password].size < 10
-          key.failure(I18n.t('dry_schema.errors.user.password_length', length: 10))
         end
       end
     end

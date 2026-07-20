@@ -118,7 +118,7 @@ export const Dnd2024CharacterForm = (props) => {
           />
         </Show>
         <Select
-          labelText={t('newCharacterPage.pathfinder2.background')}
+          labelText={t('newCharacterPage.dnd2024.background')}
           items={translate(dndBackgrounds(), locale())}
           selectedValue={characterDnd2024Form.background}
           onSelect={(value) => setCharacterDnd2024Form({ ...characterDnd2024Form, background: value })}

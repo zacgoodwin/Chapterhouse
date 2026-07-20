@@ -29,9 +29,7 @@
     <div class="flex-1 flex flex-col items-center lg:items-start">
       <h2 class="text-2xl mb-4 lg:text-4xl text-center lg:text-left"><%= t('web.welcome.index_v2.ttrpgs') %></h2>
       <p class="text-center lg:text-left mt-2"><%= t('web.welcome.index_v2.ttrpgs_desc') %></p>
-      <p class="text-center lg:text-left mt-2"><%= t('web.welcome.index_v2.ttrpgs_desc2').html_safe %></p>
       <p class="text-center lg:text-left mt-2"><%= t('web.welcome.index_v2.ttrpgs_desc3').html_safe %></p>
-      <p class="text-center lg:text-left"><%= t('web.welcome.index_v2.ttrpgs_desc4').html_safe %></p>
     </div>
   </div>
 </section>
@@ -50,9 +48,6 @@
       </div>
       <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'MacOS', "#{root_url}Charkeeper_aarch64.dmg", class: 'underline', download: 'Charkeeper_aarch64.dmg' %></p>
       <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'Android', "#{root_url}Charkeeper.apk", class: 'underline', download: 'Charkeeper.apk' %></p>
-      <p>
-        <%= t('web.welcome.index_v2.telegram_description', href: link_to(t('web.welcome.index_v2.telegram_link'), (Rails.env.ru_production? ? 'https://t.me/charkeeper_ru_bot' : 'https://t.me/charkeeper_bot'), class: 'underline', target: '_blank', rel: 'noopener noreferrer')).html_safe %>
-      </p>
     </div>
     <div class="flex-1">
       <%= image_tag 'screenshots/apps.webp', alt: 'apps', width: 624, height: 364 %>

@@ -2,8 +2,6 @@ es:
   dry_schema:
     rules:
       dnd5_character: Personaje de D&D 5
-      pathfinder2_character: Personaje de Pathfinder 2
-      daggerheart_character: Peronaje de Daggerheart
     errors:
       unexpected_key: Párametros desconocidos
       included_in?: Valor desconocido
@@ -16,31 +14,6 @@ es:
       size?: Size must be %{num}
       int?: Must be integer
       uuid_v4?: Invalid uuid format
-      pathfinder2_animal_companion:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          caption:
-            max_size?: The caption cannot be longer than 50 characters
-          kind:
-            filled?: Kind is required
-      pathfinder2_pet:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          caption:
-            max_size?: The caption cannot be longer than 50 characters
-      daggerheart_item_upgrade:
-        rules:
-          name:
-            filled?: Name is required
-            max_size?: The name cannot be longer than 50 characters
-          upgrades:
-            empty: Upgrades are required
-            invalid_key: Unknown upgrade
-            feature_exist: Feature already exists
       note:
         rules:
           title:
@@ -49,21 +22,6 @@ es:
           description:
             filled?: Se requiere una descripción
             max_size?: El descripción no puede tener más de 500 caracteres
-      daggerheart_project:
-        rules:
-          title:
-            filled?: Se requiere un título
-            max_size?: El título no puede tener más de 100 caracteres
-          description:
-            filled?: Se requiere una descripción
-            max_size?: El descripción no puede tener más de 1000 caracteres
-          complexity:
-            filled?: Se requiere una dificultad
-            gt?: La complejidad debe ser positiva
-      daggerheart_rest:
-        rules:
-          options:
-            too_many_expectations: Seleccione solo 2 opciones
       campaign:
         rules:
           name:
@@ -143,16 +101,6 @@ es:
           locale:
             filled?: Locale debe ser completado
             included_in?: Valor locale inválido
-      cosmere_character:
-        rules:
-          name:
-            key?: Name is required
-            filled?: Name must be filled
-            max_size?: Name's length cannot be more than 50
-          attribute_points:
-            gteq?: Attribute points value cannot be negative
-          skill_points:
-            gteq?: Skill points value cannot be negative
       dnd5_character:
         rules:
           name:
@@ -197,88 +145,3 @@ es:
             invalid_value: El valor de las monedas no debería ser negativo
           health:
             invalid_value: El valor de la salud no debería ser negativo
-      pathfinder2_character:
-        rules:
-          name:
-            key?: Se requiere un nombre
-            filled?: Se requiere un nombre
-          race:
-            key?: Se requiere una raza
-            filled?: Se debe poner una raza
-            included_in?: Valor de raza inválido
-          main_class:
-            key?: Se requiere una clase
-            filled?: Se debe poner una clase
-            included_in?: Valor de clase inválido
-          classes:
-            invalid_class_name: Nombre de clase inválido
-            invalid_level: Nivel inválido
-          subrace:
-            key?: Se requiere una subraza
-            filled?: Se debe poner una subraza
-            invalid: Subraza inválido
-          health:
-            invalid_value: Los valores de vida no deberían ser negativos
-          background:
-            key?: Se requiere el origen
-            filled?: Se debe poner el origen
-            included_in?: Valor el origen inválido
-      dc20_character:
-        rules:
-          name:
-            key?: Se requiere un nombre
-            filled?: Se debe poner un nombre
-          main_class:
-            key?: Se requiere una clase
-            filled?: Se debe poner una clase
-            included_in?: Valor de clase inválido
-      fallout_character:
-        rules:
-          name:
-            key?: Se requiere un nombre
-            filled?: Se debe poner un nombre
-          origin:
-            key?: El origen no puede estar en blanco
-            filled?: El origen no puede estar en blanco
-            included_in?: Valor de origen desconocido
-      daggerheart_character:
-        rules:
-          name:
-            key?: Se requiere un nombre
-            filled?: Se debe poner un nombre
-          community:
-            key?: Se requiere una comunidad
-            filled?: Se debe poner una comunidad
-          heritage:
-            key?: Se requiere una herencia
-            filled?: Se debe poner una herencia
-            included_in?: Valor de herencia inválido
-            only_one_present: Demasiadas herencias
-            at_least_one_present: Debería haber al menos 1 herencia
-          heritage_features:
-            filled?: Se deben poner las características de la herencia
-          heritage_name:
-            filled?: Se debe poner el nombre de la herencia
-            only_one_present: Demasiadas herencias
-            at_least_one_present: Debería haber al menos 1 herencia
-          main_class:
-            key?: Se requiere la clase
-            filled?: Se debe poner la clase
-            included_in?: Valor de clase inválido
-          subclass:
-            key?: Se requiere la subclase
-            filled?: Se debe poner la subclase
-            invalid: Nombre de subclase inválido
-          classes:
-            invalid_class_name: Nombre de clase inválido
-            invalid_level: Nivel inválido
-          exp_name:
-            key?: Se requiere nombre de la experiencia
-            filled?: Se debe poner el nombre de la experiencia
-          exp_level:
-            key?: Se requiere el nivel de la experiecia
-            filled?: Se debe poner el nivel de la experiencia
-          avatar_file:
-            only_one_present: Demasiados avatares
-          avatar_url:
-            only_one_present: Demasiados Avatares

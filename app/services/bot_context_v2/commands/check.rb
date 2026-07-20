@@ -11,13 +11,8 @@ module BotContextV2
 
       def service(character)
         case character.class.name
-        when 'Dnd5::Character', 'Dnd2024::Character', 'Pathfinder2::Character', 'Cosmere::Character'
+        when 'Dnd5::Character', 'Dnd2024::Character'
           BotContextV2::Commands::Checks::Dnd.new
-        when 'Daggerheart::Character' then BotContextV2::Commands::Checks::Daggerheart.new
-        when 'Dc20::Character' then BotContextV2::Commands::Checks::Dc20.new
-        when 'Fate::Character' then BotContextV2::Commands::Checks::Fate.new
-        when 'Fallout::Character' then BotContextV2::Commands::Checks::Fallout.new
-        when 'Cthulhu7::Character' then BotContextV2::Commands::Checks::Cthulhu7.new
         end
       end
     end

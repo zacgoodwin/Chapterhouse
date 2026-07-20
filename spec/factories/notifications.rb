@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :notification do
     value { 'Value' }
     locale { 'en' }
-    targets { %w[telegram] }
+    targets { %w[discord] }
   end
 end

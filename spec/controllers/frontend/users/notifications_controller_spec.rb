@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe Frontend::Users::NotificationsController do
-  let!(:user_session) { create :user_session }
-  let(:access_token) { Authkeeper::GenerateTokenService.new.call(user_session: user_session)[:result] }
+  let!(:user) { create :user }
+  let(:access_token) { supabase_token_for(user) }
 
   describe 'GET#index' do
     context 'for logged users' do
@@ -18,7 +18,7 @@ describe Frontend::Users::NotificationsController do
       end
 
       context 'with notifications' do
-        let!(:notification) { create :user_notification, user: user_session.user }
+        let!(:notification) { create :user_notification, user: user }
 
         it 'renders notifications', :aggregate_failures do
           request
@@ -45,7 +45,7 @@ describe Frontend::Users::NotificationsController do
       end
 
       context 'with unread notifications' do
-        let!(:notification) { create :user_notification, user: user_session.user }
+        let!(:notification) { create :user_notification, user: user }
 
         it 'renders unread notifications count', :aggregate_failures do
           request
