@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - campaign dice rolls broadcast through Supabase Realtime (async job) instead of ActionCable; subscriber now unsubscribes on unmount
 
 ### Removed
+- all non-D&D game systems (pathfinder2, daggerheart, dc20, fate, fallout, cosmere, cthulhu7): sheets, creation forms, platforms, builders, decorators, commands, controllers, serializers, bot checks and duality/fate/plot rolls, adminbook pages, homebrew editors, seeds, and specs; dnd5 + dnd2024 stay. RemoveNonDndSystemsData migration deletes their rows and drops daggerheart_projects
+- removed-system-only features: character reset, cthulhu7 character copy, daggerheart/pathfinder2 JSON sheet export, the ru-DHM locale and per-user provider_locales
 - authkeeper/bcrypt password + OAuth stack: signin/signup/identities endpoints, user_sessions and user_identities tables, users.password_digest; Rails now verifies Supabase Auth JWTs (ES256/RS256 via JWKS) and provisions app users keyed by the auth id on first request
 - all Telegram integration: bot webhook pipeline, mini-app (/web_telegram) with initData auto-login, login widget, admin notification delivery, marketing links; provider enums keep their remaining integer values and a data migration purges telegram rows
 - orphaned active_bot_objects table and ActiveBotObject model (dead code, no readers or writers)

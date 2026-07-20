@@ -40,7 +40,15 @@ Database rules:
 - First load is `bin/rails db:schema:load` then `bin/rails db:seed` — never `db:migrate` from zero (149 migrations include data backfills), and never `db:create`/`db:drop`/`db:reset` against Supabase.
 - After running migrations in development, review the `db/schema.rb` diff: a dump from the Supabase catalog can pick up `extensions.*`/`pg_graphql`/`supabase_vault` lines that break localhost test schema loads. The gate spec `spec/config/supabase_migration_gates_spec.rb` catches this.
 
-Known gaps: Daggerheart domain cards have no in-repo seed source; the Cypress e2e login step used the removed password form and needs a rewrite against Supabase before it can run again.
+Known gaps: the Cypress e2e login step used the removed password form and needs a rewrite against Supabase before it can run again.
+
+### Game systems
+
+This fork supports D&D only: dnd5 (2014 rules) and dnd2024. The other
+upstream CharKeeper systems (pathfinder2, daggerheart, dc20, fate,
+fallout, cosmere, cthulhu7) were removed; the
+`RemoveNonDndSystemsData` migration deletes their rows on databases
+that predate the removal.
 
 ### Reference docs
 
@@ -67,27 +75,4 @@ $ yarn add cypress@14.5.4 --dev
 $ rails server -e test -p 5002
 $ yarn run cypress run --project ./spec/e2e
 $ yarn remove cypress
-```
-
-### Info options for PF2 characters
-
-```bash
-"info": { "change_character": { "attr": "archetypes", "type": "push", "value": "bard" } }
-
-"info": { "options_list": "skills" }
-"info": { "options_list": "classes" }
-"info": { "options_list": "subclasses" }
-"info": { "options_list": "spellLists" }
-"info": { "options_list": "races" }
-
-"info": { "extra_feats": ["ride"] }
-"info": { "required": ["tough"] }
-
-"info": { "focus_spells": ["hymn_of_healing"] }
-"info": { "static_spells": { "detect_magic": { "limit": null } } }
-"info": { "static_spells": { "oaken_resilience": { "limit": 1 }, "entangle": { "limit": 1 } } }
-
-"info": { "weapons": [{ "items_slug": "razortooth", "items_name": { "en": "Jaws", "ru": "Челюсти" }, "items_info": { "group": "brawling", "weapon_skill": "unarmed", "type": "melee", "damage": "1d6", "damage_type": "pierce", "tooltips": ["finesse", "unarmed"] } }] }
-
-"info": { "weapons": [{ "items_slug": "seedpod", "items_name": { "en": "Seedpod", "ru": "Побег" }, "items_info": { "weapon_skill": "unarmed", "type": "range", "damage": "1d4", "damage_type": "bludge", "tooltips": ["unarmed"], "dist": 30 } }] }
 ```

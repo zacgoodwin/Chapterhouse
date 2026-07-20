@@ -7,7 +7,6 @@ export const CharKeeperApp = (props) => (
     username={props.username}
     isAdmin={props.admin}
     colorSchema={props.colorSchema}
-    providerLocales={props.providerLocales}
     host={props.host}
   >
     <AppLocaleProvider locale={props.locale}>
