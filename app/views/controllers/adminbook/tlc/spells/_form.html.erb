@@ -1,0 +1,24 @@
+<%= form_with model: @record, scope: :spell,
+      url: (@record.persisted? ? adminbook_tlc_spell_path(@record) : adminbook_tlc_spells_path),
+      class: 'font-cascadia-light' do |form| %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Slug', class: 'form-label' %></div>
+    <div><%= form.text_field :slug, class: 'form-value w-80', required: true %></div>
+  </div>
+  <%= form.fields_for :name, @record.name do |name_form| %>
+    <div class="form-field mb-2">
+      <div><%= name_form.label 'Name (en)', class: 'form-label' %></div>
+      <div><%= name_form.text_field :en, value: @record.name['en'], class: 'form-value w-80' %></div>
+    </div>
+    <div class="form-field mb-2">
+      <div><%= name_form.label 'Name (ru)', class: 'form-label' %></div>
+      <div><%= name_form.text_field :ru, value: @record.name['ru'], class: 'form-value w-80' %></div>
+    </div>
+  <% end %>
+  <div class="form-field mb-2">
+    <div><%= form.label 'Data (JSON)', class: 'form-label' %></div>
+    <div><%= form.textarea :data, value: @record.data.to_json, class: 'form-text text-sm', size: '100x7' %></div>
+  </div>
+  <%= render 'adminbook/tlc/meta_fields', form: form %>
+  <%= form.submit(@record.persisted? ? 'Update' : 'Create', class: 'btn btn-primary') %>
+<% end %>

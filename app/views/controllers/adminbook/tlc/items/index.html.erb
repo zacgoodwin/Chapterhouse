@@ -1,0 +1,25 @@
+<%= render 'adminbook/tlc/toolbar' %>
+<table class="table w-full text-sm font-cascadia-light">
+  <thead>
+    <tr>
+      <td>Slug</td>
+      <td>Name</td>
+      <td>Kind</td>
+      <td>Visibility</td>
+      <td>Verified</td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @records.each do |item| %>
+      <tr>
+        <td class="pr-4"><%= link_to item.slug, edit_adminbook_tlc_item_path(item.id), class: 'underline text-blue-400' %></td>
+        <td class="pr-4"><%= item.name['en'] %></td>
+        <td class="pr-4"><%= item.kind %></td>
+        <td class="pr-4"><%= item.visibility %></td>
+        <td class="pr-4"><%= item.verified? ? 'yes' : 'NO' %></td>
+        <td><%= button_to 'X', adminbook_tlc_item_path(item.id), method: :delete, class: 'btn-warning btn-small text-sm' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

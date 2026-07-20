@@ -5,5 +5,8 @@ module Tlc
   # dnd2024 items, whose `Dnd2024::Item` is only a serializer namespace). Data
   # stays as raw JSONB, matching the dnd2024 variant it mirrors.
   class Item < Item
+    include Tlc::ContentFlags
+
+    tlc_content meta: :info, name: :name
   end
 end
