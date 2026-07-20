@@ -1,0 +1,31 @@
+# Excluded from the Docker build context (fly deploy tars the working tree).
+.git
+.github
+.claude
+.gstack
+.dockerignore
+Dockerfile
+fly.toml
+
+# Secrets never enter the image; they arrive via fly secrets at runtime.
+config/master.key
+config/credentials/*.key
+.env*
+
+# Rebuilt inside the image.
+node_modules
+public/assets
+app/assets/builds
+
+# Dev/test/CI only.
+spec
+coverage
+docs
+log
+tmp
+
+# Upstream deploy leftovers (Capistrano, foreman) — never used on Fly.
+Procfile
+Procfile.lp
+config/deploy.rb
+config/deploy

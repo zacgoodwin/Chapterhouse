@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'up', to: 'rails/health#show', as: :rails_health_check
+
   mount GoodJob::Engine, at: 'good_job'
   mount PgHero::Engine, at: 'pghero'
 

@@ -25,18 +25,9 @@ shared_dir = "#{app_dir}/tmp"
 # Specifies the `environment` that Puma will run in.
 environment ENV.fetch('RAILS_ENV', 'production')
 
-# Set up socket location
-bind "unix://#{shared_dir}/sockets/puma.sock"
-
-# Logging
-if ENV.fetch('RAILS_ENV', 'production') == 'production'
-  stdout_redirect "#{shared_dir}/log/puma.stdout.log", "#{shared_dir}/log/puma.stderr.log", true
-end
-
 # Set master PID and state locations
 pidfile "#{shared_dir}/pids/puma.pid"
 state_path "#{shared_dir}/pids/puma.state"
-activate_control_app
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked web server processes. If using threads and workers together
