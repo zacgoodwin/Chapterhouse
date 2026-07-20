@@ -72,9 +72,12 @@ module Adminbook
       end
 
       # Textareas post JSON in the codebase's admin dialect (Ruby-hash `=>`/`nil`
-      # tolerated), matching the other adminbook controllers' transform.
+      # tolerated), matching the other adminbook controllers' transform. See
+      # Adminbook::BaseController#parse_admin_json for the parse-first-then-
+      # fallback behavior (ticket #41: a bare gsub here corrupted string
+      # values containing "nil", e.g. "vanilla" -> "vanulla").
       def parse_json(value)
-        JSON.parse(value.to_s.gsub(' =>', ':').gsub('nil', 'null'))
+        parse_admin_json(value)
       end
     end
   end

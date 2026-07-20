@@ -65,6 +65,28 @@ describe 'Adminbook::Tlc::Feats' do
     end
   end
 
+  describe 'JSON textarea dialect (ticket #41: gsub("nil", "null") corrupted string values)' do
+    it 'round-trips a JSON string value that contains the substring "nil" byte-identical', :aggregate_failures do
+      post '/adminbook/tlc/feats', params: {
+        feat: valid_params.merge(conditions: '{"note":"vanilla extract, nil-safe"}')
+      }
+
+      feat = Tlc::Feat.find_by(slug: 'stoneheart')
+      expect(feat).to be_present
+      expect(feat.conditions).to eq('note' => 'vanilla extract, nil-safe')
+    end
+
+    it 'still parses a pasted Ruby-hash-style value with a bare nil (legacy fallback)', :aggregate_failures do
+      post '/adminbook/tlc/feats', params: {
+        feat: valid_params.merge(price: '{"a" => nil}')
+      }
+
+      feat = Tlc::Feat.find_by(slug: 'stoneheart')
+      expect(feat).to be_present
+      expect(feat.price).to eq('a' => nil)
+    end
+  end
+
   describe 'GET#index ?verified=false (verification queue)' do
     before do
       create(:feat, :tlc, slug: 'clean-row')

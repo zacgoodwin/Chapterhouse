@@ -15,7 +15,7 @@ module Adminbook
 
     def transform_params(updating_params)
       %w[title description info].each do |attribute|
-        updating_params[attribute] = JSON.parse(updating_params[attribute].gsub(' =>', ':').gsub('nil', 'null'))
+        updating_params[attribute] = parse_admin_json(updating_params[attribute])
       end
       updating_params
     end

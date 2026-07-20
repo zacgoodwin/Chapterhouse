@@ -39,8 +39,8 @@ module Adminbook
     end
 
     def transform_params(updating_params)
-      updating_params['data'] = JSON.parse(updating_params['data'].gsub(' =>', ':').gsub('nil', 'null'))
-      updating_params['info'] = JSON.parse(updating_params['info'].gsub(' =>', ':').gsub('nil', 'null'))
+      updating_params['data'] = parse_admin_json(updating_params['data'])
+      updating_params['info'] = parse_admin_json(updating_params['info'])
       updating_params
     end
 
