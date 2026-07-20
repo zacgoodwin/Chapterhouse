@@ -73,8 +73,9 @@ surfaces (tab switch, collapse/expand, modal open, HP delta, slot fill) with a
 
 ## Artifact location
 
-Per plan L269-271 these live in the gstack designs dir
-(`~/.gstack/projects/zacgoodwin-Chapterhouse/designs/leyfarers-refs/`, mirrored by
-the extraction script). They are also committed here in-repo so Phase D PRs can
-link a resolvable path — the entry gate (AC3) is only enforceable if the link
-resolves in review.
+Per plan L269-271 a copy also lives in the gstack designs dir
+(`~/.gstack/projects/zacgoodwin-Chapterhouse/designs/leyfarers-refs/`) as a
+one-time manual mirror — the extraction script writes only to this in-repo
+directory and never touches the gstack path. The images are committed here
+in-repo so Phase D PRs can link a resolvable path — the entry gate (AC3) is only
+enforceable if the link resolves in review.
