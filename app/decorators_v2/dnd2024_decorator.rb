@@ -106,15 +106,16 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   def apply_set_modifiers # rubocop: disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-    res = all_modifiers.flat_map do |items|
+    res = all_modifiers.flat_map do |(slug, items)|
       items.filter_map do |key, value|
-        ONLY_ADD_MODIFIERS.exclude?(key) && WEAPON_MODIFIERS.exclude?(key) && value['type'] == 'set' && { key => value['value'] }
+        next unless ONLY_ADD_MODIFIERS.exclude?(key) && WEAPON_MODIFIERS.exclude?(key) && value['type'] == 'set'
+
+        [key, slug, value['value']]
       end
-    end.compact_blank.each_with_object({}) do |value, acc|
-      key = value.keys[0]
+    end.each_with_object({}) do |(key, slug, modifier_formula), acc|
       acc[key] ||= []
-      formula_result = formula.call(formula: value[key], variables: formula_variables)
-      formula_result ? (acc[key] << formula_result) : monitoring_dnd_2024_formula_error(formula)
+      formula_result = formula.call(formula: modifier_formula, variables: formula_variables)
+      formula_result ? (acc[key] << formula_result) : monitoring_formula_error(slug: slug, formula: modifier_formula)
     end
 
     res.each do |(key_name, values)|
@@ -128,20 +129,19 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   # модификаторы атаки от обычных предметов, распространяются на всё оружие
-  def find_general_attack_modifiers # rubocop: disable Metrics/AbcSize
-    @general_attack_modifiers = modifiers_from_items.flat_map do |items|
+  def find_general_attack_modifiers
+    @general_attack_modifiers = modifiers_from_items.flat_map do |(slug, items)|
       items.filter_map do |key, value|
-        WEAPON_MODIFIERS.include?(key) && value['type'] == 'add' && { key => value['value'] }
+        WEAPON_MODIFIERS.include?(key) && value['type'] == 'add' && [key, slug, value['value']]
       end
-    end.compact_blank.each_with_object({}) do |value, acc|
-      key = value.keys[0]
+    end.each_with_object({}) do |(key, slug, modifier_formula), acc|
       acc[key] ||= []
-      formula_result = formula.call(formula: value[key], variables: formula_variables)
-      formula_result ? (acc[key] << formula_result) : monitoring_dnd_2024_formula_error(formula)
+      formula_result = formula.call(formula: modifier_formula, variables: formula_variables)
+      formula_result ? (acc[key] << formula_result) : monitoring_formula_error(slug: slug, formula: modifier_formula)
     end
   end
 
-  def find_weapon_modifiers(item_list, base_list, modifiers) # rubocop: disable Metrics/AbcSize
+  def find_weapon_modifiers(item_list, base_list, modifiers, slug: 'unarmed') # rubocop: disable Metrics/AbcSize
     res = [item_list, base_list].flat_map do |items|
       items.filter_map do |key, value|
         modifiers.include?(key) && value['type'] == 'add' && { key => value['value'] }
@@ -150,7 +150,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
       key = value.keys[0]
       acc[key] ||= []
       formula_result = formula.call(formula: value[key], variables: formula_variables)
-      formula_result ? (acc[key] << formula_result) : monitoring_dnd_2024_formula_error(formula)
+      formula_result ? (acc[key] << formula_result) : monitoring_formula_error(slug: slug, formula: value[key])
     end
     res.values.flatten.sum + @general_attack_modifiers.slice(*modifiers).values.flatten.sum
   end
@@ -249,8 +249,9 @@ class Dnd2024Decorator < ApplicationDecoratorV2
 
   # rubocop: disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def melee_attack(item)
-    attack_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[attack melee_attacks])
-    damage_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[damage melee_damage])
+    item_slug = item[:items_slug]
+    attack_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[attack melee_attacks], slug: item_slug)
+    damage_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[damage melee_damage], slug: item_slug)
 
     captions = item[:items_info]['caption']
     captions = {} if captions.is_a?(Array)
@@ -286,8 +287,9 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   def range_attack(item, type)
-    attack_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[attack range_attacks])
-    damage_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[damage range_damage])
+    item_slug = item[:items_slug]
+    attack_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[attack range_attacks], slug: item_slug)
+    damage_bonus = find_weapon_modifiers(item[:modifiers], item[:items_modifiers], %w[damage range_damage], slug: item_slug)
 
     captions = item[:items_info]['caption']
     captions = {} if captions.is_a?(Array)
@@ -336,15 +338,16 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   def apply_add_modifiers # rubocop: disable Metrics/CyclomaticComplexity
-    res = all_modifiers.flat_map do |items|
+    res = all_modifiers.flat_map do |(slug, items)|
       items.filter_map do |key, value|
-        ONLY_ADD_MODIFIERS.exclude?(key) && WEAPON_MODIFIERS.exclude?(key) && value['type'] == 'add' && { key => value['value'] }
+        next unless ONLY_ADD_MODIFIERS.exclude?(key) && WEAPON_MODIFIERS.exclude?(key) && value['type'] == 'add'
+
+        [key, slug, value['value']]
       end
-    end.compact_blank.each_with_object({}) do |value, acc|
-      key = value.keys[0]
+    end.each_with_object({}) do |(key, slug, modifier_formula), acc|
       acc[key] ||= []
-      formula_result = formula.call(formula: value[key], variables: formula_variables)
-      formula_result ? (acc[key] << formula_result) : monitoring_dnd_2024_formula_error(formula)
+      formula_result = formula.call(formula: modifier_formula, variables: formula_variables)
+      formula_result ? (acc[key] << formula_result) : monitoring_formula_error(slug: slug, formula: modifier_formula)
     end
 
     res.each do |(key_name, values)|
@@ -358,7 +361,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
       end
     end
 
-    res = all_modifiers.flat_map do |items|
+    res = all_modifiers.flat_map do |(_slug, items)|
       items.filter_map do |key, value|
         ONLY_ADD_MODIFIERS.exclude?(key) && value['type'] == 'concat' && { key => value['value'] }
       end
@@ -461,12 +464,25 @@ class Dnd2024Decorator < ApplicationDecoratorV2
     )
   end
 
-  def monitoring_dnd_2024_formula_error(formula)
-    Charkeeper::Container.resolve('monitoring.client').notify(
+  # The one log line that matters for a bad seeded/homebrew formula (T3, plan
+  # Observability): slug identifies the exact feat/item/bonus row to fix,
+  # formula is the literal broken text to grep for, character_id + provider
+  # pin down which sheet hit it. Severity stays :info -- the modifier is
+  # skipped and the sheet still renders, so this is a triage signal, not an
+  # incident. Uses the injected `monitoring` client (Deps[] on
+  # ApplicationDecoratorV2) instead of re-resolving the container.
+  def monitoring_formula_error(slug:, formula:)
+    monitoring.notify(
       exception: Monitoring::FormulaError.new('Formula error'),
-      metadata: { formula: formula },
+      metadata: { slug: slug, formula: formula, character_id: @character.id, provider: provider },
       severity: :info
     )
+  end
+
+  # STI type ("Dnd2024::Character", "Tlc::Character") -> "dnd2024" / "tlc".
+  # Provider-agnostic on purpose: a future provider needs no change here.
+  def provider
+    @character.type.to_s.underscore.split('/').first
   end
 
   def formula_variables
@@ -535,26 +551,34 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   def find_modifiers(key, type)
-    all_modifiers.map { |item| item.dig(key, 'type') == type && item.dig(key, 'value') }.compact_blank.map(&:to_i)
+    all_modifiers.map { |(_slug, item)| item.dig(key, 'type') == type && item.dig(key, 'value') }.compact_blank.map(&:to_i)
   end
 
   # бонусы персонажа - bonus.value
   # бонусы от надетых предметов и оружия в руках - modifiers
   # бонусы Character::Item - modifiers
   # бонусы навыков - modifiers
+  #
+  # Each entry is a [slug, modifiers_hash] pair, not a bare hash -- slug is
+  # the feat/item slug (or bonus comment) the modifiers came from, threaded
+  # through so a rescued formula error can log which content row broke.
   def all_modifiers
     @all_modifiers ||=
       character_modifiers +
-        active_items_with_weapon_in_hands.pluck(:items_modifiers).compact_blank +
-        active_items_with_weapon_in_hands.pluck(:modifiers).compact_blank +
+        item_modifier_pairs(active_items_with_weapon_in_hands, :items_modifiers) +
+        item_modifier_pairs(active_items_with_weapon_in_hands, :modifiers) +
         feature_modifiers
   end
 
   def modifiers_from_items
     character_modifiers +
-      active_items_without_weapon.pluck(:items_modifiers).compact_blank +
-      active_items_without_weapon.pluck(:modifiers).compact_blank +
+      item_modifier_pairs(active_items_without_weapon, :items_modifiers) +
+      item_modifier_pairs(active_items_without_weapon, :modifiers) +
       feature_modifiers
+  end
+
+  def item_modifier_pairs(items, field)
+    items.filter_map { |item| [item[:items_slug], item[field]] if item[field].present? }
   end
 
   def active_items_without_weapon
@@ -565,16 +589,19 @@ class Dnd2024Decorator < ApplicationDecoratorV2
     active_items.select { |item| item[:items_kind] != 'weapon' || item[:states]['hands'].positive? }
   end
 
+  # slug here is the bonus's own comment (a free-text label required at
+  # creation, see CharactersContext::Dnd2024::Bonuses::AddV3Command) -- ad hoc
+  # user bonuses have no content-file row to point a triage grep at, so the
+  # comment is the closest thing to an identifying slug.
   def character_modifiers
-    @character.bonuses.where(enabled: true).pluck(:value).flatten
+    @character.bonuses.where(enabled: true).pluck(:comment, :value)
   end
 
   def feature_modifiers
     available_features
-      .hashable_pluck(:ready_to_use, :active, 'feats.continious', 'feats.modifiers')
+      .hashable_pluck(:ready_to_use, :active, 'feats.continious', 'feats.modifiers', 'feats.slug')
       .select { |item| (!item[:feats_continious] && item[:ready_to_use]) || item[:active] }
-      .pluck(:feats_modifiers)
-      .compact_blank
+      .filter_map { |item| [item[:feats_slug], item[:feats_modifiers]] if item[:feats_modifiers].present? }
   end
 
   def active_items
@@ -583,7 +610,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
         .items
         .where("states->>'hands' != ? OR states->>'equipment' != ?", '0', '0')
         .joins(:item)
-        .hashable_pluck('items.kind', 'items.data', 'items.info', 'items.modifiers', :states, :modifiers)
+        .hashable_pluck('items.kind', 'items.slug', 'items.data', 'items.info', 'items.modifiers', :states, :modifiers)
   end
 
   def weapons
