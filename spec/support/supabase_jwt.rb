@@ -9,7 +9,8 @@ module SupabaseJwt
   JWK = JWT::JWK.new(KEY, { alg: 'ES256', use: 'sig' })
   URL = 'https://test-project.supabase.local'
 
-  def supabase_token_for(user, exp: 1.hour.from_now.to_i, aud: 'authenticated', iss: "#{URL}/auth/v1", sub: nil, key: KEY, **claims)
+  def supabase_token_for(user, exp: 1.hour.from_now.to_i, aud: 'authenticated', iss: "#{URL}/auth/v1", sub: nil, key: KEY,
+                         **claims)
     payload = {
       sub: sub || user.id,
       aud: aud,

@@ -3,7 +3,7 @@
 # Gates for the Supabase migration invariants. All checks are local and
 # deterministic: they inspect config objects and repo files, never the
 # network.
-describe 'Supabase migration gates' do
+describe 'Supabase migration gates' do # rubocop: disable RSpec/DescribeClass
   describe 'database configuration' do
     %w[development test production].each do |env|
       it "#{env} has a single primary database" do
@@ -34,25 +34,25 @@ describe 'Supabase migration gates' do
     # catalog noise (extensions.*, pg_graphql, supabase_vault, ...) that
     # breaks localhost test schema loads
     it 'schema.rb declares only the app extensions' do
-      extensions = File.read(Rails.root.join('db/schema.rb')).scan(/enable_extension "([^"]+)"/).flatten
+      extensions = Rails.root.join('db/schema.rb').read.scan(/enable_extension "([^"]+)"/).flatten
 
       expect(extensions - ['pg_catalog.plpgsql', 'pgcrypto', 'uuid-ossp']).to be_empty
     end
 
     it 'errors schema is gone' do
-      expect(File.exist?(Rails.root.join('db/errors_schema.rb'))).to be false
+      expect(Rails.root.join('db/errors_schema.rb').exist?).to be false
     end
   end
 
   describe 'removed subsystems' do
     it 'solid_errors is gone', :aggregate_failures do
       expect(defined?(SolidErrors)).to be_nil
-      expect(File.read(Rails.root.join('Gemfile'))).not_to include('solid_errors')
+      expect(Rails.root.join('Gemfile').read).not_to include('solid_errors')
     end
 
     it 'authkeeper is gone', :aggregate_failures do
       expect(defined?(Authkeeper)).to be_nil
-      expect(File.read(Rails.root.join('Gemfile'))).not_to include('authkeeper')
+      expect(Rails.root.join('Gemfile').read).not_to include('authkeeper')
     end
 
     it 'no cable or solid_errors routes remain' do
@@ -64,7 +64,7 @@ describe 'Supabase migration gates' do
 
   describe 'storage wiring' do
     let(:storage_config) do
-      YAML.load(ERB.new(File.read(Rails.root.join('config/storage.yml'))).result, aliases: true)
+      YAML.load(ERB.new(Rails.root.join('config/storage.yml').read).result, aliases: true)
     end
 
     it 'defines the supabase S3 service', :aggregate_failures do

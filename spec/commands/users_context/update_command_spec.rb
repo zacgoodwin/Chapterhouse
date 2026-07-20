@@ -51,5 +51,4 @@ describe UsersContext::UpdateCommand do
       end
     end
   end
-
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe SupabaseAuthentication, type: :controller do
+describe SupabaseAuthentication do
   controller(Frontend::BaseController) do
     def index
       render json: { user_id: current_user.id }, status: :ok
