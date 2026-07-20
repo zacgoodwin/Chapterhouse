@@ -7,3 +7,10 @@ db/schema.rb linguist-generated
 vendor/* linguist-vendored
 config/credentials/*.yml.enc diff=rails_credentials
 config/credentials.yml.enc diff=rails_credentials
+
+# Container files must stay LF: core.autocrlf=true would otherwise smudge
+# them to CRLF on checkout, breaking the entrypoint shebang and Dockerfile
+# line continuations inside the Linux image.
+Dockerfile text eol=lf
+bin/docker-entrypoint text eol=lf
+.dockerignore text eol=lf

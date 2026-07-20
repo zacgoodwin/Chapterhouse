@@ -1,0 +1,39 @@
+# Fly.io config for Chapterhouse (Rails web + GoodJob worker).
+# primary_region should match the Supabase project's region once it exists —
+# every request does a round trip to Supabase Postgres, so keep them adjacent.
+app = "chapterhouse"
+primary_region = "iad"
+console_command = "/rails/bin/rails console"
+
+[build]
+
+[deploy]
+  # First-ever schema load is manual (README "Supabase setup": db:schema:load
+  # + db:seed, run locally against Supabase). After that, migrate-before-boot
+  # matches the plan's "migrate -> deploy" rollout order.
+  release_command = "bin/rails db:migrate"
+
+[processes]
+  web = "bin/rails server"
+  worker = "bundle exec good_job start"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["web"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "15s"
+    method = "GET"
+    path = "/up"
+
+# Applies to both process groups. The worker group has no http_service, so it
+# never auto-stops: expect one always-on worker machine (~$3-5/mo).
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

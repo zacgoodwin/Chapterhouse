@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+# Puma's pidfile/state live under tmp; the image ships without these dirs.
+mkdir -p tmp/pids tmp/sockets log
+
+# No automatic db:prepare here: the Supabase database is schema:load-ed once
+# by hand (README "Supabase setup") and migrated via fly.toml release_command.
+
+exec "${@}"

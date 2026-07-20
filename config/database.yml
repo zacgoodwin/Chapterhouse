@@ -13,13 +13,18 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 10 } %>
 
+# Keyless Docker image builds (assets:precompile) evaluate this ERB with no
+# master key, where reading credentials raises MissingKeyError; resolve to an
+# empty hash there. No connection is made during precompile, so nil values are
+# never dialed. The leading # keeps YAML linters happy; ERB still executes.
+# <% supabase_db = begin; Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db) || {}; rescue ActiveSupport::EncryptedFile::MissingKeyError; {}; end %>
 supabase: &supabase
   <<: *default
-  host: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :host) %>
-  port: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :port) || 5432 %>
-  database: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :database) || 'postgres' %>
-  username: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :username) %>
-  password: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db, :password) %>
+  host: <%= supabase_db[:host] %>
+  port: <%= supabase_db[:port] || 5432 %>
+  database: <%= supabase_db[:database] || 'postgres' %>
+  username: <%= supabase_db[:username] %>
+  password: <%= supabase_db[:password] %>
   sslmode: require
 
 development:
