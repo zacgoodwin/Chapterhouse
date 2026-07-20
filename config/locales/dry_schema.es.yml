@@ -148,3 +148,5 @@ es:
           selected_traits:
             too_many_traits: Demasiados rasgos seleccionados, el límite es 10
             unknown_trait_slug: Rasgo desconocido
+          mixed_species:
+            unknown_mixed_species: Especie mixta desconocida

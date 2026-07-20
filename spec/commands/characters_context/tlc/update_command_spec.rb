@@ -85,4 +85,25 @@ describe CharactersContext::Tlc::UpdateCommand do
       expect(character.reload.data.mixed_species).to be_nil
     end
   end
+
+  # mixed_species existence rule (human-decided: validate now). Existence only —
+  # 'elf' is a real dnd2024 baseline species key.
+  context 'with a real mixed_species id' do
+    let(:params) { { character: tlc_character, mixed_species: 'elf' } }
+
+    it 'succeeds and persists it', :aggregate_failures do
+      expect(command_call[:errors]).to be_blank
+      expect(character.reload.data.mixed_species).to eq('elf')
+    end
+  end
+
+  context 'with a nonexistent mixed_species id' do
+    let(:params) { { character: tlc_character, mixed_species: 'daggerheart-race' } }
+
+    it 'fails validation and changes nothing', :aggregate_failures do
+      expect(command_call[:errors]).to include(:mixed_species)
+      expect(command_call[:errors_list]).to include('Unknown mixed species')
+      expect(character.reload.data.mixed_species).to be_nil
+    end
+  end
 end

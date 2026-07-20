@@ -116,6 +116,16 @@ module CharactersContext
           unknown = uniq_slugs - ::Feat.tlc_content.where(slug: uniq_slugs).pluck(:slug)
           key.failure(:unknown_trait_slug) if unknown.any?
         end
+
+        # Existence-only, and only "when present" (nil/blank stays allowed). Reads the
+        # dnd2024 baseline species config — TLC has no distinct species config (plan P4).
+        # A real-but-rule-breaking Mixed Ancestry pick is a C7 soft warning, never a
+        # contract error here (plan L539-540).
+        rule(:mixed_species) do
+          next if value.blank?
+
+          key.failure(:unknown_mixed_species) unless ::Dnd2024::Character.species.key?(value)
+        end
       end
       # rubocop: enable Metrics/BlockLength
 

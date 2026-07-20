@@ -148,3 +148,5 @@ en:
           selected_traits:
             too_many_traits: Too many traits selected, limit is 10
             unknown_trait_slug: Unknown trait slug
+          mixed_species:
+            unknown_mixed_species: Unknown mixed species

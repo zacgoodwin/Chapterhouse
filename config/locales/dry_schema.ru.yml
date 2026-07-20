@@ -148,3 +148,5 @@ ru:
           selected_traits:
             too_many_traits: Слишком много выбранных черт, лимит 10
             unknown_trait_slug: Неизвестная черта
+          mixed_species:
+            unknown_mixed_species: Неизвестный смешанный вид

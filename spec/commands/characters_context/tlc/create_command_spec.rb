@@ -103,6 +103,29 @@ describe CharactersContext::Tlc::CreateCommand do
     end
   end
 
+  # mixed_species existence rule (human-decided: validate now). Existence only —
+  # 'elf' is a real dnd2024 baseline species key; a rule-breaking-but-real pick is
+  # still a C7 soft warning, never a contract error.
+  context 'with a real mixed_species id' do
+    let(:params) { valid_params.merge(mixed_species: 'elf') }
+
+    it 'succeeds and persists it', :aggregate_failures do
+      expect { command_call }.to change(Tlc::Character, :count).by(1)
+      expect(command_call[:errors]).to be_blank
+      expect(command_call[:result].data.mixed_species).to eq('elf')
+    end
+  end
+
+  context 'with a nonexistent mixed_species id' do
+    let(:params) { valid_params.merge(mixed_species: 'daggerheart-race') }
+
+    it 'fails validation and persists nothing', :aggregate_failures do
+      expect { command_call }.not_to change(Character, :count)
+      expect(command_call[:errors]).to include(:mixed_species)
+      expect(command_call[:errors_list]).to include('Unknown mixed species')
+    end
+  end
+
   context 'for invalid params' do
     context 'without species' do
       let(:params) { valid_params.merge(species: nil).compact }
