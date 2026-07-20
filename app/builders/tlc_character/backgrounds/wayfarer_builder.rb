@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module TlcCharacter
+  module Backgrounds
+    class WayfarerBuilder
+      def call(result:)
+        result[:selected_feats] = ['lucky']
+        result[:selected_skills] = { insight: 1, stealth: 1 }
+        result[:ability_boosts] = %w[dex wis cha]
+        result[:tools] = result[:tools].push('thieves').uniq
+
+        result
+      end
+    end
+  end
+end

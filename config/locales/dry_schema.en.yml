@@ -145,3 +145,6 @@ en:
             invalid_value: Coins values should not be negative
           health:
             invalid_value: Health values should not be negative
+          selected_traits:
+            too_many_traits: Too many traits selected, limit is 10
+            unknown_trait_slug: Unknown trait slug

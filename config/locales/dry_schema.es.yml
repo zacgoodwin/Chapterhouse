@@ -145,3 +145,6 @@ es:
             invalid_value: El valor de las monedas no debería ser negativo
           health:
             invalid_value: El valor de la salud no debería ser negativo
+          selected_traits:
+            too_many_traits: Demasiados rasgos seleccionados, el límite es 10
+            unknown_trait_slug: Rasgo desconocido
