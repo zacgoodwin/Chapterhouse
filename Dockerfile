@@ -15,7 +15,7 @@ ENV RAILS_ENV=production \
     PORT=3000
 
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libpq5 && \
+    apt-get install --no-install-recommends -y curl libpq5 libsodium23 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 FROM base AS build
@@ -23,10 +23,10 @@ FROM base AS build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config
 
-# Node only exists in the build stage (esbuild + tailwind); 18.x honors the
-# repo's .node-version pin. yarn matches yarn.lock, which jsbundling-rails
-# selects over package-lock.json.
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+# Node only exists in the build stage (esbuild + tailwind); 22.x honors the
+# repo's .node-version pin and satisfies @supabase/supabase-js (needs >=22).
+# yarn matches yarn.lock, which jsbundling-rails selects over package-lock.json.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install --no-install-recommends -y nodejs && \
     npm install -g yarn
 

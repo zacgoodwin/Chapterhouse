@@ -38,6 +38,12 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
+  # Fly's proxy terminates TLS, so Rails only ever sees plain HTTP on :3000.
+  # Without assume_ssl, force_ssl 301s the health check (Fly hits
+  # http://localhost:3000/up with no X-Forwarded-Proto) and the machine never
+  # goes healthy. Edge-level force_https in fly.toml still forces user traffic.
+  config.assume_ssl = true
+
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
@@ -48,8 +54,12 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  config.cache_store = :redis_cache_store, { host: 'localhost', port: 6379, db: 2 }
+  # Use a different cache store in production. On Fly this is the Upstash Redis
+  # URL (REDIS_URL secret); Upstash is single-db (db 0), so no db index there.
+  # Falls back to local redis for local RAILS_ENV=production runs.
+  # RedisCacheStore's default error handler treats a Redis outage as a cache
+  # miss (logged), so a Redis blip never fails a request.
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'].presence || 'redis://localhost:6379/2' }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque

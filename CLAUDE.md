@@ -25,15 +25,21 @@ Key routing rules:
 
 ## Deploy Configuration (configured by /setup-deploy)
 
-- Platform: Fly.io (app `chapterhouse`; Dockerfile + fly.toml in repo root)
+- Platform: Fly.io (app `chapterhouse`, region `iad`; Dockerfile + fly.toml in repo root)
 - Production URL: https://chapterhouse.fly.dev
-- Deploy workflow: `fly deploy --remote-only` (no local Docker needed)
+- Deploy workflow: `fly deploy --remote-only` (no local Docker; remote builder). No CI deploy workflow — deploys are manual.
 - Deploy status command: `fly status --app chapterhouse`
 - Merge method: squash
-- Project type: web app (Rails 8.1 + SolidJS; Supabase for DB/Auth/Storage/Realtime)
+- Project type: web app (Rails 8.1 + SolidJS; Supabase for DB/Auth/Storage/Realtime). Two Fly process groups: `web` (auto-stops to 0) + `worker` (GoodJob, always-on).
 - Post-deploy health check: https://chapterhouse.fly.dev/up
+- flyctl: installed at `~/.fly/bin/flyctl.exe` (v0.4.72). Not yet authed — run `flyctl auth login` (browser).
 - Note: Procfile and config/deploy.rb are upstream (kortirso) leftovers — never deploy with them.
-- FIRST-DEPLOY GATE: do not deploy until (1) the Supabase project exists and its schema is loaded (README "Supabase setup": db:schema:load + db:seed run locally), (2) `fly apps create chapterhouse` has been run by a human, and (3) `fly secrets set RAILS_MASTER_KEY=...` is done. Until then, stop after merge.
+- FIRST-DEPLOY GATE: do not deploy until all four hold —
+  (1) DONE — `config/master.key` present + valid on this box (gitignored). Re-keyed 2026-07-20 (old upstream kortirso enc was undecryptable): fresh master.key + Chapterhouse-owned enc holding `secret_key_base`, `production` + `development` (mirrored) `.supabase.{db,url,anon_key,service_role_key,storage}` + `.discord_{bot_token,public_key}`. DB creds LIVE-VERIFIED: session pooler `aws-1-us-west-2.pooler.supabase.com:5432`, user `chapter.surtaqeyusnowwltwgka` (custom least-priv role, tenant-suffixed), SELECT + LISTEN/UNLISTEN confirmed against PG 17.6.
+  (2) the Supabase project exists (ref `surtaqeyusnowwltwgka`) and its schema is loaded (README "Supabase setup": `db:schema:load` + `db:seed` run locally);
+  (3) `fly apps create chapterhouse` has been run by a human;
+  (4) `fly secrets set RAILS_MASTER_KEY=<config/master.key contents> --app chapterhouse` is done (SUPABASE_URL is already in credentials, so no separate secret needed).
+  Until all four hold, stop after merge.
 
 ### Custom deploy hooks
 

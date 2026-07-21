@@ -42,3 +42,12 @@ dump.rdb
 /tmp/storage
 .gstack/
 docs/**/*.pdf
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
+
+# generated knowledge graph (regenerate with /graphify)
+graphify-out/
+# z-loop scratch worktrees
+.worktrees/
