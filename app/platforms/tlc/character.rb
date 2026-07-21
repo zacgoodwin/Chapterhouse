@@ -82,6 +82,10 @@ module Tlc
     # (plan P4). Homebrew name resolution through the dnd2024-keyed
     # `cache.dnd_names` stays parked to Phase D, so an unknown slug renders '-',
     # the same value Dnd2024::Character#species_name lands on with no cache hit.
+    # Copying that fallback here would be dead code today: the TLC importer
+    # deliberately writes nothing to dnd_names
+    # (homebrews_v2_context/import/tlc/species/add_command.rb:11), so the lookup
+    # can only miss until Phase D adds a TLC-keyed name cache.
     def species_name = config_name(::Dnd2024::Character.species, data.species)
 
     def background_name = config_name(::Dnd2024::Character.backgrounds, data.background)

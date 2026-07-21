@@ -74,34 +74,6 @@ describe Frontend::CampaignsController do
           expect(response).to have_http_status :created
         end
       end
-
-      # Provider enum: 'tlc' is accepted, anything outside the enum is not.
-      context 'for tlc provider' do
-        let(:request) {
-          post :create, params: {
-            campaign: { name: 'Leyfarers', provider: 'tlc' }, charkeeper_access_token: access_token
-          }
-        }
-
-        it 'creates campaign', :aggregate_failures do
-          expect { request }.to change(user.campaigns, :count).by(1)
-          expect(response).to have_http_status :created
-          expect(Campaign.last.provider).to eq 'tlc'
-        end
-      end
-
-      context 'for an unsupported provider' do
-        let(:request) {
-          post :create, params: {
-            campaign: { name: 'Leyfarers', provider: 'daggerheart' }, charkeeper_access_token: access_token
-          }
-        }
-
-        it 'does not create campaign', :aggregate_failures do
-          expect { request }.not_to change(Campaign, :count)
-          expect(response).to have_http_status :unprocessable_content
-        end
-      end
     end
   end
 

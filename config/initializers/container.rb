@@ -62,6 +62,8 @@ module Charkeeper
 
     register('commands.characters_context.tlc.create') { CharactersContext::Tlc::CreateCommand.new }
     register('commands.characters_context.tlc.update') { CharactersContext::Tlc::UpdateCommand.new }
+    register('commands.characters_context.tlc.make_short_rest') { CharactersContext::Tlc::MakeShortRestCommand.new }
+    register('commands.characters_context.tlc.make_long_rest') { CharactersContext::Tlc::MakeLongRestCommand.new }
     register('commands.characters_context.dnd2024.make_short_rest') { CharactersContext::Dnd2024::MakeShortRestCommand.new }
     register('commands.characters_context.dnd2024.make_long_rest') { CharactersContext::Dnd2024::MakeLongRestCommand.new }
     register('commands.characters_context.dnd2024.craft') { CharactersContext::Dnd2024::CraftCommand.new }

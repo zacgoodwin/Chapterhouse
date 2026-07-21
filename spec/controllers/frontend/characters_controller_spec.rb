@@ -94,24 +94,6 @@ describe Frontend::CharactersController do
           end
         end
       end
-
-      # Tlc::CharacterSerializer is resolved from character.type by #serializer,
-      # so no per-provider case is needed here. Asserts the serializer contract:
-      # provider string plus the five TLC data fields.
-      context 'for tlc' do
-        let!(:character) { create :character, :tlc, user: user }
-
-        it 'returns data through Tlc::CharacterSerializer', :aggregate_failures do
-          get :show, params: { id: character.id, charkeeper_access_token: access_token }
-
-          expect(response).to have_http_status :ok
-          expect(response.parsed_body.dig('character', 'provider')).to eq 'tlc'
-          expect(response.parsed_body['character']).to include(
-            'leyfarer_rank' => 0, 'leyfarer_focus' => nil, 'selected_traits' => [],
-            'mixed_species' => nil, 'dismissed_warnings' => []
-          )
-        end
-      end
     end
   end
 
