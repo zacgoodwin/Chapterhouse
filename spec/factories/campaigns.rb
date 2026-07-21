@@ -13,5 +13,9 @@ FactoryBot.define do
     trait :dnd2024 do
       provider { 'dnd2024' }
     end
+
+    trait :tlc do
+      provider { 'tlc' }
+    end
   end
 end
