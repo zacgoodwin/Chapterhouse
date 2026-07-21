@@ -2,8 +2,10 @@
 
 if defined?(RailsPerformance)
   RailsPerformance.setup do |config|
-    # Redis configuration
-    config.redis = Redis.new(url: 'redis://127.0.0.1:6379/10')
+    # Redis configuration. On Fly this is the Upstash Redis (REDIS_URL secret),
+    # shared with the cache store — Upstash is single-db (db 0). Falls back to
+    # local redis (db 10) for local runs.
+    config.redis = Redis.new(url: ENV['REDIS_URL'].presence || 'redis://127.0.0.1:6379/10')
 
     # All data we collect
     config.duration = 1.day
