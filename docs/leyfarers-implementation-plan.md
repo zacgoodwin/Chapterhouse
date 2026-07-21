@@ -154,6 +154,115 @@ armor_class`, the six ability **modifiers**, and `<class>_level`).
    only (`.to_i`), so those grants can't use formulas — irrelevant to these 10
    but load-bearing for Phase B seeding of ability bonuses.
 
+#### A0-1 verdict: Homebrew-UI spike (COMPLETE)
+
+**Method.** The dnd2024 homebrew "UI" is not a form editor. It is a JSON-file
+import: `SharedContent.jsx` "Create" uploads a `.json` file to
+`homebrews_v2/publications`; "Edit" downloads the record as JSON to re-import.
+The uploaded file runs through the `Import::Dnd2024::{Races,Subclasses}`
+dry-validation contracts, then each `features[]` entry persists via
+`Import::Dnd2024::Feats::AddCommand` as a `Dnd2024::Feat` row keyed
+`origin: species|subclass`. So "entering a species/subclass" means authoring a
+JSON file to the fixture schema (`spec/fixtures/dnd2024/{race,subclass}.json`).
+Both entities were authored as real import files and validated against those
+exact contracts by a runnable gate. Live SPA render was NOT exercised: a Rails
+boot is blocked on this box (`config/master.key` absent, credentials encrypted;
+same root cause as the pending Supabase dev creds), so record existence and
+render are proven at the contract + serializer level, which fully determine
+them (`to_homebrew_json` is a pure function of the persisted attributes).
+Artifacts + gate: `docs/reference/a0-homebrew-spike/`
+(`birdfolk.race.json`, `college-of-calamity.subclass.json`, `validate.mjs` →
+`node validate.mjs`, exit 0 = both pass import).
+
+**Homebrew expressiveness ceiling (the schema, from the contracts):**
+- Race header holds: `title`, `description` (markdown), `size[]` (S/M/L set),
+  `speed`, `speeds{flight|swim|climb|burrow}`, `vision{darkvision|truesight|
+  blindsight|tremorsense}`, `resistance|immunity|vulnerability[]`, `features[]`.
+- A feature/feat holds: `title`, `description`, `kind` (static/text/
+  update_result/hidden), `level` (**required** on every feature), `limit`
+  (fixed **integer** 1..20), `limit_refresh` (short_rest/long_rest/
+  one_at_short_rest only), `modifiers`, `continious`, `static_spells`.
+- `modifiers` only apply for decorator-honored keys: ability scores + `spell_
+  save_dc` + `spell_attack_bonus` (add), the weapon attack/damage families, and
+  `set`/`concat` onto `armor_class|initiative|speed|save_dc.*|speeds.*` via
+  Dentaku. Any other key persists but is **inert**.
+- All species-origin (`0`) and subclass-origin (`3`) feats auto-attach; they are
+  NOT in `SELECTABLE_ORIGINS = [4,5,6]`, so a character cannot pick a subset and
+  cannot detach one.
+
+**Birdfolk (species), routes verdict** (8 features authored, all import-valid):
+
+| Requirement | Homebrew field | Routes? | Gap / no-home |
+|---|---|---|---|
+| Size S or M | `size:["small","medium"]` | Yes | per-character S/M pick is a builder concern, not on the race |
+| Speed 30 | `speed:30` | Yes | none |
+| Flight = walk speed | `speeds:{flight:0}` (0 = base) | Partial | "not in medium/heavy armor" conditional has no home; flight is unconditional |
+| Wilderfolk (Beast-type tag) | feature prose | No | no `creature_type`/interaction-tag field; targeting-widen tag is inert text |
+| Choose 3 of 6 optional traits | 6 `features[]` | No | all 6 auto-attach (origin `species` ∉ SELECTABLE_ORIGINS); "choose 3" cannot be expressed or enforced |
+| Nocturnal Hunter (Darkvision 60) | `vision` (race-level) or prose | Partial | vision is race-level not per-trait; as an optional trait it is prose only; "+30 if already have DV" not expressible |
+| Songspeech (Performance prof) | feature prose | No | no skill-proficiency modifier key |
+| Vigilance (advantage on Initiative) | feature prose | No | modifiers are numeric only; "advantage" not expressible |
+| Seizing Talons (1d6 talons + grapple) | feature prose | No | no natural-weapon definition; dice + grapple rider are inert text |
+| Aerial Acrobat, Mimicry | feature prose | Yes | narrative/situational; fine as static text, nothing lost |
+| `level` on every feature | `level:1` ×8 | Yes (friction) | `Feats::AddCommand` marks `level` REQUIRED though the race contract marks it optional; omitting it rolls back the whole import. Species traits carry a meaningless class-level field |
+
+**College of Calamity (Bard subclass), per-level routes verdict** (import-valid):
+
+| Feature (level) | Homebrew field | Routes? | Gap / no-home |
+|---|---|---|---|
+| Parent class | `class_id:"bard"` | Yes | none |
+| Chapter 2 unlock | none | No | no unlock/gate field on subclass or feature |
+| Bardic Sinsperation (3) | feature `level:3` prose | Yes | narrative rider, no hook needed |
+| Savage Mockery (3): Intimidation prof | prose | No | no skill-proficiency grant |
+| Savage Mockery (3): Vicious Mockery cantrip | `static_spells` | Yes* | resolves only if the cantrip is seeded as a `Dnd2024::Feat origin=6`; unseeded → silently dropped |
+| Savage Mockery (3): grants Tavern Brawler feat | prose | No | a feature cannot grant another feat |
+| Savage Mockery (3): failed-save chain | prose | No | automation, out of scope |
+| Dumb Luck (6): reaction, reduce 1d6+Cha | prose | No | damage-reduction reaction is not a modifier |
+| Dumb Luck (6): uses = 1 + Cha / LR | `limit:1, limit_refresh:long_rest` | Partial | the per-LR COUNTER routes as a fixed int; the "1 + Cha mod" scaling does NOT (`limit` is an integer, not a formula); hardcoded to 1, real count tracked by hand |
+| Dumb Luck (6): last-use disadvantage rider | prose | No | conditional rider not expressible |
+| Feast of Fortune (14) | feature `level:14` prose | Yes | narrative refund; fine as text |
+
+**Routes-through vs needs-seeds/code, by content category:**
+
+| Category | Homebrew? | Verdict |
+|---|---|---|
+| Species base stats (size set, speed, race-level senses, extra speeds, resist/immune/vuln) | Yes | routes |
+| Flavor / narrative traits and features | Yes (static text) | routes |
+| Flat ability / spell-save / spell-attack bonuses | Yes (add modifiers) | routes |
+| Innate spells referencing standard spells | Yes* | routes if the 2024 corpus is seeded |
+| Fixed-count per short/long-rest resource | Yes | routes (`limit` + `limit_refresh`) |
+| Choose-N-of-M optional trait pools | No | needs code (`selected_traits` + TLC RefreshFeats) |
+| Creature-type interaction tags (Wilderfolk, Dreamtouched, ...) | No | needs code (character tags) |
+| Skill / tool proficiency grants | No | needs modifier-vocabulary extension + code |
+| Feature-grants-a-feat | No | needs code |
+| PB / ability-scaled resource counts | No | needs formula-valued `limit` (code) |
+| Session-rest / per-day refresh | No | needs `limit_refresh` enum + rest-path code |
+| Unlock gates (chapter / reputation / special) | No | needs unlock field + campaign progress (code) |
+| Alternate AC (13+Dex, Con-for-Dex, handless shield) | Raw only | undocumented set-modifier + Dentaku; really decorator-override / A0-2 territory |
+| Lineage sub-choices (one_from_list / many_from_list) | No | import `Kinds` enum excludes the list kinds |
+| Banned-spell filtering | No | needs code |
+
+**Per-entity entry cost.** Birdfolk: 1 header + 8 features, ~40 min (dominated by
+transcribing rule text into markdown and deciding each mostly-failing mechanical
+mapping). College of Calamity: 1 header + 4 features, ~30 min. The JSON scaffold
+is cheap; the cost is transcription + adjudicating what has no home.
+
+**Phase B pricing implication (one line).** At the measured ~4 min/feature, the
+full corpus (17 species / ~110 optional + ~34 base traits, 12 subclasses / ~60
+features, 13 feats, 8 spells = 225 content features + 29 headers) is ~18 h of raw
+homebrew JSON authoring (computed in `validate.mjs`), and that buys ZERO
+enforcement of choose-3 pools, unlock gates, PB-scaled counters, session rests,
+or creature-type tags, so homebrew-only (Alternative B) is a data-entry cost with
+a hard fidelity ceiling, not a substitute for the `tlc` provider.
+
+**Bottom line.** Confirms the Alternative B row (completeness 4/10): the homebrew
+UI holds species/subclass narrative + flat numeric bonuses + race-level
+senses/speeds + fixed per-rest counters, but cannot express the load-bearing TLC
+mechanics (choose-3 traits, ranks/sessions, gates, scaled resources, tags,
+alternate AC). Phase A (the `tlc` provider) is required. As the kill-criterion
+fallback, homebrew + paper tracking works for flavor, with every gated / scaled /
+choose-N mechanic hand-tracked by the player.
+
 ### Phase A — Provider skeleton (TLC characters exist)
 
 Backend:

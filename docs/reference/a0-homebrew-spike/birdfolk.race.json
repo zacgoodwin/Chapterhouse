@@ -1,0 +1,60 @@
+[
+  {
+    "title": { "en": "Birdfolk" },
+    "description": { "en": "Avian Ruvinar. Size Small or Medium (chosen at creation). Wilderfolk creature-type tag. Innate flight equal to walking speed, lost while wearing medium or heavy armor. Choose 3 of 6 optional traits." },
+    "public": false,
+    "size": ["small", "medium"],
+    "speed": 30,
+    "speeds": { "flight": 0 },
+    "features": [
+      {
+        "title": { "en": "Wilderfolk" },
+        "description": { "en": "You count as a Beast for effects that target Beasts (in addition to Humanoid). Spells and features that affect Beasts can affect you. **Base trait.**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Flight" },
+        "description": { "en": "You have a flying speed equal to your walking speed. You cannot use it while wearing medium or heavy armor. **Base trait.**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Aerial Acrobat" },
+        "description": { "en": "You ignore difficult terrain while flying and do not provoke opportunity attacks when you fly out of an enemy's reach. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Mimicry" },
+        "description": { "en": "You can mimic sounds you have heard, including voices. A creature that hears the sounds can tell they are imitations with a successful Wisdom (Insight) check. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Nocturnal Hunter" },
+        "description": { "en": "You have Darkvision to a range of 60 feet. If you already have Darkvision, its range increases by 30 feet. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Seizing Talons" },
+        "description": { "en": "Your talons are natural weapons dealing 1d6 slashing damage on an unarmed strike. On a hit against a creature your size or smaller you can grapple it. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Songspeech" },
+        "description": { "en": "You gain proficiency in the Performance skill and can communicate simple ideas through birdsong to creatures that can hear you. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      },
+      {
+        "title": { "en": "Vigilance" },
+        "description": { "en": "You have advantage on Initiative rolls. **Optional trait (choose 3).**" },
+        "kind": "static",
+        "level": 1
+      }
+    ]
+  }
+]

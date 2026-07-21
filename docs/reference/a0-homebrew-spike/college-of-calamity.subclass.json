@@ -1,0 +1,39 @@
+[
+  {
+    "title": { "en": "College of Calamity" },
+    "description": { "en": "TLC homebrew Bard college of chaos and luck. Chapter 2 unlock. Features at bard levels 3, 6, and 14." },
+    "public": false,
+    "class_id": "bard",
+    "features": [
+      {
+        "title": { "en": "Bardic Sinsperation" },
+        "description": { "en": "When you roll a 1 on a Bardic Inspiration die, you can reroll it, but you must accompany the reroll with a rude gesture or remark. **Level 3.**" },
+        "kind": "static",
+        "level": 3
+      },
+      {
+        "title": { "en": "Savage Mockery" },
+        "description": { "en": "You gain proficiency in Intimidation, learn the Vicious Mockery cantrip, and gain the Tavern Brawler feat. When a creature fails the save against your Vicious Mockery, the taunt chains to a second creature within 15 feet. **Level 3.**" },
+        "kind": "static",
+        "level": 3,
+        "static_spells": {
+          "Vicious Mockery": { "modifier": "cha" }
+        }
+      },
+      {
+        "title": { "en": "Dumb Luck" },
+        "description": { "en": "As a reaction when you take damage, reduce it by 1d6 + your Charisma modifier. Uses per long rest equal to 1 + your Charisma modifier. On your last use, your next d20 roll is made with disadvantage. **Level 6.**" },
+        "kind": "static",
+        "level": 6,
+        "limit": 1,
+        "limit_refresh": "long_rest"
+      },
+      {
+        "title": { "en": "Feast of Fortune" },
+        "description": { "en": "When you roll the maximum value on a Bardic Inspiration die, you regain one expended use of Bardic Inspiration. **Level 14.**" },
+        "kind": "static",
+        "level": 14
+      }
+    ]
+  }
+]
