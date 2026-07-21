@@ -48,8 +48,12 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Use a different cache store in production.
-  config.cache_store = :redis_cache_store, { host: 'localhost', port: 6379, db: 2 }
+  # Use a different cache store in production. On Fly this is the Upstash Redis
+  # URL (REDIS_URL secret); Upstash is single-db (db 0), so no db index there.
+  # Falls back to local redis for local RAILS_ENV=production runs.
+  # RedisCacheStore's default error handler treats a Redis outage as a cache
+  # miss (logged), so a Redis blip never fails a request.
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'].presence || 'redis://localhost:6379/2' }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
