@@ -15,7 +15,7 @@ ENV RAILS_ENV=production \
     PORT=3000
 
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libpq5 && \
+    apt-get install --no-install-recommends -y curl libpq5 libsodium23 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 FROM base AS build

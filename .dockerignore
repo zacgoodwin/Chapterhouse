@@ -29,3 +29,7 @@ Procfile
 Procfile.lp
 config/deploy.rb
 config/deploy
+
+# Dev Dirs
+.worktrees/
+graphify-out/

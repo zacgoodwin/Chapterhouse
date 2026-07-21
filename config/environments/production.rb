@@ -38,6 +38,12 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
+  # Fly's proxy terminates TLS, so Rails only ever sees plain HTTP on :3000.
+  # Without assume_ssl, force_ssl 301s the health check (Fly hits
+  # http://localhost:3000/up with no X-Forwarded-Proto) and the machine never
+  # goes healthy. Edge-level force_https in fly.toml still forces user traffic.
+  config.assume_ssl = true
+
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
