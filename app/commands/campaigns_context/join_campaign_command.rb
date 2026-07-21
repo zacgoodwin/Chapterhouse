@@ -4,7 +4,8 @@ module CampaignsContext
   class JoinCampaignCommand < BaseCommand
     CHARACTER_PROVIDERS = {
       'Dnd5::Character' => 'dnd5',
-      'Dnd2024::Character' => 'dnd2024'
+      'Dnd2024::Character' => 'dnd2024',
+      'Tlc::Character' => 'tlc'
     }.freeze
 
     use_contract do

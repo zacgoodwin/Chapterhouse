@@ -108,6 +108,22 @@ describe Frontend::Campaigns::JoinsController do
           expect(response).to have_http_status :ok
         end
       end
+
+      context 'for tlc campaign and tlc character' do
+        let!(:tlc_campaign) { create :campaign, :tlc }
+        let!(:tlc_character) { create :character, :tlc, user: user }
+        let(:request) {
+          post :create, params: {
+            campaign_id: tlc_campaign.id, character_id: tlc_character.id, charkeeper_access_token: access_token
+          }
+        }
+
+        it 'creates campaign character', :aggregate_failures do
+          expect { request }.to change(tlc_campaign.campaign_characters, :count).by(1)
+          expect(response).to have_http_status :ok
+          expect(response.parsed_body).to eq({ 'result' => 'ok' })
+        end
+      end
     end
   end
 
