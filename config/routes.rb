@@ -108,6 +108,17 @@ Rails.application.routes.draw do
       resources :spells, only: %i[index show]
     end
 
+    # Only the endpoints whose Frontend::Tlc controllers exist. Spell options
+    # (C5), craft/talents/homebrew items and `import` land with their owning
+    # tickets; routing them now would 500 on a missing controller constant.
+    namespace :tlc do
+      resources :characters, only: %i[create update] do
+        scope module: :characters do
+          resources :rest, only: %i[create]
+        end
+      end
+    end
+
     scope ':provider' do
       namespace :tags do
         scope ':type' do
