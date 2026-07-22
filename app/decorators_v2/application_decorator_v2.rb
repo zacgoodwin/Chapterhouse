@@ -15,5 +15,4 @@ class ApplicationDecoratorV2
 
     @result[method.to_s]
   end
-
 end
