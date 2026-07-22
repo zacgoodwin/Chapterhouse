@@ -30,16 +30,17 @@
 # line regresses; see the A6 review's mutation pass for the exact lines.
 #
 # AC3 baseline ("pre-TLC baseline branch -> run the same specs -> green there
-# too"): every example in this file EXCEPT the two tagged :tlc_provider below
+# too"): every example in this file EXCEPT the three tagged :tlc_provider below
 # is baseline-portable -- `bin/rspec spec/requests/frontend/dnd2024/regression_spec.rb
 # --tag ~tlc_provider` passes at any commit, including a genuine pre-TLC
 # checkout (e.g. 271e0f2d, the commit immediately before A1/#36 first added
-# TLC backend code). The two :tlc_provider examples call `create :character,
-# :tlc` and need A1's :tlc factory trait plus Character.scope(:tlc), neither of
-# which exists before b6bae3d3 (A1, #36) -- they're verified from A1 forward,
-# not against a literal pre-TLC checkout. (0cacf70d, where this file was
-# separately verified green, is post-A1: not the "pre-TLC" baseline AC3 means
-# literally, just the closest fully-green commit before A3/#51 landed.)
+# TLC backend code). The three :tlc_provider examples call `create :character,
+# :tlc` or `create :feat, :tlc` and need A1's :tlc factory traits plus
+# Character.scope(:tlc), neither of which exists before b6bae3d3 (A1, #36) --
+# they're verified from A1 forward, not against a literal pre-TLC checkout.
+# (0cacf70d, where this file was separately verified green, is post-A1: not
+# the "pre-TLC" baseline AC3 means literally, just the closest fully-green
+# commit before A3/#51 landed.)
 describe 'Frontend::Dnd2024::Characters regression' do
   let!(:user) { create :user }
   let(:access_token) { supabase_token_for(user) }
@@ -86,7 +87,7 @@ describe 'Frontend::Dnd2024::Characters regression' do
     # as the shared risk) would leak a same-origin_value Tlc::Feat onto a
     # dnd2024 character; matching_dnd2024_feat and matching_tlc_feat share
     # origin_value 'bard' so only STI type tells them apart.
-    it 'updates the character and attaches only same-provider feats for the new class', :aggregate_failures do
+    it 'updates the character and attaches only same-provider feats for the new class', :aggregate_failures, :tlc_provider do
       matching_dnd2024_feat = create :feat, :dnd2024, origin_value: 'bard'
       matching_tlc_feat = create :feat, :tlc, origin_value: 'bard'
 
