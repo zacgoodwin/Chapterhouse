@@ -72,10 +72,12 @@ the real `fetchDictionary`, not a copy of its merge. The create endpoint itself 
 covered server-side by `spec/requests/frontend/tlc/characters_spec.rb`. The loader
 uses `module.registerHooks`, which is why `.node-version` moved to 22.15.0.
 
-There is no browser gate. Cypress is not installed in this repo — only the
-`cypress-on-rails` gem is, a leftover from upstream, with no `cypress` package in
-any `package.json` and no CI job to run one — so a `.cy.js` spec here would be a
-file nothing executes. The two surfaces that only a browser can drive are checked
+There is no browser gate. Cypress has no automated runner here: it is not a
+dependency in any `package.json`, and there is no CI at all. Running the specs
+under `spec/e2e` is the manual install-then-uninstall flow in the README (`yarn
+add cypress` → `rails server -e test` → `yarn cypress run` → `yarn remove
+cypress`), so nothing runs a `.cy.js` spec unless a human does it by hand. The
+two surfaces that only a browser can drive are checked
 by hand: the platform picker routing to the TLC form, and the sheet opening
 through the `tlc` branch of `CharacterTab`. Both read their state from a fetch
 that never runs under SSR, so nothing short of a real browser covers them.
