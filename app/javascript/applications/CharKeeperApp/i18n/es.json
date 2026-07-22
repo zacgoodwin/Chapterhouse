@@ -215,5 +215,20 @@
       "heavy": "Armadura pesada",
       "shield": "Escudo"
     }
+  },
+  "warnings": {
+    "title": "Avisos de reglas",
+    "dismiss": "Descartar",
+    "restore": "Restaurar",
+    "source": {
+      "PHB": "Manual del Jugador",
+      "TLC": "The Leyfarer's Chronicle"
+    },
+    "multiclassPrereq": "No cumples los requisitos de característica para multiclase en estas clases (se requiere 13 en cada característica indicada).",
+    "traitCount": "Has seleccionado más rasgos de especie de los que tu especie permite.",
+    "preparedOverrun": "Tienes más conjuros preparados de los que esta clase permite.",
+    "levelVsChapterCap": "Tu nivel supera el máximo del capítulo de la campaña.",
+    "bannedSpellExempted": "Una característica otorga un conjuro prohibido en TLC; se mantiene como excepción explícita.",
+    "traitUnavailable": "Un rasgo de especie seleccionado ya no existe y fue omitido."
   }
 }
