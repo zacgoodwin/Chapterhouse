@@ -4,7 +4,7 @@ import * as i18n from '@solid-primitives/i18n';
 import { IconButton } from '../../../components';
 import { Dots, Avatar } from '../../../assets';
 import dnd5Config from '../../../data/dnd5.json';
-import { dndConfigFor } from '../../../data/tlcConfig';
+import { dndConfigFor, speciesFor } from '../../../data/tlcConfig';
 import { useAppLocale } from '../../../context';
 import { clickOutside, localize, isDnd2024Family } from '../../../helpers';
 
@@ -50,9 +50,9 @@ export const CharactersListItem = (props) => {
     props.onDeleteCharacter(event);
   }
 
-  // dnd2024 species come in via props (config + user homebrew races); tlc adds
-  // its own on top of the merged config, and homebrew still wins.
-  const speciesConfig = createMemo(() => ({ ...dndConfigFor(character().provider).species, ...props.dnd2024Races }));
+  // The row's own provider decides the base species; only user homebrew races
+  // arrive by prop, so a tlc row keeps its merged overrides.
+  const speciesConfig = createMemo(() => speciesFor(character().provider, props.homebrewRaces));
 
   const firstText = createMemo(() => {
     if (character().provider === 'dnd5') {

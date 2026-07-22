@@ -3,7 +3,17 @@
 module PlatformConfig
   extend self
 
-  def data(provider, version: '0.4.12')
+  CONFIG_DIR = Rails.root.join('app/javascript/applications/CharKeeperApp/data')
+  # Content-addressed cache version. The merged config is a pure function of
+  # these files, and production's redis store survives deploys, so a
+  # hand-maintained number means a tlc.json change ships behind the stale key it
+  # already warmed and serves the old config for the rest of the 3-day window.
+  # Digesting the inputs makes every content change its own key. Computed once
+  # per boot -- the files cannot change under a running process.
+  CONFIG_VERSION =
+    Digest::SHA256.hexdigest(Dir[CONFIG_DIR.join('*.json')].map { |file| File.read(file) }.join)[0, 12]
+
+  def data(provider, version: CONFIG_VERSION)
     Rails.cache.fetch("#{provider}/#{version}", expires_in: 3.days) { load_data(provider) }
   end
 
@@ -14,7 +24,8 @@ module PlatformConfig
   # deep-merge on top (its values win, nested hashes combine key-by-key, arrays
   # replace wholesale). Chained bases resolve recursively. The merge runs inside
   # `data`'s cache block, so it is computed once per cache window -- a tlc.json
-  # edit only surfaces after a version bump or cache clear (plan L871-873).
+  # edit surfaces once the process restarts and CONFIG_VERSION re-digests
+  # (plan L871-873).
   def load_data(provider)
     config = read_config(provider)
     base = config['base']
@@ -24,6 +35,6 @@ module PlatformConfig
   end
 
   def read_config(provider)
-    JSON.parse(Rails.root.join("app/javascript/applications/CharKeeperApp/data/#{provider}.json").read)
+    JSON.parse(CONFIG_DIR.join("#{provider}.json").read)
   end
 end

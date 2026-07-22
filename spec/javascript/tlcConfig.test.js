@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import dnd2024Config from '../../app/javascript/applications/CharKeeperApp/data/dnd2024.json' with { type: 'json' };
 import tlcDelta from '../../app/javascript/applications/CharKeeperApp/data/tlc.json' with { type: 'json' };
-import { tlcConfig, dndConfigFor } from '../../app/javascript/applications/CharKeeperApp/data/tlcConfig.js';
+import { tlcConfig, dndConfigFor, speciesFor } from '../../app/javascript/applications/CharKeeperApp/data/tlcConfig.js';
 
 const CHARKEEPER = path.join(
   fileURLToPath(new URL('../../', import.meta.url)),
@@ -51,6 +51,22 @@ test('dndConfigFor routes tlc to the merged config and leaves dnd2024 alone', ()
   assert.equal(dndConfigFor('tlc'), tlcConfig);
   assert.equal(dndConfigFor('dnd2024'), dnd2024Config);
   assert.equal(dndConfigFor('dnd5'), dnd2024Config);
+});
+
+// The list row renders species through speciesFor; feeding it dnd2024's base
+// species as if they were homebrew clobbers every slug tlc redefines.
+test('speciesFor keeps the tlc overrides and lets homebrew win', () => {
+  const tlcSpecies = speciesFor('tlc');
+
+  assert.deepEqual(tlcSpecies.dwarf.sizes, ['medium']);
+  assert.equal(tlcSpecies.dwarf.unlock, 'reputation');
+  assert.deepEqual(speciesFor('dnd2024').dwarf, dnd2024Config.species.dwarf);
+
+  const homebrew = { customspecies: { name: { en: 'Custom' }, legacies: {} } };
+  assert.deepEqual(speciesFor('tlc', homebrew).customspecies, homebrew.customspecies);
+  assert.equal(speciesFor('tlc', homebrew).dwarf.unlock, 'reputation');
+  // Homebrew overriding a shared slug still wins over the merged config.
+  assert.equal(speciesFor('tlc', { dwarf: { name: { en: 'Hb' } } }).dwarf.name.en, 'Hb');
 });
 
 const sourceFiles = (dir) =>

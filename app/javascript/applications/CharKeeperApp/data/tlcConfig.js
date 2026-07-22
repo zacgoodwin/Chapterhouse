@@ -33,3 +33,9 @@ export const tlcConfig = deepMerge(dnd2024Config, delta);
 // The dnd-family config object for a provider. tlc characters must read the
 // merged config; dnd5/dnd2024 keep their own JSON.
 export const dndConfigFor = (provider) => (provider === 'tlc' ? tlcConfig : dnd2024Config);
+
+// Species a character can be rendered from: the provider's own config first,
+// user homebrew races on top. Callers must pass homebrew races ALONE -- pass a
+// dnd2024-config-plus-homebrew blob for a tlc character and dnd2024's base
+// species clobber every slug tlc redefines.
+export const speciesFor = (provider, homebrewRaces = {}) => ({ ...dndConfigFor(provider).species, ...homebrewRaces });
