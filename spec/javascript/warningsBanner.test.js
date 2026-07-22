@@ -11,6 +11,10 @@ const { WarningsBanner } = await import(
   '../../app/javascript/applications/CharKeeperApp/components/molecules/WarningsBanner.jsx'
 );
 const { fetchDictionary } = await import('../../app/javascript/applications/CharKeeperApp/context/appLocale.jsx');
+// The sheet itself: Dnd5.jsx mounts the banner (Dnd5.jsx:429). Its page/component
+// tree resolves through support/stubs.js (real banner, null-stubbed siblings), so
+// this render gates the mount -- drop the mount line and the title assertion REDs.
+const { Dnd5 } = await import('../../app/javascript/applications/CharKeeperApp/pages/Content/Character/Dnd5.jsx');
 
 const DICTIONARIES = Object.fromEntries(
   await Promise.all(['en', 'ru', 'es'].map(async (locale) => [locale, await fetchDictionary(locale)]))
@@ -121,4 +125,30 @@ test('es and ru render the message and source from their own warnings block, nev
     // The locale actually applied: its message is not the en string.
     assert.notEqual(message, DICTIONARIES.en['warnings.multiclassPrereq']);
   }
+});
+
+// classes/subclasses are the only character fields Dnd5's setup memos read
+// directly (Object.keys/Object.values); the abilities column the SSR reaches
+// touches nothing else. Everything but the banner renders to null via stubs.js.
+const sheetCharacter = (overrides = {}) => ({ ...character(), classes: {}, subclasses: {}, ...overrides });
+
+test('the sheet mounts the banner: rendering Dnd5 shows the warning title and message', () => {
+  stubs.setAppLocale('en', DICTIONARIES.en);
+  stubs.resetRequests();
+
+  const html = renderToString(() => Dnd5({ character: sheetCharacter(), onReloadCharacter: async () => {} }));
+
+  // Removing the <WarningsBanner .../> mount from Dnd5.jsx makes both go RED.
+  assert.ok(html.includes(DICTIONARIES.en['warnings.title']), 'the sheet does not mount the banner title');
+  assert.ok(html.includes(DICTIONARIES.en['warnings.multiclassPrereq']), 'the sheet does not mount the translated message');
+});
+
+test('a warning with no dismissed_warnings key still dismisses (guarded spread)', async () => {
+  // dismissible warning present, dismissed_warnings absent: the unguarded spread
+  // would throw. The payload is just the new slug.
+  const { buttons } = render(character({ dismissed_warnings: undefined }));
+
+  await buttons[0].onClick();
+
+  assert.deepEqual(stubs.requests[0].options.payload.character.dismissed_warnings, ['multiclass_prereq']);
 });

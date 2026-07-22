@@ -25,7 +25,7 @@ export const WarningsBanner = (props) => {
       appState.accessToken,
       props.character.provider,
       props.character.id,
-      { character: { dismissed_warnings: [...props.character.dismissed_warnings, slug] } }
+      { character: { dismissed_warnings: [...(props.character.dismissed_warnings || []), slug] } }
     );
 
     if (result.errors_list === undefined) await props.onReloadCharacter();
