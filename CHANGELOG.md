@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 ### Fixed
-- TLC characters now receive the shared D&D 2024 class features and species traits on create/update (the strict `Tlc::Feat` scope attached nothing while the TLC corpus is empty)
-- soft rule warnings now render on the character sheet as a dismissible banner (they were computed and served but no JSX read them)
+- TLC characters now receive the D&D 2024 features they share (class, species, legacy, feat) on create and on feature-affecting updates (the strict `Tlc::Feat` scope attached nothing while the TLC feat corpus is empty)
+- soft rule warnings now render on the TLC character sheet as a dismissible banner (they were computed and served but no JSX read them)
 
 ### Added
 - leyfarers (tlc) implementation plan, reference digests, and source docs (docs/; PDFs via the reference-docs release)

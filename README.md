@@ -55,7 +55,8 @@ that predate the removal.
 Player and DM guides for the TLC provider live in `docs/user-guide/`
 (creating a TLC character, rule warnings, homebrew, admin content).
 The Leyfarers/TLC implementation plan lives at
-`docs/leyfarers-implementation-plan.md` with digests in `docs/reference/`.
+`docs/leyfarers-implementation-plan.md` with digests in `docs/` and source
+references in `docs/reference/`.
 Reference PDFs are NOT in git (GitHub blocks LFS uploads on public forks);
 download the Players Guide from the
 [reference-docs release](https://github.com/zacgoodwin/Chapterhouse/releases/tag/reference-docs)

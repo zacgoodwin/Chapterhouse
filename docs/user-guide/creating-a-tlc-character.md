@@ -56,6 +56,10 @@ The new character appears at the top of the list, showing `Level 3` and its
 species. A **The Leyfarer's Chronicle** tab appears in the list filter once you
 have at least one TLC character.
 
+Class features and any species or legacy features TLC shares with D&D 2024
+attach automatically on save; a TLC-only species shows no species traits until
+the TLC content corpus is seeded.
+
 Opening it renders the D&D 2024 sheet as interim scaffolding while the dedicated
 TLC sheet is built. Most tabs work as they do for a 2024 character; **Craft** is
 the exception — it has no TLC endpoint yet and shows an error until crafting

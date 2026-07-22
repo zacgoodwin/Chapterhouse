@@ -4,6 +4,9 @@ Chapterhouse never blocks a choice. If a build breaks a rule, the sheet still
 saves it and raises a **warning** instead: a short note saying which rule broke
 and where the rule comes from. You decide whether it matters at your table.
 
+Warnings are a TLC-provider feature: only TLC characters compute and serve
+them. D&D 5 and D&D 2024 sheets have no warnings.
+
 Only two things are ever rejected outright, and neither is a rule judgement:
 
 - Data that does not exist (a species trait whose content row is not in the
@@ -97,6 +100,12 @@ Each entry serializes as:
 `context` carries whatever the message needs to interpolate and differs per
 slug. At most one entry per slug is ever produced, because dismissals are keyed
 by slug alone — a check with several offenders aggregates them into `context`.
+The banner does not interpolate `context` yet — the locale strings are written
+generically, so `t(message_key)` alone renders a complete message.
+
+The frontend surface is `components/molecules/WarningsBanner.jsx`, exported
+through the components barrel. Dismiss PATCHes the slug appended to
+`data.dismissed_warnings` and reloads the character on success.
 
 The character serializer exposes `warnings` (active only) alongside
 `dismissed_warnings` (the raw hidden list, for the settings restore surface).
