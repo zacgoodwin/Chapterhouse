@@ -101,6 +101,8 @@ export const CharactersTab = () => {
       </div>
     );
 
+    // No automated gate: this memo only evaluates after the characters fetch has
+    // resolved, which SSR never does (README, Frontend tests).
     if (platform() === 'tlc') {
       return <TlcCharacterForm onCreateCharacter={saveCharacter} setCurrentTab={setCurrentTab} />;
     }

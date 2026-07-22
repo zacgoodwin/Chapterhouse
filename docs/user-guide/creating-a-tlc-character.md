@@ -56,31 +56,11 @@ The new character appears at the top of the list, showing `Level 3` and its
 species. A **The Leyfarer's Chronicle** tab appears in the list filter once you
 have at least one TLC character.
 
-Opening it renders the D&D 2024 sheet as interim scaffolding — same tabs, same
-controls — while the dedicated TLC sheet is built. The PDF export in the row menu
-is deliberately absent: the export sheet is the official 2024 character sheet and
-there is no TLC one to fill.
-
-## How this is tested
-
-`npm test` renders the real form (`spec/javascript/tlcForm.test.js`): a node
-loader compiles the `.jsx` with the same babel preset esbuild uses, in SSR mode,
-and stubs the barrels so the field components record the props the form hands
-them. It gates the species list, the size default, the payload the Save button
-submits, and that no label renders blank in `en`/`ru`/`es` — the last one against
-the real `fetchDictionary`, not a copy of its merge. The create endpoint itself is
-covered server-side by `spec/requests/frontend/tlc/characters_spec.rb`. The loader
-uses `module.registerHooks`, which is why `.node-version` moved to 22.15.0.
-
-There is no browser gate. Cypress has no automated runner here: it is not a
-dependency in any `package.json`, and there is no CI at all. Running the specs
-under `spec/e2e` is the manual install-then-uninstall flow in the README (`yarn
-add cypress` → `rails server -e test` → `yarn cypress run` → `yarn remove
-cypress`), so nothing runs a `.cy.js` spec unless a human does it by hand. The
-two surfaces that only a browser can drive are checked
-by hand: the platform picker routing to the TLC form, and the sheet opening
-through the `tlc` branch of `CharacterTab`. Both read their state from a fetch
-that never runs under SSR, so nothing short of a real browser covers them.
+Opening it renders the D&D 2024 sheet as interim scaffolding while the dedicated
+TLC sheet is built. Most tabs work as they do for a 2024 character; **Craft** is
+the exception — it has no TLC endpoint yet and shows an error until crafting
+lands. The PDF export in the row menu is deliberately absent: the export sheet is
+the official 2024 character sheet and there is no TLC one to fill.
 
 ## Language support
 

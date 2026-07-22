@@ -29,14 +29,47 @@ const renderForm = (locale = 'en', onCreateCharacter = async () => null) => {
 };
 
 const speciesSelect = (fields) => fields.find((item) => item.kind === 'select');
+const nameInput = (fields) => fields.find((item) => item.kind === 'input');
 
-test('the form renders the interim TLC fields and nothing else', () => {
+test('a fresh mount renders the interim TLC fields and nothing else', () => {
+  // Dirty a form first, on purpose: the field shape has to hold for any mount, not
+  // only for the mount that happens to run before every other test in the file.
+  // A form that leaked its species into the next mount renders an extra size
+  // Select here (Tlc.jsx `<Show when={species !== undefined}>`).
+  speciesSelect(renderForm().fields).onSelect('birdfolk');
+
   const { fields } = renderForm();
 
   // No level or ability inputs (the server fixes both), no D&D Beyond file import.
   assert.deepEqual(fields.map((item) => item.kind), ['input', 'select', 'select', 'select', 'select', 'checkbox']);
   assert.equal(fields[0].labelText, 'Name');
+  assert.equal(nameInput(fields).value, '');
+  assert.equal(speciesSelect(fields).selectedValue, undefined);
   assert.equal(fields.at(-1).checked, false);
+});
+
+test('saving clears the form, so the next Save cannot repost the character just created', async () => {
+  const submitted = [];
+  const { fields, save } = renderForm('en', async (payload) => { submitted.push({ ...payload }); return null; });
+
+  nameInput(fields).onInput('Kaelith');
+  speciesSelect(fields).onSelect('birdfolk');
+  await save();
+  // The player taps Save again without touching a field: the reset at Tlc.jsx must
+  // have emptied the store, or this posts a duplicate of the character just made.
+  await save();
+
+  assert.equal(submitted.length, 2);
+  assert.equal(submitted[0].name, 'Kaelith');
+  assert.equal(submitted[0].species, 'birdfolk');
+  assert.equal(submitted[1].name, '');
+  assert.equal(submitted[1].species, undefined);
+  assert.equal(submitted[1].size, undefined);
+  assert.equal(submitted[1].background, undefined);
+  assert.equal(submitted[1].alignment, 'neutral');
+  // skip_guide is the one field a save keeps on: the guide is a first-character
+  // walkthrough, so the dnd2024 form leaves it set too (Dnd2024.jsx saveCharacter).
+  assert.equal(submitted[1].skip_guide, true);
 });
 
 test('the species select offers exactly the TLC species, never the dnd2024 base', () => {

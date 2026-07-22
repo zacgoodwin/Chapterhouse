@@ -85,6 +85,21 @@ Modifier syntax errors (malformed Dentaku formulas, missing variables) surface a
 
 **Cache caveat:** `app/lib/platform_config.rb` caches the TLC config (`app/javascript/applications/CharKeeperApp/data/tlc.json`) under a cache key derived from the config files' own contents (`PlatformConfig::CONFIG_VERSION`, a SHA of every `data/*.json`) for 3 days. Editing `tlc.json` changes the key, so a deploy picks the new config up even though production's redis cache survives deploys. The digest is computed at boot: in development, restart the server (or `Rails.cache.clear`) after editing `tlc.json`.
 
+### Frontend tests
+
+```bash
+$ npm test
+```
+
+`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label in `en`/`ru`/`es` against the real `fetchDictionary`). The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
+
+**What this harness cannot reach.** Anything whose state arrives from a `fetch` inside a `createEffect`, because SSR never runs effects and there is no DOM here (no jsdom, no headless browser). Two TLC surfaces sit behind exactly that and are checked by hand only:
+
+- `pages/Navigation/CharactersTab.jsx` — the platform picker routing `tlc` to `TlcCharacterForm`. The picker only renders after the characters fetch resolves.
+- `pages/Content/CharacterTab.jsx` — the `provider === 'tlc'` `<Match>` opening the interim Dnd5 sheet. `character()` is empty until its fetch resolves.
+
+Deleting either branch leaves `npm test` green. Cypress would cover them, but it has no automated runner in this repo (not a dependency in any `package.json`, no CI): the `spec/e2e` flow below is a manual install-run-uninstall, so a `.cy.js` spec runs only when a human runs it. Adding a real gate means adding a browser-based runner, which is a bigger call than any one ticket.
+
 ### E2E tests
 
 With browser

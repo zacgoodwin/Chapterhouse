@@ -25,7 +25,10 @@ const TLC_DEFAULT_FORM = {
 };
 
 export const TlcCharacterForm = (props) => {
-  const [characterTlcForm, setCharacterTlcForm] = createStore(TLC_DEFAULT_FORM);
+  // Copy, never the constant itself: createStore writes through the proxy into the
+  // object it is handed, so passing TLC_DEFAULT_FORM would let every keystroke edit
+  // the module constant -- and the reset below spreads that same constant.
+  const [characterTlcForm, setCharacterTlcForm] = createStore({ ...TLC_DEFAULT_FORM });
 
   const [locale, dict] = useAppLocale();
   const t = i18n.translator(dict);
