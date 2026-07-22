@@ -49,6 +49,9 @@ campaign is held to the earliest chapter.
 
 ## Dismissing and restoring
 
+Active warnings show as a banner at the top of the character sheet, one row per
+warning, each with its message, source label, and a Dismiss button.
+
 Every warning is dismissible. Dismissing one hides it from the sheet and adds
 its slug to the character's dismissed list; the warning stays hidden until you
 restore it from character settings, even if you later change the build in a way
