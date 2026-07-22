@@ -32,14 +32,21 @@ Key routing rules:
 - Merge method: squash
 - Project type: web app (Rails 8.1 + SolidJS; Supabase for DB/Auth/Storage/Realtime). Two Fly process groups: `web` (auto-stops to 0) + `worker` (GoodJob, always-on).
 - Post-deploy health check: https://chapterhouse.fly.dev/up
-- flyctl: installed at `~/.fly/bin/flyctl.exe` (v0.4.72). Not yet authed — run `flyctl auth login` (browser).
+- flyctl: installed at `~/.fly/bin/flyctl.exe` (v0.4.72), authed.
 - Note: Procfile and config/deploy.rb are upstream (kortirso) leftovers — never deploy with them.
-- FIRST-DEPLOY GATE: do not deploy until all four hold —
-  (1) DONE — `config/master.key` present + valid on this box (gitignored). Re-keyed 2026-07-20 (old upstream kortirso enc was undecryptable): fresh master.key + Chapterhouse-owned enc holding `secret_key_base`, `production` + `development` (mirrored) `.supabase.{db,url,anon_key,service_role_key,storage}` + `.discord_{bot_token,public_key}`. DB creds LIVE-VERIFIED: session pooler `aws-1-us-west-2.pooler.supabase.com:5432`, user `chapter.surtaqeyusnowwltwgka` (custom least-priv role, tenant-suffixed), SELECT + LISTEN/UNLISTEN confirmed against PG 17.6.
-  (2) the Supabase project exists (ref `surtaqeyusnowwltwgka`) and its schema is loaded (README "Supabase setup": `db:schema:load` + `db:seed` run locally);
-  (3) `fly apps create chapterhouse` has been run by a human;
-  (4) `fly secrets set RAILS_MASTER_KEY=<config/master.key contents> --app chapterhouse` is done (SUPABASE_URL is already in credentials, so no separate secret needed).
-  Until all four hold, stop after merge.
+- FIRST-DEPLOY GATE: SATISFIED — the app is created, secrets are set, and production is live.
+  Kept as history; there is no longer a gate to clear before deploying.
+  - `config/master.key` is gitignored and lives only on the dev box and in Fly's
+    `RAILS_MASTER_KEY` secret. Keep a copy in a password manager: losing it means re-keying.
+  - The encrypted credentials hold `secret_key_base` plus `production` and `development`
+    (mirrored) `.supabase.{db,url,anon_key,service_role_key,storage}` and
+    `.discord_{bot_token,public_key}`. Read them with `bin/rails credentials:show`; never
+    paste project refs, DB users, hostnames, or keys into tracked files — this repo is public.
+  - Fly secrets in use: `RAILS_MASTER_KEY`, `REDIS_URL`. `SUPABASE_URL` comes from
+    credentials, so it needs no separate secret.
+  - The deploy's `release_command` runs `bin/rails db:migrate` against Supabase on every
+    deploy. Locally, never run `db:migrate`/`db:create`/`db:drop` against Supabase — use
+    `db:schema:load` + `db:seed` per README "Supabase setup".
 
 ### Custom deploy hooks
 
