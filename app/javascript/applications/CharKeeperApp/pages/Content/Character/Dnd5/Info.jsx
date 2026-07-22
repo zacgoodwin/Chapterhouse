@@ -4,7 +4,7 @@ import { ErrorWrapper, GuideWrapper, Text } from '../../../../components';
 import config from '../../../../data/dnd5.json';
 import configNext from '../../../../data/dnd2024.json';
 import { useAppLocale } from '../../../../context';
-import { localize } from '../../../../helpers';
+import { localize, isDnd2024Family } from '../../../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -40,7 +40,7 @@ export const Dnd5Info = (props) => {
 
   const availableKeys = createMemo(() => {
     if (character().provider === 'dnd5') return ['alignment', 'race', 'subrace'];
-    if (character().provider === 'dnd2024') return ['alignment', 'species', 'legacy', 'background'];
+    if (isDnd2024Family(character().provider)) return ['alignment', 'species', 'legacy', 'background'];
 
     return [];
   })

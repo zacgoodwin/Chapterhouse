@@ -3,6 +3,7 @@ import * as i18n from '@solid-primitives/i18n';
 
 import { ErrorWrapper, Equipment } from '../../../components';
 import { useAppLocale } from '../../../context';
+import { isDnd2024Family } from '../../../helpers';
 
 export const CampaignItems = (props) => {
   const campaign = () => props.campaign;
@@ -22,7 +23,7 @@ export const CampaignItems = (props) => {
   return (
     <ErrorWrapper payload={{ campaign_id: campaign().id, key: 'CampaignItems' }}>
       <Switch>
-        <Match when={campaign().provider === 'dnd5' || campaign().provider === 'dnd2024'}>
+        <Match when={campaign().provider === 'dnd5' || isDnd2024Family(campaign().provider)}>
           <Equipment
             forCampaign
             withWeight

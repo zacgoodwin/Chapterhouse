@@ -3,7 +3,7 @@ import { createSignal, createEffect, createMemo, For, Show, batch } from 'solid-
 import { ErrorWrapper, Dice, GuideWrapper, createModal, Button, Select } from '../../components';
 import { useAppState, useAppLocale } from '../../context';
 import { Edit } from '../../assets';
-import { modifier, readFromCache, writeToCache, localize } from '../../helpers';
+import { modifier, readFromCache, writeToCache, localize, isDnd2024Family } from '../../helpers';
 import { fetchTagInfoRequest } from '../../requests/fetchTagInfoRequest';
 
 const DISTANCE_SETTINGS_CACHE_NAME = 'DistanceSettings';
@@ -91,7 +91,8 @@ export const Combat = (props) => {
   });
 
   const showTagInfo = async (tag, value) => {
-    const provider = character().provider === 'dnd5' || character().provider === 'dnd2024' ? 'dnd' : character().provider;
+    // Weapon tag copy is shared across the dnd family (config/locales `tags.dnd.*`).
+    const provider = character().provider === 'dnd5' || isDnd2024Family(character().provider) ? 'dnd' : character().provider;
     const result = await fetchTagInfoRequest(appState.accessToken, provider, 'weapon', tag);
     batch(() => {
       openModal();

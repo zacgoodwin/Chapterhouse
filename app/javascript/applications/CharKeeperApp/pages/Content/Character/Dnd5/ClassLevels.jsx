@@ -4,6 +4,7 @@ import * as i18n from '@solid-primitives/i18n';
 import { ErrorWrapper, Select, Checkbox, Button, GuideWrapper, Toggle } from '../../../../components';
 import dnd2024Config from '../../../../data/dnd2024.json';
 import dnd5Config from '../../../../data/dnd5.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale, useAppAlert } from '../../../../context';
 import { PlusSmall, Minus } from '../../../../assets';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
@@ -59,7 +60,9 @@ const TRANSLATION = {
 
 export const Dnd5ClassLevels = (props) => {
   const character = () => props.character;
-  const currentConfig = () => character().provider === 'dnd5' ? dnd5Config : dnd2024Config;
+  // tlc reads the merged config so its 12 homebrew subclasses reach the picker;
+  // the static dnd2024 import alone would only ever show the 2024 list.
+  const currentConfig = () => character().provider === 'dnd5' ? dnd5Config : dndConfigFor(character().provider);
 
   const [lastActiveCharacterId, setLastActiveCharacterId] = createSignal(undefined);
   const [homebrews, setHomebrews] = createSignal(undefined);
@@ -81,6 +84,8 @@ export const Dnd5ClassLevels = (props) => {
   createEffect(() => {
     if (lastActiveCharacterId() === character().id) return;
 
+    // Kept dnd2024-only: there is no frontend/tlc talents route yet (config/routes.rb
+    // L111-120), so widening this to the family would 404 on every tlc character open.
     if (character().provider === 'dnd2024') {
       Promise.all([fetchTalents()]).then(
         ([talentsData]) => {
@@ -283,6 +288,7 @@ export const Dnd5ClassLevels = (props) => {
           </For>
           <Button default textable classList="mt-2" onClick={updateClasses}>{t('save')}</Button>
         </div>
+        {/* Kept dnd2024-only to match the talents fetch above; unblocks with the tlc talents route. */}
         <Show when={character().provider === 'dnd2024'}>
           <Toggle
             containerClassList="mt-2"

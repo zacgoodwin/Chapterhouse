@@ -3,11 +3,13 @@ import * as i18n from '@solid-primitives/i18n';
 
 import { IconButton } from '../../../components';
 import { Dots, Avatar } from '../../../assets';
-import dnd2024Config from '../../../data/dnd2024.json';
 import dnd5Config from '../../../data/dnd5.json';
+import { dndConfigFor } from '../../../data/tlcConfig';
 import { useAppLocale } from '../../../context';
-import { clickOutside, localize } from '../../../helpers';
+import { clickOutside, localize, isDnd2024Family } from '../../../helpers';
 
+// tlc is deliberately absent: the PDF export sheet is the official 2024 form
+// and there is no TLC sheet to fill yet (TODOS.md, deferred).
 const AVAILABLE_PDF = ['dnd5', 'dnd2024'];
 const TRANSLATION = {
   en: {
@@ -48,12 +50,16 @@ export const CharactersListItem = (props) => {
     props.onDeleteCharacter(event);
   }
 
+  // dnd2024 species come in via props (config + user homebrew races); tlc adds
+  // its own on top of the merged config, and homebrew still wins.
+  const speciesConfig = createMemo(() => ({ ...dndConfigFor(character().provider).species, ...props.dnd2024Races }));
+
   const firstText = createMemo(() => {
     if (character().provider === 'dnd5') {
       return `${t('charactersPage.level')} ${character().level} | ${character().subrace ? localize(dnd5Config.races[character().race].subraces[character().subrace].name, locale()) : localize(dnd5Config.races[character().race].name, locale())}`;
     }
-    if (character().provider === 'dnd2024') {
-      return `${t('charactersPage.level')} ${character().level} | ${character().legacy ? localize(props.dnd2024Races[character().species].legacies[character().legacy].name, locale()) : localize(props.dnd2024Races[character().species].name, locale())}`;
+    if (isDnd2024Family(character().provider)) {
+      return `${t('charactersPage.level')} ${character().level} | ${character().legacy ? localize(speciesConfig()[character().species].legacies[character().legacy].name, locale()) : localize(speciesConfig()[character().species].name, locale())}`;
     }
   });
 
@@ -61,8 +67,8 @@ export const CharactersListItem = (props) => {
     if (character().provider === 'dnd5') {
       return Object.keys(character().classes).map((item) => localize(dnd5Config.classes[item].name, locale())).join(' * ');
     }
-    if (character().provider === 'dnd2024') {
-      return Object.keys(character().classes).map((item) => localize(dnd2024Config.classes[item].name, locale())).join(' * ');
+    if (isDnd2024Family(character().provider)) {
+      return Object.keys(character().classes).map((item) => localize(dndConfigFor(character().provider).classes[item].name, locale())).join(' * ');
     }
   });
 

@@ -100,6 +100,7 @@ export const CharactersTab = () => {
       </div>
     );
 
+    // Kept exact: this picks the creation form, and the tlc form is A5b.
     if (platform() === 'dnd2024') {
       return <Dnd2024CharacterForm onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} dnd2024Races={dnd2024Races} />;
     }

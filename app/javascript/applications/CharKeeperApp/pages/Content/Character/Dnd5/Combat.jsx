@@ -8,7 +8,7 @@ import {
 import { useAppState, useAppLocale } from '../../../../context';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
 import { createCharacterHealthRequest } from '../../../../requests/createCharacterHealthRequest';
-import { modifier, localize } from '../../../../helpers';
+import { modifier, localize, isDnd2024Family } from '../../../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -183,7 +183,7 @@ export const Dnd5Combat = (props) => {
               </Button>
             </div>
             <div class="flex gap-4">
-              <Show when={character().provider === 'dnd2024'}>
+              <Show when={isDnd2024Family(character().provider)}>
                 <div class="flex-1">
                   <Dnd2024Exhaustion character={character()} onReplaceCharacter={props.onReplaceCharacter} />
                 </div>
