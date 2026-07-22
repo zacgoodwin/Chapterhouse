@@ -21,6 +21,7 @@ export * from './molecules/FeatureTitle';
 export * from './molecules/ItemsTable';
 export * from './molecules/Dice';
 export * from './molecules/Loading';
+export * from './molecules/WarningsBanner';
 
 export * from './molecules/ItemUpgrades/Dnd2024';
 

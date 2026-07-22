@@ -26,10 +26,30 @@ const record = (kind) => (props) => {
 export const Select = record('select');
 export const Input = record('input');
 export const Checkbox = record('checkbox');
+export const Button = record('button');
 
 export let onSaveCharacter = null;
 
 export const CharacterForm = (props) => {
   onSaveCharacter = props.onSaveCharacter;
   return props.children;
+};
+
+// A component reading appState (WarningsBanner's dismiss) needs the accessToken.
+export const useAppState = () => [{ accessToken: 'test-token' }, {}];
+
+// The `/helpers` barrel is redirected here, so a real request module
+// (updateCharacterRequest) linked in a test resolves its network layer to these.
+// `options` passes the payload through unstringified so a test can read the PATCH
+// body; `apiRequest` records the call and returns whatever the test set.
+export const requests = [];
+let apiResponse = {};
+export const setApiResponse = (value) => { apiResponse = value; };
+export const resetRequests = () => { requests.length = 0; apiResponse = {}; };
+
+export const options = (method, accessToken, payload) => ({ method, accessToken, payload });
+export const formDataOptions = (method, accessToken, payload) => ({ method, accessToken, payload });
+export const apiRequest = async ({ url, options }) => {
+  requests.push({ url, options });
+  return apiResponse;
 };

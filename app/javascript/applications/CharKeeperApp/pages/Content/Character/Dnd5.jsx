@@ -7,7 +7,7 @@ import {
   Dnd5Proficiency, Dnd2024WildShapes, BeastFeatures, Dnd5Craft, Dnd5Bonuses, Dnd2024Spells, Dnd5Info, Dnd2024Bonuses
 } from '../../../pages';
 import {
-  CharacterNavigation, Equipment, Notes, Avatar, ContentWrapper, Feats, createRoll, Conditions, Combat, Gold
+  CharacterNavigation, Equipment, Notes, Avatar, ContentWrapper, Feats, createRoll, Conditions, Combat, Gold, WarningsBanner
 } from '../../../components';
 import { useAppState, useAppLocale } from '../../../context';
 import { updateCharacterRequest } from '../../../requests/updateCharacterRequest';
@@ -426,6 +426,7 @@ export const Dnd5 = (props) => {
 
   return (
     <>
+      <WarningsBanner character={character()} onReloadCharacter={props.onReloadCharacter} />
       <ContentWrapper mobileView={mobileView()} leftView={leftView()} rightView={rightView()} />
       <Roll provider="dnd" characterId={character().id} />
     </>
