@@ -129,14 +129,18 @@ module CharactersContext
         end
 
         # Dismiss and restore are both a full replace of the array (same shape as
-        # selected_traits): the client sends the set it wants kept. Registry-bound
-        # because an off-registry slug would be dead state no surface can ever
-        # restore -- unlike a rule-breaking trait pick, there is nothing here to
-        # warn about softly.
+        # selected_traits): the client sends the set it wants kept. Newly ADDED
+        # slugs are registry-bound, because an off-registry slug would be dead
+        # state no surface can ever restore -- unlike a rule-breaking trait pick,
+        # there is nothing here to warn about softly. Only the delta, though:
+        # validating the whole array would freeze every later dismiss and restore
+        # behind a 422 once a slug already stored is retired from the registry,
+        # which is the same dead state read from the other end.
         rule(:dismissed_warnings) do
           next if value.blank?
 
-          key.failure(:unknown_warning_slug) unless value.all? { |slug| ::Tlc::Warnings::SLUGS.key?(slug) }
+          added = value - values[:character].data.dismissed_warnings
+          key.failure(:unknown_warning_slug) unless added.all? { |slug| ::Tlc::Warnings::SLUGS.key?(slug) }
         end
       end
       # rubocop: enable Metrics/BlockLength

@@ -148,13 +148,29 @@ module Tlc
     # re-deriving membership from Tlc::Feat::BANNED_SPELL_SLUGS (C5, #21): it
     # needs no cross-lane constant and it names the granting feature, which the
     # banner message wants (the Lady of Ivory -> Fabricate case).
+    #
+    # All three content tables, because Tlc::Seeder lints all three
+    # (seeder.rb FILE_MODELS) -- an exempted ITEM would otherwise pass the seed
+    # gate and then never warn at runtime.
     def banned_spell_exempted
-      granting = @character.feats.joins(:feat)
-                   .where("feats.info -> 'banned_exemption' = 'true'::jsonb")
-                   .pluck(Arel.sql('feats.slug'))
+      granting = {
+        feats: exempted(@character.feats, :feat, 'feats', 'info'),
+        items: exempted(@character.items, :item, 'items', 'info'),
+        spells: exempted(@character.spells, :spell, 'spells', 'data')
+      }.reject { |_kind, slugs| slugs.empty? }
       return if granting.empty?
 
-      warning('banned_spell_exempted', { feats: granting.compact })
+      warning('banned_spell_exempted', granting)
+    end
+
+    # The flag folds into the content row's jsonb meta column, which the seeder
+    # names `info` for feats and items and `data` for spells
+    # (seeder.rb META_COLUMN). Table and column are literals from the three call
+    # sites above, never input.
+    def exempted(relation, association, table, meta_column)
+      relation.joins(association)
+        .where("#{table}.#{meta_column} -> 'banned_exemption' = 'true'::jsonb")
+        .pluck(Arel.sql("#{table}.slug")).compact
     end
 
     # C2's refresh service skips a selected trait whose content row was deleted;

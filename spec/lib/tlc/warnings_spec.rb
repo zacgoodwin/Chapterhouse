@@ -299,6 +299,44 @@ describe Tlc::Warnings do
 
       expect(slugs).not_to include 'banned_spell_exempted'
     end
+
+    # Tlc::Seeder lints spells.json and items.json too, so the flag reaches all
+    # three content tables; an exempted item that never warned would be a seed
+    # gate with no runtime half.
+    it 'warns for an exempted item the character carries' do
+      granting = create :item, :tlc, slug: 'ivory_key', info: { 'banned_exemption' => true }
+      create :character_item, character: character, item: granting
+
+      expect(entry('banned_spell_exempted')[:context]).to eq({ items: ['ivory_key'] })
+    end
+
+    # Spells fold the flag into `data`, not `info` (seeder.rb META_COLUMN).
+    it 'warns for an exempted spell the character knows' do
+      granting = create :spell, :tlc, slug: 'ivory_word', data: { 'banned_exemption' => true }
+      create :character_spell, character: character, spell: granting
+
+      expect(entry('banned_spell_exempted')[:context]).to eq({ spells: ['ivory_word'] })
+    end
+
+    it 'names every carrying surface in one entry' do
+      create :character_feat, character: character,
+                              feat: create(:feat, :tlc, slug: 'lady_of_ivory', info: { 'banned_exemption' => true })
+      create :character_item, character: character,
+                              item: create(:item, :tlc, slug: 'ivory_key', info: { 'banned_exemption' => true })
+      create :character_spell, character: character,
+                               spell: create(:spell, :tlc, slug: 'ivory_word', data: { 'banned_exemption' => true })
+
+      expect(entry('banned_spell_exempted')[:context]).to eq(
+        { feats: ['lady_of_ivory'], items: ['ivory_key'], spells: ['ivory_word'] }
+      )
+    end
+
+    it 'stays silent for ordinary attached items and spells' do
+      create :character_item, character: character, item: create(:item, :tlc)
+      create :character_spell, character: character, spell: create(:spell, :tlc)
+
+      expect(slugs).not_to include 'banned_spell_exempted'
+    end
   end
 
   describe 'trait_unavailable' do
@@ -317,6 +355,15 @@ describe Tlc::Warnings do
       create :feat, :tlc, slug: 'deleted'
 
       expect(slugs).not_to include 'trait_unavailable'
+    end
+
+    # The lookup is Feat.tlc_content (Dnd2024 + Tlc), the same union the update
+    # contract validates against. A Dnd5 row wearing the slug is not TLC content
+    # and must not silence the warning.
+    it 'ignores a same-slug row outside the TLC content union' do
+      create :feat, :dnd5, slug: 'deleted', origin: 2, kind: 0
+
+      expect(entry('trait_unavailable')[:context]).to eq({ traits: ['deleted'] })
     end
   end
 end

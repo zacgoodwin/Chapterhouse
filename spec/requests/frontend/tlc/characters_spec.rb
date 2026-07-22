@@ -256,7 +256,9 @@ describe 'Frontend::Tlc::Characters' do
 
       expect(response).to have_http_status :ok
       expect(character.reload.data.selected_traits).to eq traits
-      expect(response.parsed_body.dig('character', 'errors')).to be_nil
+      # Contract failures render top-level `errors` (base_controller.rb:43); a
+      # never-block save must carry none.
+      expect(response.parsed_body['errors']).to be_nil
       expect(warning(show, 'trait_count')).to include(
         'source' => 'TLC', 'context' => { 'selected' => 4, 'allowed' => 3 }
       )
@@ -308,6 +310,22 @@ describe 'Frontend::Tlc::Characters' do
         update({ dismissed_warnings: %w[not_a_warning] })
 
         expect(response).to have_http_status :unprocessable_content
+        expect(character.reload.data.dismissed_warnings).to eq []
+      end
+
+      # Only the delta is registry-bound. A slug already stored (dismissed
+      # before it was retired from SLUGS) must not 422 every later mutation --
+      # that would be the same unrestorable dead state from the other side.
+      it 'still restores a stored slug the registry no longer knows', :aggregate_failures do
+        stored = Character.find(character.id)
+        stored.data.dismissed_warnings = %w[retired_slug]
+        stored.save!
+
+        update({ dismissed_warnings: %w[retired_slug multiclass_prereq] })
+        expect(response).to have_http_status :ok
+
+        update({ dismissed_warnings: [] })
+        expect(response).to have_http_status :ok
         expect(character.reload.data.dismissed_warnings).to eq []
       end
     end

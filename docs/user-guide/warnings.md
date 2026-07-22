@@ -31,7 +31,7 @@ Every warning names its **source** so you know whose rule you are bending:
 | `trait_count`           | TLC    | More species traits are selected than your species allows: 3 normally, 4 with Mixed Ancestry.       |
 | `prepared_overrun`      | PHB    | A class has more spells prepared than its prepared-spells allowance. Cantrips do not count.         |
 | `level_vs_chapter_cap`  | TLC    | Your level is above the maximum for your campaign's chapter (chapter 8 caps at level 12, up to chapter 16 at level 20). |
-| `banned_spell_exempted` | TLC    | A feature on your sheet grants one of the eight spells TLC bans. The grant is kept as an explicit exemption and flagged. |
+| `banned_spell_exempted` | TLC    | A feat, an item, or a spell on your sheet grants one of the eight spells TLC bans. The grant is kept as an explicit exemption and flagged. |
 | `trait_unavailable`     | TLC    | A species trait you selected no longer exists as content, so it was skipped when your features were rebuilt. |
 
 ### Human Greenhorn
