@@ -65,8 +65,10 @@ The slug list is one constant, `Tlc::Warnings::SLUGS` in
 - the warning's source (`PHB` / `TLC`),
 - its i18n key, derived as `warnings.<slugInCamelCase>` and resolved against
   `app/javascript/applications/CharKeeperApp/i18n/*.json`,
-- the values `data.dismissed_warnings` accepts (the update contract rejects any
-  slug that is not in the registry).
+- the values `data.dismissed_warnings` accepts. The update contract binds only
+  the delta: a slug being newly added must be in the registry, and one already
+  stored is grandfathered — a retired slug keeps saving and restoring instead of
+  freezing every later mutation behind a 422.
 
 Adding a warning means adding a registry row, a private method on
 `Tlc::Warnings` named after the slug, and one message per frontend locale.

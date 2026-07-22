@@ -313,6 +313,15 @@ describe 'Frontend::Tlc::Characters' do
         expect(character.reload.data.dismissed_warnings).to eq []
       end
 
+      # Pins all? (not any?): one bad slug poisons the whole payload, so the
+      # known slug alongside it is not stored either.
+      it 'rejects a payload mixing a known slug with an unknown one', :aggregate_failures do
+        update({ dismissed_warnings: %w[multiclass_prereq not_a_warning] })
+
+        expect(response).to have_http_status :unprocessable_content
+        expect(character.reload.data.dismissed_warnings).to eq []
+      end
+
       # Only the delta is registry-bound. A slug already stored (dismissed
       # before it was retired from SLUGS) must not 422 every later mutation --
       # that would be the same unrestorable dead state from the other side.
