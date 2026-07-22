@@ -16,13 +16,4 @@ class ApplicationDecoratorV2
     @result[method.to_s]
   end
 
-  private
-
-  def monitoring_formula_error(formula)
-    monitoring.notify(
-      exception: Monitoring::FormulaError.new('Formula error'),
-      metadata: { formula: formula },
-      severity: :info
-    )
-  end
 end
