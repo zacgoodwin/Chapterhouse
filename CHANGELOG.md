@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Fixed
+- TLC characters now receive the shared D&D 2024 class features and species traits on create/update (the strict `Tlc::Feat` scope attached nothing while the TLC corpus is empty)
+- soft rule warnings now render on the character sheet as a dismissible banner (they were computed and served but no JSX read them)
+
 ### Added
 - leyfarers (tlc) implementation plan, reference digests, and source docs (docs/; PDFs via the reference-docs release)
 - homebrew upvotes

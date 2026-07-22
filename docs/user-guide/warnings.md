@@ -58,6 +58,11 @@ restore it from character settings, even if you later change the build in a way
 that breaks the same rule again. That is deliberate: a dismissal means "I know,
 this is intentional", and re-raising it on every edit would be noise.
 
+The settings restore control has not shipped yet; until it does, a dismissal is
+one-way from the UI. The API already supports restoring — the update contract
+only validates slugs being added to `dismissed_warnings`, so removing one is
+accepted.
+
 Dismissals are per character, not per campaign or per account.
 
 ## For developers

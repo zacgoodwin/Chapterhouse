@@ -52,6 +52,8 @@ that predate the removal.
 
 ### Reference docs
 
+Player and DM guides for the TLC provider live in `docs/user-guide/`
+(creating a TLC character, rule warnings, homebrew, admin content).
 The Leyfarers/TLC implementation plan lives at
 `docs/leyfarers-implementation-plan.md` with digests in `docs/reference/`.
 Reference PDFs are NOT in git (GitHub blocks LFS uploads on public forks);
@@ -91,7 +93,7 @@ Modifier syntax errors (malformed Dentaku formulas, missing variables) surface a
 $ npm test
 ```
 
-`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label in `en`/`ru`/`es` against the real `fetchDictionary`). The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
+`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label in `en`/`ru`/`es` against the real `fetchDictionary`). `warningsBanner.test.js` mounts the real `WarningsBanner` through the same harness — direct render/dismiss cases plus a gate that the 2024 character sheet actually mounts it. The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
 
 **What this harness cannot reach.** Anything whose state arrives from a `fetch` inside a `createEffect`, because SSR never runs effects and there is no DOM here (no jsdom, no headless browser). Two TLC surfaces sit behind exactly that and are checked by hand only:
 
