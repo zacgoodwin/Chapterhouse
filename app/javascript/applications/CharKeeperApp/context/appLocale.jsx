@@ -7,9 +7,15 @@ const FALLBACKS = {
   'ru-DHM': 'ru'
 }
 
+// en is the only complete dictionary; ru/es lag it deliberately (TLC strings are
+// en-only for now). Without the merge below a missing key resolves to undefined
+// and the label renders blank, so every locale is layered over en.
 const fetchDictionary = async (locale) => {
-  const dictionary = await import(`../i18n/${FALLBACKS[locale] || locale}.json`);
-  return i18n.flatten(dictionary);
+  const target = FALLBACKS[locale] || locale;
+  const dictionary = await import(`../i18n/${target}.json`);
+  if (target === 'en') return i18n.flatten(dictionary);
+
+  return { ...i18n.flatten(await import('../i18n/en.json')), ...i18n.flatten(dictionary) };
 }
 
 export function AppLocaleProvider(props) {

@@ -52,4 +52,5 @@ export * from './Navigation/Characters/ListItem';
 export * from './Navigation/Characters/CharacterForm';
 export * from './Navigation/Characters/Forms/Dnd5';
 export * from './Navigation/Characters/Forms/Dnd2024';
+export * from './Navigation/Characters/Forms/Tlc';
 export * from './Navigation/Campaigns/ListItem';

@@ -6,7 +6,9 @@ import { fileURLToPath } from 'node:url';
 
 import dnd2024Config from '../../app/javascript/applications/CharKeeperApp/data/dnd2024.json' with { type: 'json' };
 import tlcDelta from '../../app/javascript/applications/CharKeeperApp/data/tlc.json' with { type: 'json' };
-import { tlcConfig, dndConfigFor, speciesFor } from '../../app/javascript/applications/CharKeeperApp/data/tlcConfig.js';
+import {
+  tlcConfig, dndConfigFor, speciesFor, tlcCreationSpecies
+} from '../../app/javascript/applications/CharKeeperApp/data/tlcConfig.js';
 
 const CHARKEEPER = path.join(
   fileURLToPath(new URL('../../', import.meta.url)),
@@ -67,6 +69,33 @@ test('speciesFor keeps the tlc overrides and lets homebrew win', () => {
   assert.equal(speciesFor('tlc', homebrew).dwarf.unlock, 'reputation');
   // Homebrew overriding a shared slug still wins over the merged config.
   assert.equal(speciesFor('tlc', { dwarf: { name: { en: 'Hb' } } }).dwarf.name.en, 'Hb');
+});
+
+// The creation form's option list. The merge cannot remove, so this is the only
+// thing standing between the form and the five dnd2024-only species.
+test('tlcCreationSpecies offers exactly the species tlc.json declares', () => {
+  assert.deepEqual(Object.keys(tlcCreationSpecies).sort(), Object.keys(tlcDelta.species).sort());
+
+  for (const slug of ['halfling', 'dragonborn', 'tiefling', 'aasimar', 'goliath']) {
+    assert.ok(dnd2024Config.species[slug], `${slug} should exist in the dnd2024 base`);
+    assert.ok(tlcConfig.species[slug], `${slug} should survive the merge`);
+    assert.equal(tlcCreationSpecies[slug], undefined, `${slug} must not be offered at TLC creation`);
+  }
+});
+
+test('tlcCreationSpecies carries merged values, not raw tlc.json deltas', () => {
+  // Redefined slug: tlc sizes/unlock win, dnd2024 legacies survive alongside.
+  assert.deepEqual(tlcCreationSpecies.dwarf.sizes, ['medium']);
+  assert.equal(tlcCreationSpecies.dwarf.unlock, 'reputation');
+  assert.deepEqual(tlcCreationSpecies.dwarf.legacies, dnd2024Config.species.dwarf.legacies);
+  // TLC-only slug: no legacies key at all, which the form has to survive.
+  assert.equal(tlcCreationSpecies.birdfolk.legacies, undefined);
+  assert.deepEqual(tlcCreationSpecies.birdfolk.sizes, ['small', 'medium']);
+  // Every offered species can drive the form's size default and its label.
+  for (const [slug, species] of Object.entries(tlcCreationSpecies)) {
+    assert.ok(species.sizes?.length > 0, `${slug} needs at least one size`);
+    assert.ok(species.name?.en, `${slug} needs an en name`);
+  }
 });
 
 const sourceFiles = (dir) =>

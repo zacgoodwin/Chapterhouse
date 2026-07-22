@@ -50,8 +50,14 @@ export const CharacterTab = (props) => {
         <Match when={character().provider === 'dnd5'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>
-        {/* Kept exact: routing the tlc provider to a sheet is A5b's Match, not this ticket's. */}
+        {/* Kept exact: tlc has its own Match below, so this one stays 2024-only. */}
         <Match when={character().provider === 'dnd2024'}>
+          <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
+        </Match>
+        {/* Interim scaffolding (plan L420-421): tlc borrows the Dnd5 sheet until
+            the dedicated TLC sheet lands in D2. Kept as its own Match, not folded
+            into the dnd2024 one, so D2 is a one-line component swap. */}
+        <Match when={character().provider === 'tlc'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>
       </Switch>
