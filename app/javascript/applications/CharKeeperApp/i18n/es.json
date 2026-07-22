@@ -144,6 +144,9 @@
         "large": "Grande"
       },
       "background": "Trasfondo"
+    },
+    "tlc": {
+      "skipGuide": "Omitir guía de personaje nuevo"
     }
   },
   "itemsPage": {

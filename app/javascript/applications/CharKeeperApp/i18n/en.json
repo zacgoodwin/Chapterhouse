@@ -14,6 +14,7 @@
       "allFilter": "All",
       "dnd5": "D&D 5",
       "dnd2024": "D&D 2024",
+      "tlc": "The Leyfarer's Chronicle",
       "aspects": "Aspects",
       "skills": "Skills",
       "vitals": "Vitals",
@@ -144,6 +145,10 @@
         "large": "Large"
       },
       "background": "Background"
+    },
+    "tlc": {
+      "start": "Leyfarers start at level 3 with point-buy ability scores. Species and class options are shared with D&D 2024 where The Leyfarer's Chronicle does not replace them.",
+      "skipGuide": "Skip new character guide"
     }
   },
   "itemsPage": {

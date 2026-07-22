@@ -1,7 +1,7 @@
 import { createSignal, createEffect, createMemo, For, Switch, Match, Show, batch } from 'solid-js';
 import * as i18n from '@solid-primitives/i18n';
 
-import { CharactersListItem, Dnd5CharacterForm, Dnd2024CharacterForm } from '../../pages';
+import { CharactersListItem, Dnd5CharacterForm, Dnd2024CharacterForm, TlcCharacterForm } from '../../pages';
 import { CharacterNavigation, createModal, PageHeader, Select, Input, Button, Loading } from '../../components';
 import { Plus } from '../../assets';
 import { speciesFor } from '../../data/tlcConfig';
@@ -73,9 +73,9 @@ export const CharactersTab = () => {
 
   const homebrewRaces = createMemo(() => (homebrews() === undefined ? {} : homebrews().dnd2024.races));
 
-  // Kept dnd2024-only: this feeds the creation form, which is dnd2024-only
-  // (see characterComponent). The list rows get homebrewRaces instead, so each
-  // row can layer homebrew over its own provider's species.
+  // Kept dnd2024-only: this feeds the dnd2024 creation form only -- the tlc form
+  // reads tlcCreationSpecies itself. The list rows get homebrewRaces instead, so
+  // each row can layer homebrew over its own provider's species.
   const dnd2024Races = createMemo(() => speciesFor('dnd2024', homebrewRaces()));
 
   const characterProviders = createMemo(() => {
@@ -101,7 +101,13 @@ export const CharactersTab = () => {
       </div>
     );
 
-    // Kept exact: this picks the creation form, and the tlc form is A5b.
+    // No automated gate: this memo only evaluates after the characters fetch has
+    // resolved, which SSR never does (README, Frontend tests).
+    if (platform() === 'tlc') {
+      return <TlcCharacterForm onCreateCharacter={saveCharacter} setCurrentTab={setCurrentTab} />;
+    }
+
+    // Kept exact: tlc is picked off above, so this branch really is 2024-only.
     if (platform() === 'dnd2024') {
       return <Dnd2024CharacterForm onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} dnd2024Races={dnd2024Races} />;
     }
@@ -181,7 +187,7 @@ export const CharactersTab = () => {
             </Button>
           </Show>
           <CharacterNavigation
-            tabsList={['allFilter'].concat(['dnd5', 'dnd2024'].filter((item) => characterProviders().includes(item)))}
+            tabsList={['allFilter'].concat(['dnd5', 'dnd2024', 'tlc'].filter((item) => characterProviders().includes(item)))}
             activeTab={activeFilter()}
             setActiveTab={setActiveFilter}
           />
@@ -226,7 +232,7 @@ export const CharactersTab = () => {
               containerClassList="mb-2"
               classList="w-full"
               labelText={t('newCharacterPage.platform')}
-              items={{ 'dnd5': 'D&D 5', 'dnd2024': 'D&D 2024' }}
+              items={{ 'dnd5': 'D&D 5', 'dnd2024': 'D&D 2024', 'tlc': t('pages.characterNavigation.tlc') }}
               selectedValue={platform()}
               onSelect={(value) => setPlatform(value)}
               dataTestId="new-character-platform-select"

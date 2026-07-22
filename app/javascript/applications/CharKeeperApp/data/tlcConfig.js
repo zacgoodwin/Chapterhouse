@@ -24,11 +24,18 @@ if (base !== 'dnd2024') {
   throw new Error(`tlc.json declares base "${base}"; tlcConfig.js only imports dnd2024.json`);
 }
 
-// ponytail: merge can add and override but never remove, so tlcConfig.species
-// still carries the dnd2024-only species (halfling, dragonborn, tiefling,
-// aasimar, goliath) that TLC does not use. Fine while nothing lists species
-// from config; A5b's creation form needs an explicit TLC species list.
+// The merge can add and override but never remove, so tlcConfig.species still
+// carries the dnd2024-only species (halfling, dragonborn, tiefling, aasimar,
+// goliath) that TLC does not use. Rendering an existing character keeps reading
+// this superset -- a character created before a slug left TLC still has to draw;
+// only the creation form narrows, via tlcCreationSpecies below.
 export const tlcConfig = deepMerge(dnd2024Config, delta);
+
+// The species TLC offers at character creation: exactly what tlc.json declares,
+// with the merged values (a redefined slug keeps its dnd2024 legacies).
+export const tlcCreationSpecies = Object.fromEntries(
+  Object.keys(delta.species).map((slug) => [slug, tlcConfig.species[slug]])
+);
 
 // The dnd-family config object for a provider. tlc characters must read the
 // merged config; dnd5/dnd2024 keep their own JSON.
