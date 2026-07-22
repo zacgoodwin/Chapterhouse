@@ -1,5 +1,152 @@
 {
   "base": "dnd2024",
-  "species": {},
-  "classes": {}
+  "species": {
+    "birdfolk": {
+      "name": { "en": "Birdfolk" },
+      "sizes": ["small", "medium"],
+      "unlock": "none"
+    },
+    "catfolk": {
+      "name": { "en": "Catfolk" },
+      "sizes": ["small", "medium"],
+      "unlock": "none"
+    },
+    "dwarf": {
+      "name": { "en": "Dwarf" },
+      "sizes": ["medium"],
+      "unlock": "reputation"
+    },
+    "elf": {
+      "name": { "en": "Elf" },
+      "sizes": ["medium"],
+      "unlock": "none"
+    },
+    "fabricated": {
+      "name": { "en": "Fabricated" },
+      "sizes": ["small", "medium"],
+      "unlock": "chapter_9"
+    },
+    "frogfolk": {
+      "name": { "en": "Frogfolk" },
+      "sizes": ["small"],
+      "unlock": "reputation"
+    },
+    "gnome": {
+      "name": { "en": "Gnome" },
+      "sizes": ["small"],
+      "unlock": "none"
+    },
+    "human": {
+      "name": { "en": "Human" },
+      "sizes": ["small", "medium"],
+      "unlock": "none"
+    },
+    "hyenafolk": {
+      "name": { "en": "Hyenafolk" },
+      "sizes": ["medium"],
+      "unlock": "chapter_6"
+    },
+    "kobold": {
+      "name": { "en": "Kobold" },
+      "sizes": ["small", "medium"],
+      "unlock": "chapter_4"
+    },
+    "lizardfolk": {
+      "name": { "en": "Lizardfolk" },
+      "sizes": ["small", "medium"],
+      "unlock": "none"
+    },
+    "nereid": {
+      "name": { "en": "Nereid" },
+      "sizes": ["small", "medium"],
+      "unlock": "chapter_10"
+    },
+    "orc": {
+      "name": { "en": "Orc" },
+      "sizes": ["medium"],
+      "unlock": "none"
+    },
+    "otterfolk": {
+      "name": { "en": "Otterfolk" },
+      "sizes": ["small", "medium"],
+      "unlock": "chapter_10"
+    },
+    "ratfolk": {
+      "name": { "en": "Ratfolk" },
+      "sizes": ["small", "medium"],
+      "unlock": "none"
+    },
+    "snailfolk": {
+      "name": { "en": "Snailfolk" },
+      "sizes": ["medium"],
+      "unlock": "chapter_2"
+    },
+    "turtlefolk": {
+      "name": { "en": "Turtlefolk" },
+      "sizes": ["medium"],
+      "unlock": "chapter_10"
+    }
+  },
+  "classes": {
+    "artificer": {
+      "subclasses": {
+        "sunforge": { "name": { "en": "Sunforge" }, "unlock": "chapter_3" }
+      }
+    },
+    "barbarian": {
+      "subclasses": {
+        "path_of_the_primordial": { "name": { "en": "Path of the Primordial" }, "unlock": "chapter_10" }
+      }
+    },
+    "bard": {
+      "subclasses": {
+        "college_of_calamity": { "name": { "en": "College of Calamity" }, "unlock": "chapter_2" }
+      }
+    },
+    "cleric": {
+      "subclasses": {
+        "rune_priest": { "name": { "en": "Rune Priest" }, "unlock": "chapter_4" }
+      }
+    },
+    "fighter": {
+      "subclasses": {
+        "frog_knight": { "name": { "en": "Frog Knight" }, "unlock": "reputation" }
+      }
+    },
+    "monk": {
+      "subclasses": {
+        "way_of_the_twisting_hand": { "name": { "en": "Way of the Twisting Hand" }, "unlock": "chapter_7" }
+      }
+    },
+    "paladin": {
+      "subclasses": {
+        "oath_of_the_ivory_knight": { "name": { "en": "Oath of the Ivory Knight" }, "unlock": "chapter_1" }
+      }
+    },
+    "ranger": {
+      "subclasses": {
+        "ghostscale_reaver": { "name": { "en": "Ghostscale Reaver" }, "unlock": "chapter_2" }
+      }
+    },
+    "rogue": {
+      "subclasses": {
+        "gambler": { "name": { "en": "Gambler" }, "unlock": "chapter_4" }
+      }
+    },
+    "sorcerer": {
+      "subclasses": {
+        "mirage": { "name": { "en": "Mirage" }, "unlock": "chapter_6" }
+      }
+    },
+    "warlock": {
+      "subclasses": {
+        "lady_of_ivory": { "name": { "en": "The Lady of Ivory" }, "unlock": "chapter_1" }
+      }
+    },
+    "wizard": {
+      "subclasses": {
+        "technomancer": { "name": { "en": "Technomancer" }, "unlock": "chapter_9" }
+      }
+    }
+  }
 }

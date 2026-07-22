@@ -1,10 +1,10 @@
 import { createSignal, createEffect, createMemo, Show, batch, For } from 'solid-js';
 
 import { Select, ErrorWrapper, GuideWrapper } from '../../components';
-import dndConfig from '../../data/dnd2024.json';
+import { dndConfigFor } from '../../data/tlcConfig';
 import { useAppState, useAppLocale } from '../../context';
 import { updateCharacterRequest } from '../../requests/updateCharacterRequest';
-import { translate, localize } from '../../helpers';
+import { translate, localize, isDnd2024Family } from '../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -40,7 +40,9 @@ export const Conditions = (props) => {
   });
 
   const providerConfig = createMemo(() => {
-    if (character().provider === 'dnd5' || character().provider === 'dnd2024') return dndConfig;
+    // dndConfigFor keeps tlc on the merged config; the static dnd2024 import
+    // it replaced never saw the tlc.json delta (plan eng finding 8).
+    if (character().provider === 'dnd5' || isDnd2024Family(character().provider)) return dndConfigFor(character().provider);
   });
 
   const updateMultiFeatureValue = async (value) => {

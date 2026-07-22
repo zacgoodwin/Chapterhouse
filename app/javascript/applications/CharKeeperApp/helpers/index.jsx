@@ -2,6 +2,7 @@ export * from './apiRequest';
 export * from './capitalize';
 export * from './clickOutside';
 export * from './modifier';
+export * from './provider';
 export * from './translate';
 export * from './copy';
 export * from './cache';

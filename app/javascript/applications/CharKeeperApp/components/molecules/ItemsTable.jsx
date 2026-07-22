@@ -6,7 +6,7 @@ import { ItemsTableItem } from './ItemsTableItem';
 import { IconButton, createModal, Dnd2024ItemUpgrade } from '../../components';
 import { useAppLocale } from '../../context';
 import { Hands, Equipment, Backpack, Storage, Dots } from '../../assets';
-import { clickOutside, localize } from '../../helpers';
+import { clickOutside, localize, isDnd2024Family } from '../../helpers';
 
 const STATE_ICONS = {
   'hands': Hands, 'equipment': Equipment, 'backpack': Backpack, 'storage': Storage, 'hidden': Storage, 'shared': Storage
@@ -148,7 +148,7 @@ export const ItemsTable = (props) => {
       <Modal>
         <Show when={upgradingItem.item}>
           <Switch>
-            <Match when={props.provider === 'dnd2024'}>
+            <Match when={isDnd2024Family(props.provider)}>
               <Dnd2024ItemUpgrade
                 characterId={props.characterId}
                 item={upgradingItem.item}

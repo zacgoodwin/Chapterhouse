@@ -50,6 +50,7 @@ export const CharacterTab = (props) => {
         <Match when={character().provider === 'dnd5'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>
+        {/* Kept exact: routing the tlc provider to a sheet is A5b's Match, not this ticket's. */}
         <Match when={character().provider === 'dnd2024'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>

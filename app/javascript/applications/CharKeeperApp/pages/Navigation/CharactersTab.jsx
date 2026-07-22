@@ -4,7 +4,7 @@ import * as i18n from '@solid-primitives/i18n';
 import { CharactersListItem, Dnd5CharacterForm, Dnd2024CharacterForm } from '../../pages';
 import { CharacterNavigation, createModal, PageHeader, Select, Input, Button, Loading } from '../../components';
 import { Plus } from '../../assets';
-import dnd2024Config from '../../data/dnd2024.json';
+import { speciesFor } from '../../data/tlcConfig';
 import { useAppState, useAppLocale, useAppAlert } from '../../context';
 import { fetchCharactersRequest } from '../../requests/fetchCharactersRequest';
 import { fetchCharacterRequest } from '../../requests/fetchCharacterRequest';
@@ -71,11 +71,12 @@ export const CharactersTab = () => {
     if (characterData.errors == undefined) setCharacters(characters().concat(characterData.character));
   }
 
-  const dnd2024Races = createMemo(() => {
-    if (homebrews() === undefined) return {};
+  const homebrewRaces = createMemo(() => (homebrews() === undefined ? {} : homebrews().dnd2024.races));
 
-    return { ...dnd2024Config.species, ...homebrews().dnd2024.races };
-  });
+  // Kept dnd2024-only: this feeds the creation form, which is dnd2024-only
+  // (see characterComponent). The list rows get homebrewRaces instead, so each
+  // row can layer homebrew over its own provider's species.
+  const dnd2024Races = createMemo(() => speciesFor('dnd2024', homebrewRaces()));
 
   const characterProviders = createMemo(() => {
     if (characters() === undefined) return [];
@@ -100,6 +101,7 @@ export const CharactersTab = () => {
       </div>
     );
 
+    // Kept exact: this picks the creation form, and the tlc form is A5b.
     if (platform() === 'dnd2024') {
       return <Dnd2024CharacterForm onCreateCharacter={saveCharacter} onImportCharacter={importCharacter} homebrews={homebrews} setCurrentTab={setCurrentTab} dnd2024Races={dnd2024Races} />;
     }
@@ -194,7 +196,7 @@ export const CharactersTab = () => {
                   <CharactersListItem
                     character={character}
                     isActive={character.id == appState.activePageParams.id}
-                    dnd2024Races={dnd2024Races()}
+                    homebrewRaces={homebrewRaces()}
                     onClick={() => navigate('character', { id: character.id })}
                     onViewClick={() => navigate('characterView', { id: character.id })}
                     onDeleteCharacter={(e) => deleteCharacter(e, character.id)}

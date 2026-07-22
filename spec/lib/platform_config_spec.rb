@@ -20,6 +20,25 @@ describe PlatformConfig do
     end
   end
 
+  # A hand-maintained version number ships stale: production's redis cache
+  # survives deploys, so a tlc.json edit behind an unchanged key keeps serving
+  # the old config. The key has to be derived from the config content.
+  describe 'CONFIG_VERSION' do
+    it 'digests every provider config file' do
+      files = Dir[described_class::CONFIG_DIR.join('*.json')]
+      expected = Digest::SHA256.hexdigest(files.map { |file| File.read(file) }.join)[0, 12]
+
+      expect(described_class::CONFIG_VERSION).to eq(expected)
+    end
+
+    it 'is the default cache key segment' do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      described_class.data('dnd5')
+
+      expect(Rails.cache.exist?("dnd5/#{described_class::CONFIG_VERSION}")).to be(true)
+    end
+  end
+
   # Merge semantics on controlled configs, so the assertions do not depend on
   # tlc.json's evolving content.
   describe 'base deep-merge' do

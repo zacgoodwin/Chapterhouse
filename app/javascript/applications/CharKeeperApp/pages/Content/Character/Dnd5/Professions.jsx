@@ -5,7 +5,7 @@ import { ErrorWrapper, Toggle, Checkbox, GuideWrapper, Languages } from '../../.
 import config from '../../../../data/dnd2024.json';
 import { useAppLocale, useAppState } from '../../../../context';
 import { fetchItemsRequest } from '../../../../requests/fetchItemsRequest';
-import { localize } from '../../../../helpers';
+import { localize, isDnd2024Family } from '../../../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -92,7 +92,7 @@ export const Dnd5Professions = (props) => {
   return (
     <ErrorWrapper payload={{ character_id: character().id, key: 'Dnd5Professions' }}>
       <GuideWrapper character={character()}>
-        <Show when={character().provider === 'dnd2024'}>
+        <Show when={isDnd2024Family(character().provider)}>
           <Toggle title={t('professionsPage.fightingFeats')}>
             <For each={Object.entries(feats().fighting)}>
               {([slug, values]) =>
@@ -110,7 +110,7 @@ export const Dnd5Professions = (props) => {
           </Toggle>
         </Show>
         <Languages character={character()} defaults={config.languages} />
-        <Show when={character().provider === 'dnd2024'}>
+        <Show when={isDnd2024Family(character().provider)}>
           <Toggle title={localize(TRANSLATION, locale())['weaponMastery']}>
             <For each={Object.entries(config.weaponMasteries)}>
               {([slug, names]) =>

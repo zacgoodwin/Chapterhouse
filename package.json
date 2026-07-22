@@ -7,7 +7,8 @@
   "scripts": {
     "watch": "node esbuild.watch.config.js",
     "build": "node esbuild.config.js",
-    "lint": "eslint app/javascript"
+    "lint": "eslint app/javascript",
+    "test": "node --test \"spec/javascript/*.test.js\""
   },
   "dependencies": {
     "@babel/core": "^7.20.12",

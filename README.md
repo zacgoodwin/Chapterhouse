@@ -83,7 +83,7 @@ Modifier syntax errors (malformed Dentaku formulas, missing variables) surface a
 4. Fix the JSON and re-run `rake tlc:seed` to reload the corrected content into the database (re-runs are safe due to the partial unique index).
 5. Commit the fix.
 
-**Cache caveat:** `app/lib/platform_config.rb` caches the TLC config (`app/javascript/applications/CharKeeperApp/data/tlc.json`) per version (default `0.4.12`) for 3 days. After editing `tlc.json` in development, either bump the version in `platform_config.rb:6` or clear the cache via `Rails.cache.clear` in the console to pick up changes immediately. Production deploys use the same cache window; plan accordingly.
+**Cache caveat:** `app/lib/platform_config.rb` caches the TLC config (`app/javascript/applications/CharKeeperApp/data/tlc.json`) under a cache key derived from the config files' own contents (`PlatformConfig::CONFIG_VERSION`, a SHA of every `data/*.json`) for 3 days. Editing `tlc.json` changes the key, so a deploy picks the new config up even though production's redis cache survives deploys. The digest is computed at boot: in development, restart the server (or `Rails.cache.clear`) after editing `tlc.json`.
 
 ### E2E tests
 

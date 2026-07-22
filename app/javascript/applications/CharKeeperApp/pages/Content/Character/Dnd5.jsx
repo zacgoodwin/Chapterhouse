@@ -11,7 +11,7 @@ import {
 } from '../../../components';
 import { useAppState, useAppLocale } from '../../../context';
 import { updateCharacterRequest } from '../../../requests/updateCharacterRequest';
-import { localize } from '../../../helpers';
+import { localize, isDnd2024Family } from '../../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -99,7 +99,7 @@ export const Dnd5 = (props) => {
 
   const characterTabs = createMemo(() => {
     const result = ['combat', 'equipment', 'spells', 'professions'];
-    if (character().provider === 'dnd2024') result.push('craft');
+    if (isDnd2024Family(character().provider)) result.push('craft');
     return result.concat(['classLevels', 'rest', 'bonuses', 'notes', 'avatar']);
   });
 
@@ -142,7 +142,7 @@ export const Dnd5 = (props) => {
               <div class="mt-4">
                 <Conditions character={character()} />
               </div>
-              <Show when={character().provider === 'dnd2024' && Object.keys(character().classes).includes('druid')}>
+              <Show when={isDnd2024Family(character().provider) && Object.keys(character().classes).includes('druid')}>
                 <div class="mt-4">
                   <Dnd2024WildShapes character={character()} onReplaceCharacter={props.onReplaceCharacter} />
                 </div>
@@ -190,7 +190,7 @@ export const Dnd5 = (props) => {
               <Equipment
                 withWeight
                 withPrice
-                upgrades={character().provider === 'dnd2024' ? ['weapon', 'armor', 'shield', 'item'] : null}
+                upgrades={isDnd2024Family(character().provider) ? ['weapon', 'armor', 'shield', 'item'] : null}
                 character={character()}
                 itemFilters={[
                   { title: t('equipment.itemsList'), callback: itemFilter },
@@ -289,7 +289,7 @@ export const Dnd5 = (props) => {
         <div class="mt-4">
           <Conditions character={character()} />
         </div>
-        <Show when={character().provider === 'dnd2024' && Object.keys(character().classes).includes('druid')}>
+        <Show when={isDnd2024Family(character().provider) && Object.keys(character().classes).includes('druid')}>
           <div class="mt-4">
             <Dnd2024WildShapes character={character()} onReplaceCharacter={props.onReplaceCharacter} />
           </div>
@@ -346,7 +346,7 @@ export const Dnd5 = (props) => {
               <Equipment
                 withWeight
                 withPrice
-                upgrades={character().provider === 'dnd2024' ? ['weapon', 'armor', 'shield', 'item'] : null}
+                upgrades={isDnd2024Family(character().provider) ? ['weapon', 'armor', 'shield', 'item'] : null}
                 character={character()}
                 itemFilters={[
                   { title: t('equipment.itemsList'), callback: itemFilter },

@@ -5,7 +5,7 @@ import config from '../../../../data/dnd2024.json';
 import { useAppState, useAppLocale, useAppAlert } from '../../../../context';
 import { Minus, Plus } from '../../../../assets';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
-import { modifier, localize } from '../../../../helpers';
+import { modifier, localize, isDnd2024Family } from '../../../../helpers';
 
 const TRANSLATION = {
   en: {
@@ -82,7 +82,7 @@ export const Dnd5Skills = (props) => {
 
   const updateCharacter = async () => {
     let selectedSkills;
-    if (character().provider === 'dnd2024') {
+    if (isDnd2024Family(character().provider)) {
       selectedSkills = skillsData().reduce((acc, item) => { acc[item.slug] = item.level; return acc }, {})
     } else {
       selectedSkills = skillsData().filter((item) => item.selected).map((item) => item.slug)
@@ -144,7 +144,7 @@ export const Dnd5Skills = (props) => {
                               <Match when={character().provider === 'dnd5'}>
                                 <Levelbox classList="mr-2" value={skill.selected ? 1 : 0} />
                               </Match>
-                              <Match when={character().provider === 'dnd2024'}>
+                              <Match when={isDnd2024Family(character().provider)}>
                                 <Levelbox classList="mr-2" value={skill.level} />
                               </Match>
                             </Switch>
@@ -171,7 +171,7 @@ export const Dnd5Skills = (props) => {
                           </p>
                           <div class="skills-grid-item-actions">
                             <Show
-                              when={character().provider === 'dnd2024'}
+                              when={isDnd2024Family(character().provider)}
                               fallback={
                                 <Checkbox classList="mr-2" checked={skill.selected} onToggle={() => toggleSkill(skill.slug)} />
                               }
