@@ -10,7 +10,9 @@ const FALLBACKS = {
 // en is the only complete dictionary; ru/es lag it deliberately (TLC strings are
 // en-only for now). Without the merge below a missing key resolves to undefined
 // and the label renders blank, so every locale is layered over en.
-const fetchDictionary = async (locale) => {
+// Exported for spec/javascript/tlcForm.test.js -- the layering is what keeps a
+// ru/es label from rendering blank, so it is gated directly.
+export const fetchDictionary = async (locale) => {
   const target = FALLBACKS[locale] || locale;
   const dictionary = await import(`../i18n/${target}.json`);
   if (target === 'en') return i18n.flatten(dictionary);

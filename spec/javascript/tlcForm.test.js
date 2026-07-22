@@ -1,135 +1,130 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-import en from '../../app/javascript/applications/CharKeeperApp/i18n/en.json' with { type: 'json' };
-import ru from '../../app/javascript/applications/CharKeeperApp/i18n/ru.json' with { type: 'json' };
-import es from '../../app/javascript/applications/CharKeeperApp/i18n/es.json' with { type: 'json' };
+// Registers the hooks that let node import .jsx; everything below it has to be a
+// dynamic import, or the module graph loads before the hooks exist.
+import './support/jsxLoader.js';
 
-const CHARKEEPER = path.join(
-  fileURLToPath(new URL('../../', import.meta.url)),
-  'app/javascript/applications/CharKeeperApp'
+const stubs = await import('./support/stubs.js');
+const { renderToString } = await import('solid-js/web');
+const { TlcCharacterForm } = await import(
+  '../../app/javascript/applications/CharKeeperApp/pages/Navigation/Characters/Forms/Tlc.jsx'
+);
+const { fetchDictionary } = await import('../../app/javascript/applications/CharKeeperApp/context/appLocale.jsx');
+const { default: tlcDelta } = await import('../../app/javascript/applications/CharKeeperApp/data/tlc.json');
+
+const DICTIONARIES = Object.fromEntries(
+  await Promise.all(['en', 'ru', 'es'].map(async (locale) => [locale, await fetchDictionary(locale)]))
 );
 
-const read = (relative) => readFileSync(path.join(CHARKEEPER, relative), 'utf8');
+// Renders the real form with the barrels stubbed (support/stubs.js): the field
+// components record their props instead of drawing, and CharacterForm hands back
+// its save callback, so a test drives the form the way a player does.
+const renderForm = (locale = 'en', onCreateCharacter = async () => null) => {
+  stubs.setAppLocale(locale, DICTIONARIES[locale]);
 
-// The A5b creation form and the surfaces that route to it. Rendering SolidJS
-// needs a DOM the repo has no harness for, so the option data itself is covered
-// by pure assertions (tlcConfig.test.js) and the wiring is asserted on source.
-test('the tlc creation form reads species from tlcConfig, never a provider json', () => {
-  const source = read('pages/Navigation/Characters/Forms/Tlc.jsx');
+  const html = renderToString(() => TlcCharacterForm({ onCreateCharacter, setCurrentTab: () => {} }));
 
-  assert.match(source, /import \{[^}]*tlcCreationSpecies[^}]*\} from '\.\.\/\.\.\/\.\.\/\.\.\/data\/tlcConfig'/);
-  assert.match(source, /items=\{translate\(tlcCreationSpecies, locale\(\)\)\}/);
-  assert.doesNotMatch(source, /data\/dnd2024\.json/);
-  assert.doesNotMatch(source, /data\/tlc\.json/);
+  return { html, fields: [...stubs.fields], save: stubs.onSaveCharacter };
+};
+
+const speciesSelect = (fields) => fields.find((item) => item.kind === 'select');
+
+test('the form renders the interim TLC fields and nothing else', () => {
+  const { fields } = renderForm();
+
+  // No level or ability inputs (the server fixes both), no D&D Beyond file import.
+  assert.deepEqual(fields.map((item) => item.kind), ['input', 'select', 'select', 'select', 'select', 'checkbox']);
+  assert.equal(fields[0].labelText, 'Name');
+  assert.equal(fields.at(-1).checked, false);
 });
 
-// There is no ImportContext::Tlc and the tlc `import` route is deliberately
-// unrouted, so a Beyond-import affordance on this form would 404 on click.
-test('the tlc creation form offers no D&D Beyond import', () => {
-  const source = read('pages/Navigation/Characters/Forms/Tlc.jsx');
+test('the species select offers exactly the TLC species, never the dnd2024 base', () => {
+  const species = speciesSelect(renderForm().fields);
 
-  assert.doesNotMatch(source, /onImportCharacter/);
-  assert.doesNotMatch(source, /type="file"/);
+  assert.deepEqual(Object.keys(species.items).sort(), Object.keys(tlcDelta.species).sort());
+  assert.equal(Object.keys(species.items).length, 17);
+  for (const slug of ['halfling', 'dragonborn', 'tiefling', 'aasimar', 'goliath']) {
+    assert.equal(species.items[slug], undefined, `${slug} is a dnd2024-only species and must not be offered`);
+  }
+  // Names, not slugs: the option list is what the player reads.
+  assert.equal(species.items.birdfolk, 'Birdfolk');
+  assert.ok(Object.values(species.items).every((name) => typeof name === 'string' && name.length > 0));
 });
 
-test('CharactersTab routes the tlc platform to the tlc form and lists it', () => {
-  const source = read('pages/Navigation/CharactersTab.jsx');
+test('picking a TLC-only species defaults its size and leaves the legacy unset', async () => {
+  let submitted = null;
+  const { fields, save } = renderForm('en', async (payload) => { submitted = { ...payload }; return null; });
 
-  assert.match(source, /platform\(\) === 'tlc'/);
-  assert.match(source, /<TlcCharacterForm/);
-  assert.match(source, /\['dnd5', 'dnd2024', 'tlc'\]/);
-  assert.match(source, /'tlc': t\('pages\.characterNavigation\.tlc'\)/);
-  // No homebrew props: /frontend/homebrews only serves a dnd2024 bucket.
-  assert.doesNotMatch(source, /<TlcCharacterForm[^>]*homebrews=/);
+  // birdfolk has no `legacies` key at all -- the branch a dnd2024 species never takes.
+  speciesSelect(fields).onSelect('birdfolk');
+  await save();
+
+  assert.equal(submitted.species, 'birdfolk');
+  assert.equal(submitted.size, 'small');
+  assert.equal(submitted.legacy, undefined);
+  assert.equal(submitted.alignment, 'neutral');
+  assert.equal(submitted.skip_guide, false);
+  // Level and abilities belong to TlcCharacter::BaseBuilder, not to the form.
+  assert.deepEqual(
+    Object.keys(submitted).sort(),
+    ['alignment', 'background', 'legacy', 'main_class', 'name', 'size', 'skip_guide', 'species']
+  );
 });
 
-test('CharacterTab renders a tlc character on the interim Dnd5 sheet', () => {
-  const source = read('pages/Content/CharacterTab.jsx');
+test('a redefined dnd2024 species takes the TLC size, not the 2024 one', async () => {
+  let submitted = null;
+  const { fields, save } = renderForm('en', async (payload) => { submitted = { ...payload }; return null; });
 
-  assert.match(source, /<Match when=\{character\(\)\.provider === 'tlc'\}>/);
-  // Its own Match, so D2 swaps one component instead of untangling a shared branch.
-  assert.equal((source.match(/<Match /g) || []).length, 3);
+  speciesSelect(fields).onSelect('dwarf');
+  await save();
+
+  // dnd2024 gives dwarf ['small']; tlc.json overrides it to ['medium'].
+  assert.equal(submitted.size, 'medium');
 });
 
-// The PDF export sheet is the official 2024 form; tlc has none to fill.
-test('tlc gets no PDF affordance in the characters list', () => {
-  const source = read('pages/Navigation/Characters/ListItem.jsx');
+test('every locale renders the form with real labels, en filling in for what it lags', () => {
+  const enStart = DICTIONARIES.en['newCharacterPage.tlc.start'];
+  // Everything up to the first character renderToString would escape.
+  const rendered = enStart.slice(0, enStart.search(/[&<>'"]/));
 
-  assert.match(source, /const AVAILABLE_PDF = \['dnd5', 'dnd2024'\];/);
-});
+  assert.ok(enStart.includes('level 3') && enStart.includes('point-buy'));
+  assert.ok(rendered.length > 40);
 
-test('en carries the tlc strings the form and the provider label need', () => {
-  assert.equal(en.pages.characterNavigation.tlc, "The Leyfarer's Chronicle");
-  assert.match(en.newCharacterPage.tlc.start, /level 3/);
-  assert.match(en.newCharacterPage.tlc.start, /point-buy/);
-  assert.ok(en.newCharacterPage.tlc.skipGuide);
-});
+  for (const locale of ['en', 'ru', 'es']) {
+    const { html, fields } = renderForm(locale);
 
-// The form's field labels are reused from dnd2024 rather than duplicated under
-// a tlc namespace: every locale already translates them, so a ru/es player gets
-// a real translation instead of an en fallback.
-test('every field label the tlc form reuses is translated in ru and es', () => {
-  const labels = ['species', 'legacy', 'size', 'background', 'mainClass', 'alignment'];
-
-  for (const [name, dictionary] of [['ru', ru], ['es', es]]) {
-    assert.ok(dictionary.newCharacterPage.name, `${name} is missing newCharacterPage.name`);
-    for (const label of labels) {
-      assert.ok(dictionary.newCharacterPage.dnd2024[label], `${name} is missing newCharacterPage.dnd2024.${label}`);
+    for (const item of fields) {
+      assert.ok(
+        typeof item.labelText === 'string' && item.labelText.length > 0,
+        `${locale} renders a blank label on the ${item.kind} field`
+      );
     }
-    for (const size of ['small', 'medium', 'large']) {
-      assert.ok(dictionary.newCharacterPage.dnd2024.sizes[size], `${name} is missing size ${size}`);
-    }
+    // `start` is en-only (plan L134); it is the paragraph at the top of the form.
+    assert.ok(html.includes(rendered), `${locale} drops the tlc intro paragraph`);
   }
 });
 
-// Mirrors i18n.flatten from @solid-primitives/i18n: every nested leaf also gets
-// a dotted top-level key, which is what translator() looks up.
-const flatten = (dictionary, prefix = '') =>
-  Object.entries(dictionary).reduce((acc, [key, value]) => {
-    const flatKey = prefix ? `${prefix}.${key}` : key;
-    acc[flatKey] = value;
-    if (value && typeof value === 'object' && !Array.isArray(value)) Object.assign(acc, flatten(value, flatKey));
-    return acc;
-  }, {});
+test('a locale keeps its own translation where it has one', () => {
+  const skipGuide = (locale) => renderForm(locale).fields.at(-1).labelText;
 
-const TLC_KEYS = ['pages.characterNavigation.tlc', 'newCharacterPage.tlc.start', 'newCharacterPage.tlc.skipGuide'];
+  assert.equal(skipGuide('ru'), DICTIONARIES.ru['newCharacterPage.tlc.skipGuide']);
+  assert.notEqual(skipGuide('ru'), skipGuide('en'));
+  assert.notEqual(skipGuide('es'), skipGuide('en'));
+});
 
-// ru/es lag en deliberately (plan L134). translator() returns undefined for a
-// missing key, so without the en layer in fetchDictionary these render blank.
-test('the tlc labels are non-blank in every locale once layered over en', () => {
-  for (const [name, dictionary] of [['en', en], ['ru', ru], ['es', es]]) {
-    const merged = { ...flatten(en), ...flatten(dictionary) };
+test('fetchDictionary layers en under every lagging locale and under the ru alias', async () => {
+  const en = DICTIONARIES.en;
 
-    for (const key of TLC_KEYS) assert.ok(merged[key], `${name} renders ${key} blank`);
+  for (const locale of ['ru', 'es']) {
+    const dictionary = DICTIONARIES[locale];
+
+    assert.equal(dictionary['pages.characterNavigation.tlc'], "The Leyfarer's Chronicle");
+    assert.equal(dictionary['newCharacterPage.tlc.start'], en['newCharacterPage.tlc.start']);
+    // The locale still wins wherever it translates a key.
+    assert.notEqual(dictionary['newCharacterPage.dnd2024.species'], en['newCharacterPage.dnd2024.species']);
+    assert.notEqual(dictionary['newCharacterPage.tlc.skipGuide'], en['newCharacterPage.tlc.skipGuide']);
   }
-});
 
-// newCharacterPage.tlc is the partially-translated case: ru/es carry skipGuide
-// (the string already existed for the dnd2024 form) and lag `start`. A locale
-// node that lags one sibling key must not shadow the en string for it.
-test('a partially translated tlc node keeps its own strings and falls back on the rest', () => {
-  for (const [name, dictionary] of [['ru', ru], ['es', es]]) {
-    const merged = { ...flatten(en), ...flatten(dictionary) };
-
-    assert.ok(dictionary.newCharacterPage.tlc.skipGuide, `${name} should translate skipGuide`);
-    assert.equal(merged['newCharacterPage.tlc.skipGuide'], dictionary.newCharacterPage.tlc.skipGuide);
-    assert.equal(merged['newCharacterPage.tlc.start'], en.newCharacterPage.tlc.start);
-  }
-});
-
-test('layering keeps the en string for a lagging key and the locale string elsewhere', () => {
-  const lagging = { ...flatten(en), ...flatten({ pages: { characterNavigation: { dnd5: 'ДиД 5' } } }) };
-
-  assert.equal(lagging['pages.characterNavigation.tlc'], "The Leyfarer's Chronicle");
-  assert.equal(lagging['pages.characterNavigation.dnd5'], 'ДиД 5');
-});
-
-test('fetchDictionary layers en under every non-en locale', () => {
-  const source = read('context/appLocale.jsx');
-
-  assert.match(source, /i18n\.flatten\(await import\('\.\.\/i18n\/en\.json'\)\), \.\.\.i18n\.flatten\(dictionary\)/);
+  assert.deepEqual(await fetchDictionary('ru-DHM'), DICTIONARIES.ru);
 });

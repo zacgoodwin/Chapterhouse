@@ -61,6 +61,25 @@ controls — while the dedicated TLC sheet is built. The PDF export in the row m
 is deliberately absent: the export sheet is the official 2024 character sheet and
 there is no TLC one to fill.
 
+## How this is tested
+
+`npm test` renders the real form (`spec/javascript/tlcForm.test.js`): a node
+loader compiles the `.jsx` with the same babel preset esbuild uses, in SSR mode,
+and stubs the barrels so the field components record the props the form hands
+them. It gates the species list, the size default, the payload the Save button
+submits, and that no label renders blank in `en`/`ru`/`es` — the last one against
+the real `fetchDictionary`, not a copy of its merge. The create endpoint itself is
+covered server-side by `spec/requests/frontend/tlc/characters_spec.rb`. The loader
+uses `module.registerHooks`, which is why `.node-version` moved to 22.15.0.
+
+There is no browser gate. Cypress is not installed in this repo — only the
+`cypress-on-rails` gem is, a leftover from upstream, with no `cypress` package in
+any `package.json` and no CI job to run one — so a `.cy.js` spec here would be a
+file nothing executes. The two surfaces that only a browser can drive are checked
+by hand: the platform picker routing to the TLC form, and the sheet opening
+through the `tlc` branch of `CharacterTab`. Both read their state from a fetch
+that never runs under SSR, so nothing short of a real browser covers them.
+
 ## Language support
 
 The TLC-specific prose — the provider name and the form's intro note — is
