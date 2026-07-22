@@ -220,5 +220,20 @@
       "heavy": "Heavy Armor",
       "shield": "Shield"
     }
+  },
+  "warnings": {
+    "title": "Rule warnings",
+    "dismiss": "Dismiss",
+    "restore": "Restore",
+    "source": {
+      "PHB": "Player's Handbook",
+      "TLC": "The Leyfarer's Chronicle"
+    },
+    "multiclassPrereq": "You do not meet the ability prerequisites to multiclass into these classes (13 required in each listed ability).",
+    "traitCount": "You have selected more species traits than your species allows.",
+    "preparedOverrun": "You have more spells prepared than this class allows.",
+    "levelVsChapterCap": "Your level is above the maximum for the campaign chapter.",
+    "bannedSpellExempted": "A feature on this character grants a spell that TLC bans; it was kept as an explicit exemption.",
+    "traitUnavailable": "A selected species trait no longer exists and was skipped."
   }
 }

@@ -194,6 +194,152 @@ describe 'Frontend::Tlc::Characters' do
     end
   end
 
+  # C7 acceptance cases, end to end through the real update contract and the
+  # real serializer. The never-block principle is the load-bearing assertion in
+  # each: the write always succeeds and the complaint arrives as a warning.
+  describe 'soft warnings' do
+    let!(:character) {
+      create :character, :tlc, user: user, data: {
+        level: 4, species: 'orc', main_class: 'bard', classes: { bard: 4 }, subclasses: { bard: nil },
+        abilities: { str: 12, dex: 16, con: 14, int: 11, wis: 16, cha: 16 }
+      }
+    }
+
+    def show
+      get "/frontend/characters/#{character.id}", params: { charkeeper_access_token: access_token }
+      response.parsed_body['character']
+    end
+
+    # JSON, matching helpers/apiRequest.jsx:63-67 -- form encoding drops an
+    # empty array, which is exactly the payload that restores the last dismissed
+    # warning.
+    def update(payload, target: character)
+      patch "/frontend/tlc/characters/#{target.id}",
+            params: { character: payload, charkeeper_access_token: access_token }, as: :json
+    end
+
+    def warning(payload, slug) = payload['warnings'].find { |item| item['slug'] == slug }
+
+    # Acceptance test 7.
+    it 'saves an under-prereq multiclass and warns from the PHB', :aggregate_failures do
+      update({ classes: { bard: 3, paladin: 1 } })
+
+      expect(response).to have_http_status :ok
+      expect(character.reload.data.classes).to eq({ 'bard' => 3, 'paladin' => 1 })
+      expect(warning(show, 'multiclass_prereq')).to include(
+        'source' => 'PHB', 'message_key' => 'warnings.multiclassPrereq', 'dismissible' => true
+      )
+    end
+
+    # Same scores, same multiclass, Human instead of Orc. Species is not an
+    # update-contract field, so the bypass needs its own character rather than a
+    # follow-up PATCH.
+    it 'raises no multiclass warning for a Human (Greenhorn bypass)', :aggregate_failures do
+      human = create :character, :tlc, user: user, data: {
+        level: 4, species: 'human', main_class: 'bard', classes: { bard: 4 }, subclasses: { bard: nil },
+        abilities: { str: 12, dex: 16, con: 14, int: 11, wis: 16, cha: 16 }
+      }
+
+      update({ classes: { bard: 3, paladin: 1 } }, target: human)
+      expect(response).to have_http_status :ok
+
+      get "/frontend/characters/#{human.id}", params: { charkeeper_access_token: access_token }
+      expect(response.parsed_body.dig('character', 'warnings').pluck('slug')).not_to include 'multiclass_prereq'
+    end
+
+    # Acceptance test 2, third clause: a 4th trait without Mixed Ancestry is a
+    # warning, NOT a 422.
+    it 'saves a 4th species trait and warns instead of erroring', :aggregate_failures do
+      traits = Array.new(4) { |index| create(:feat, :tlc, slug: "trait-#{index}").slug }
+
+      update({ selected_traits: traits })
+
+      expect(response).to have_http_status :ok
+      expect(character.reload.data.selected_traits).to eq traits
+      # Contract failures render top-level `errors` (base_controller.rb:43); a
+      # never-block save must carry none.
+      expect(response.parsed_body['errors']).to be_nil
+      expect(warning(show, 'trait_count')).to include(
+        'source' => 'TLC', 'context' => { 'selected' => 4, 'allowed' => 3 }
+      )
+    end
+
+    it 'warns from TLC when level exceeds the campaign chapter cap', :aggregate_failures do
+      create :campaign_character, character: character, campaign: create(:campaign, :tlc, chapter: 8)
+      update({ classes: { bard: 13 } })
+
+      expect(response).to have_http_status :ok
+      expect(warning(show, 'level_vs_chapter_cap')).to include(
+        'source' => 'TLC', 'context' => { 'level' => 13, 'cap' => 12, 'chapter' => 8 }
+      )
+    end
+
+    # The Lady of Ivory -> Fabricate class of conflict: the grant is kept
+    # (never-block) and flagged.
+    it 'warns from TLC for an exempted banned-spell grant', :aggregate_failures do
+      granting = create :feat, :tlc, slug: 'lady_of_ivory', info: { 'banned_exemption' => true }
+      create :character_feat, character: character, feat: granting
+
+      expect(warning(show, 'banned_spell_exempted')).to include(
+        'source' => 'TLC', 'context' => { 'feats' => ['lady_of_ivory'] }
+      )
+    end
+
+    describe 'dismiss and restore' do
+      before { update({ classes: { bard: 3, paladin: 1 } }) }
+
+      it 'hides a dismissed slug, lists it, and brings it back on restore', :aggregate_failures do
+        update({ dismissed_warnings: %w[multiclass_prereq] })
+        dismissed = show
+        expect(dismissed['warnings'].pluck('slug')).not_to include 'multiclass_prereq'
+        expect(dismissed['dismissed_warnings']).to eq %w[multiclass_prereq]
+
+        update({ dismissed_warnings: [] })
+        restored = show
+        expect(restored['warnings'].pluck('slug')).to include 'multiclass_prereq'
+        expect(restored['dismissed_warnings']).to eq []
+      end
+
+      it 'dedupes a repeated dismissal' do
+        update({ dismissed_warnings: %w[multiclass_prereq multiclass_prereq] })
+
+        expect(character.reload.data.dismissed_warnings).to eq %w[multiclass_prereq]
+      end
+
+      it 'rejects a slug outside the registry', :aggregate_failures do
+        update({ dismissed_warnings: %w[not_a_warning] })
+
+        expect(response).to have_http_status :unprocessable_content
+        expect(character.reload.data.dismissed_warnings).to eq []
+      end
+
+      # Pins all? (not any?): one bad slug poisons the whole payload, so the
+      # known slug alongside it is not stored either.
+      it 'rejects a payload mixing a known slug with an unknown one', :aggregate_failures do
+        update({ dismissed_warnings: %w[multiclass_prereq not_a_warning] })
+
+        expect(response).to have_http_status :unprocessable_content
+        expect(character.reload.data.dismissed_warnings).to eq []
+      end
+
+      # Only the delta is registry-bound. A slug already stored (dismissed
+      # before it was retired from SLUGS) must not 422 every later mutation --
+      # that would be the same unrestorable dead state from the other side.
+      it 'still restores a stored slug the registry no longer knows', :aggregate_failures do
+        stored = Character.find(character.id)
+        stored.data.dismissed_warnings = %w[retired_slug]
+        stored.save!
+
+        update({ dismissed_warnings: %w[retired_slug multiclass_prereq] })
+        expect(response).to have_http_status :ok
+
+        update({ dismissed_warnings: [] })
+        expect(response).to have_http_status :ok
+        expect(character.reload.data.dismissed_warnings).to eq []
+      end
+    end
+  end
+
   # AC5: the campaign provider enum. Lives here because it is one of this
   # ticket's acceptance cases; the flow itself is upstream's.
   describe 'POST /frontend/campaigns' do

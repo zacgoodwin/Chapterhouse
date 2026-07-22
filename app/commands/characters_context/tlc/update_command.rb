@@ -65,6 +65,7 @@ module CharactersContext
           optional(:selected_feats).value(:array)
           optional(:selected_traits).value(:array).each(:string)
           optional(:mixed_species).maybe(:string)
+          optional(:dismissed_warnings).value(:array).each(:string)
           optional(:weapon_core_skills).value(:array).each(included_in?: WEAPON_CORE_SKILLS)
           optional(:weapon_mastery).value(:array).each(:string)
           optional(:armor_proficiency).value(:array).each(included_in?: ARMOR_PROFICIENCY)
@@ -126,6 +127,21 @@ module CharactersContext
 
           key.failure(:unknown_mixed_species) unless ::Dnd2024::Character.species.key?(value)
         end
+
+        # Dismiss and restore are both a full replace of the array (same shape as
+        # selected_traits): the client sends the set it wants kept. Newly ADDED
+        # slugs are registry-bound, because an off-registry slug would be dead
+        # state no surface can ever restore -- unlike a rule-breaking trait pick,
+        # there is nothing here to warn about softly. Only the delta, though:
+        # validating the whole array would freeze every later dismiss and restore
+        # behind a 422 once a slug already stored is retired from the registry,
+        # which is the same dead state read from the other end.
+        rule(:dismissed_warnings) do
+          next if value.blank?
+
+          added = value - values[:character].data.dismissed_warnings
+          key.failure(:unknown_warning_slug) unless added.all? { |slug| ::Tlc::Warnings::SLUGS.key?(slug) }
+        end
       end
       # rubocop: enable Metrics/BlockLength
 
@@ -140,6 +156,7 @@ module CharactersContext
         end
 
         input[:selected_traits] = input[:selected_traits].uniq if input.key?(:selected_traits)
+        input[:dismissed_warnings] = input[:dismissed_warnings].uniq if input.key?(:dismissed_warnings)
 
         if input[:classes]
           input[:level] = input[:classes].values.sum(&:to_i)
