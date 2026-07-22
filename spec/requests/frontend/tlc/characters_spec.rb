@@ -60,6 +60,28 @@ describe 'Frontend::Tlc::Characters' do
       expect(response).to have_http_status :unprocessable_content
       expect(response.parsed_body['errors']).not_to be_nil
     end
+
+    # #76 regression, end to end: a TLC character on a SHARED species/class must
+    # surface the shared FEATURES, not an empty panel. The shared species trait
+    # and class feature live as Dnd2024::Feat rows (db/data/tlc/* seed zero), so
+    # a strict ::Tlc::Feat scope attached nothing and `features` came back []. The
+    # union in refresh_feats.rb#feats fixes it. Revert that union -> this goes RED.
+    it 'attaches shared species and class features to a created TLC character', :aggregate_failures do
+      species_trait = create :feat, :dnd2024, origin: 0, origin_value: 'human', slug: 'resourceful'
+      class_feature = create :feat, :dnd2024, origin: 1, origin_value: 'wizard', slug: 'wizard_magic_initiate'
+
+      post '/frontend/tlc/characters',
+           params: create_params.deep_merge(character: { name: 'Leyfarer Wizard', main_class: 'wizard' })
+      expect(response).to have_http_status :created
+      character_id = response.parsed_body.dig('character', 'id')
+
+      # The full show serializer exposes `features` (the create response omits it).
+      get "/frontend/characters/#{character_id}", params: { charkeeper_access_token: access_token }
+      feature_slugs = response.parsed_body.dig('character', 'features').pluck('slug')
+      expect(feature_slugs).not_to be_empty
+      expect(feature_slugs).to include(species_trait.slug)
+      expect(feature_slugs).to include(class_feature.slug)
+    end
   end
 
   describe 'PATCH /frontend/tlc/characters/:id' do
