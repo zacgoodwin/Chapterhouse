@@ -59,3 +59,22 @@ picking one up later starts from the reasoning, not from scratch.
   physical dice for now.
 
 Effort scale: S/M/L/XL (human team) → with CC+gstack roughly S→S, M→S, L→M, XL→L.
+
+## Deferred from the dev-instance ship (2026-07-23)
+
+- [ ] **Per-env credential files (split RAILS_MASTER_KEY)** (M) — P2. Both Fly
+  apps decrypt the ONE credentials.yml.enc, so a compromise of the experimental
+  dev app yields the prod DB password, service_role key, and storage keys.
+  CREDENTIALS_ENV is a runtime convention, not a security boundary. Fix: Rails
+  multi-env credentials (config/credentials/production.yml.enc + its own key),
+  each Fly app holding only its own key. Requires re-keying prod secrets.
+- [ ] **Replace hardcoded charkeeper.org domain** (S) — P1. Upstream leftover:
+  web/base_controller.rb#current_domain and application_helper.rb#root_host
+  return 'charkeeper.org' in production, so the cookie-banner cookie is
+  rejected on chapterhouse.tools / dev.chapterhouse.tools (Domain mismatch)
+  and root_host lies. Fix: host-only cookie (nil domain) + derive root_host
+  from request.host. Found by /ship red-team 2026-07-23.
+- [ ] **Revoke CREATEDB/CREATEROLE/BYPASSRLS on the PROD chapter role** (S) —
+  P2. Dev's role is already least-privilege (revoked 2026-07-23); prod's still
+  carries all three. One SQL statement in the prod project, but it is a prod
+  action: `ALTER ROLE chapter NOCREATEDB NOCREATEROLE NOBYPASSRLS;`.

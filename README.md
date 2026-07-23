@@ -2,15 +2,15 @@
 
 ### Supabase setup
 
-The app runs on Supabase: hosted Postgres, Auth (email/password + Google/Discord OAuth), Storage (avatars/files), and Realtime (campaign dice rolls). Test env stays on localhost Postgres and never touches Supabase.
+The app runs on Supabase: hosted Postgres, Auth (email/password + Google/Discord OAuth), Storage (avatars/files), and Realtime (campaign dice rolls). Test env stays on localhost Postgres and never touches Supabase. Two projects exist: prod (the `production` credentials section, used by the `chapterhouse` Fly app) and dev (the `development` section, used by local dev and the `chapterhouse-dev` Fly app).
 
 One-time project setup (dashboard):
 
 1. Create a project; note the project ref, region, and database password.
 2. Disable the Data API (Project Settings -> Data API). App tables live in `public` with RLS off; a live PostgREST endpoint would expose them.
-3. Auth: enable the Email provider (confirmations off for the personal app), add Google + Discord OAuth apps (callback `https://<ref>.supabase.co/auth/v1/callback`), set Site URL and add `http://localhost:3000/dashboard` to the redirect allow-list.
+3. Auth: enable the Email provider (confirmations off for the personal app), add Google + Discord OAuth apps (callback `https://<ref>.supabase.co/auth/v1/callback`), set Site URL and fill the redirect allow-list per project — prod: `https://chapterhouse.tools/dashboard` (+ `https://chapterhouse.fly.dev/dashboard` fallback); dev: `https://dev.chapterhouse.tools/dashboard` + `http://localhost:3000/dashboard`. A host missing from its project's allow-list fails OAuth round-trips with redirect_uri-not-allowed.
 4. Storage: create a private bucket `charkeeper`; create S3 access keys (Project Settings -> Storage).
-5. Fill `app/javascript/applications/CharKeeperApp/supabaseConfig.js` with the project URL and anon key, then `yarn build`.
+5. The SPA reads the project URL and anon key at runtime from meta tags the Rails layout renders out of the encrypted credentials — nothing to bake into the JS for the web app. `supabaseConfig.js` is only a fallback for hosts without the Rails layout: before building a Tauri webview bundle, fill it with the target project's URL and anon key (and never commit the filled values).
 6. Add credentials via `bin/rails credentials:edit`:
 
 ```yaml
@@ -23,7 +23,7 @@ development:
       host: aws-<n>-<region>.pooler.supabase.com
       port: 5432
       database: postgres
-      username: postgres.<ref>
+      username: chapter.<ref> # dedicated role, not postgres — see below
       password: "<db password>"
     storage:
       endpoint: https://<ref>.storage.supabase.co/storage/v1/s3
@@ -34,10 +34,19 @@ development:
 production: # same shape when cutting over
 ```
 
+The app connects as a dedicated `chapter` role, not `postgres`. On a fresh project, create it in the SQL editor before the first schema load (it then owns every table the load creates). Keep it least-privilege: no CREATEDB/CREATEROLE (a CREATEROLE role is a privilege-escalation primitive) and no BYPASSRLS (app tables have RLS off anyway):
+
+```sql
+CREATE ROLE chapter LOGIN PASSWORD '<db password>';
+GRANT USAGE, CREATE ON SCHEMA public TO chapter;
+GRANT USAGE ON SCHEMA extensions TO chapter;
+```
+
 Database rules:
 
-- Always connect through the **session pooler** (port 5432, user `postgres.<ref>`). Never the transaction pooler (6543): GoodJob needs LISTEN/NOTIFY and `with_advisory_lock` needs session advisory locks. The direct `db.<ref>.supabase.co` host is IPv6-only.
+- Always connect through the **session pooler** (port 5432, user `chapter.<ref>`). Never the transaction pooler (6543): GoodJob needs LISTEN/NOTIFY and `with_advisory_lock` needs session advisory locks. The direct `db.<ref>.supabase.co` host is IPv6-only.
 - First load is `bin/rails db:schema:load` then `bin/rails db:seed` — never `db:migrate` from zero (159 migrations include data backfills), and never `db:create`/`db:drop`/`db:reset` against Supabase.
+- The dev Fly app's release step migrates the dev DB under RAILS_ENV=production, which stamps `ar_internal_metadata.environment = production`. A later local `db:schema:load` against the dev project then raises ProtectedEnvironmentError; clear it first with `bin/rails db:environment:set RAILS_ENV=development`.
 - After running migrations in development, review the `db/schema.rb` diff: a dump from the Supabase catalog can pick up `extensions.*`/`pg_graphql`/`supabase_vault` lines that break localhost test schema loads. The gate spec `spec/config/supabase_migration_gates_spec.rb` catches this.
 
 Known gaps: the Cypress e2e login step used the removed password form and needs a rewrite against Supabase before it can run again.

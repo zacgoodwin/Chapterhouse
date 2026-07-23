@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.5.1.0] - 2026-07-23
+### Added
+- the app lives at https://chapterhouse.tools (plus www) with its own TLS certs; chapterhouse.fly.dev still works
+- a separate development instance at https://dev.chapterhouse.tools: its own Fly app and Supabase project (schema and content seeded), so testing never touches live campaign data
+### Fixed
+- browser sign-in works again: the page now hands the SPA its Supabase identity at runtime (the deployed bundle had shipped with empty keys, so login was silently unavailable), and the Homebrews app gets the same fix
+- the Discord webhook answers 401 instead of crashing when signature headers or the configured key are missing
+- the dev instance no longer fails every request without Redis: performance monitoring switches off and caching falls back to in-memory, keeping sign-in token checks fast
+### Changed
+- every credential lookup (database, Supabase, storage, image proxy, Discord) resolves through one guarded switch: unknown section names fail at boot, and the dev instance can never silently read production credentials
+- local development now targets the dev Supabase project instead of production
+
 ## Unreleased
 ### Fixed
 - TLC characters now receive the D&D 2024 features they share (class, species, legacy, feat) on create and on feature-affecting updates (the strict `Tlc::Feat` scope attached nothing while the TLC feat corpus is empty)
