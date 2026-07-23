@@ -14,7 +14,7 @@ module DiscordApi
     def headers
       {
         'Content-type' => 'application/json',
-        'Authorization' => "Bot #{Rails.application.credentials.dig(:production, :discord_bot_token)}"
+        'Authorization' => "Bot #{Rails.application.credentials.dig(Charkeeper.credentials_env, :discord_bot_token)}"
       }
     end
   end

@@ -8,30 +8,30 @@ test:
 
 minio:
   service: S3
-  endpoint: <%= Rails.application.credentials.dig(Rails.env.to_sym, :minio, :endpoint) %>
+  endpoint: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :minio, :endpoint) %>
   force_path_style: true
-  access_key_id: <%= Rails.application.credentials.dig(Rails.env.to_sym, :minio, :access_key_id) %>
-  secret_access_key: <%= Rails.application.credentials.dig(Rails.env.to_sym, :minio, :secret_access_key) %>
-  bucket: <%= Rails.application.credentials.dig(Rails.env.to_sym, :minio, :bucket) %>
-  region: <%= Rails.application.credentials.dig(Rails.env.to_sym, :minio, :region) %>
+  access_key_id: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :minio, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :minio, :secret_access_key) %>
+  bucket: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :minio, :bucket) %>
+  region: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :minio, :region) %>
 
 # Supabase Storage over its S3-compatible endpoint
 # (https://<ref>.storage.supabase.co/storage/v1/s3, S3 access keys from
 # Project Settings -> Storage). Keys bypass RLS: server-side only.
 supabase:
   service: S3
-  endpoint: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :storage, :endpoint) %>
+  endpoint: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :storage, :endpoint) %>
   force_path_style: true
-  access_key_id: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :storage, :access_key_id) %>
-  secret_access_key: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :storage, :secret_access_key) %>
-  bucket: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :storage, :bucket) %>
-  region: <%= Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :storage, :region) %>
+  access_key_id: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :storage, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :storage, :secret_access_key) %>
+  bucket: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :storage, :bucket) %>
+  region: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :storage, :region) %>
 
 rustfs:
   service: S3
-  endpoint: <%= Rails.application.credentials.dig(Rails.env.to_sym, :rustfs, :endpoint) %>
+  endpoint: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :rustfs, :endpoint) %>
   force_path_style: true
-  access_key_id: <%= Rails.application.credentials.dig(Rails.env.to_sym, :rustfs, :access_key_id) %>
-  secret_access_key: <%= Rails.application.credentials.dig(Rails.env.to_sym, :rustfs, :secret_access_key) %>
-  bucket: <%= Rails.application.credentials.dig(Rails.env.to_sym, :rustfs, :bucket) %>
-  region: <%= Rails.application.credentials.dig(Rails.env.to_sym, :rustfs, :region) %>
+  access_key_id: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :rustfs, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :rustfs, :secret_access_key) %>
+  bucket: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :rustfs, :bucket) %>
+  region: <%= Rails.application.credentials.dig(Charkeeper.credentials_env, :rustfs, :region) %>

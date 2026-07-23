@@ -9,6 +9,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <meta name="supabase-url" content="<%= Rails.application.config.x.supabase.url %>">
+    <meta name="supabase-anon-key" content="<%= Rails.application.config.x.supabase.anon_key %>">
     <%= yield :head %>
     <%= stylesheet_link_tag 'tailwind' %>
     <%= stylesheet_link_tag :application %>

@@ -25,6 +25,9 @@ module SupabaseJwt
 end
 
 Rails.application.config.x.supabase.url = SupabaseJwt::URL
+# Non-empty so layout specs assert a real value flows into the meta tags
+# (an empty anon_key makes those assertions pass vacuously).
+Rails.application.config.x.supabase.anon_key = 'test-anon-key'
 Rails.application.config.x.supabase.jwks = { keys: [SupabaseJwt::JWK.export] }
 
 RSpec.configure do |config|

@@ -32,5 +32,27 @@ describe Webhooks::DiscordsController do
         expect(Charkeeper::Container.resolve('monitoring.client')).not_to have_received(:notify)
       end
     end
+
+    context 'without signature headers' do
+      it 'rejects instead of raising', :aggregate_failures do
+        request.headers['X-Signature-Ed25519'] = nil
+
+        post :create, params: {}
+
+        expect(response).to have_http_status :unauthorized
+        expect(Charkeeper::Container.resolve('monitoring.client')).not_to have_received(:notify)
+      end
+    end
+
+    # The test credentials have no discord_public_key section, which is
+    # exactly the state that used to 500 (TypeError on nil.pack).
+    context 'without a public key in the selected credentials section' do
+      it 'rejects instead of raising', :aggregate_failures do
+        post :create, params: {}
+
+        expect(response).to have_http_status :unauthorized
+        expect(Charkeeper::Container.resolve('monitoring.client')).not_to have_received(:notify)
+      end
+    end
   end
 end

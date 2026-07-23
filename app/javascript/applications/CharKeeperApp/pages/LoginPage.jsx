@@ -16,7 +16,7 @@ const TRANSLATION = {
     noAccount: "Don't have account?",
     orContinueWith: 'Or continue with',
     confirmEmail: 'Check your inbox to confirm the email address.',
-    notConfigured: 'Supabase is not configured: fill supabaseConfig.js.'
+    notConfigured: 'Supabase is not configured for this deployment.'
   },
 }
 

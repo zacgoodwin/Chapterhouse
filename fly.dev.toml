@@ -1,0 +1,44 @@
+# Fly.io config for the DEV instance (dev.chapterhouse.tools).
+# Same image and RAILS_ENV=production as prod; CREDENTIALS_ENV=development
+# points the data plane (DB, Supabase keys, storage creds) at the dev
+# Supabase project. Deploy: fly deploy -c fly.dev.toml --remote-only
+app = "chapterhouse-dev"
+primary_region = "iad"
+console_command = "/rails/bin/rails console"
+
+[build]
+
+[deploy]
+  release_command = "bin/rails db:migrate"
+
+[env]
+  CREDENTIALS_ENV = "development"
+  # ponytail: no worker machine; GoodJob runs async inside web, so jobs only
+  # process while the machine is awake, and auto_stop can kill a job mid-run
+  # (at-least-once semantics; partial side effects possible on non-idempotent
+  # jobs). Local dev polls the same dev-DB good_jobs table, so a job enqueued
+  # here may execute on the dev box and vice versa. Add a worker group like
+  # fly.toml's if dev ever needs always-on or exactly-once jobs.
+  GOOD_JOB_EXECUTION_MODE = "async"
+
+[processes]
+  web = "bin/rails server"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["web"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "15s"
+    method = "GET"
+    path = "/up"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
