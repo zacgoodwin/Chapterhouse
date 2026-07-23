@@ -13,16 +13,15 @@ spells.map! do |spell|
     type: 'Dnd5::Spell',
     slug: spell[1],
     name: {
-      en: spell[2],
-      ru: spell[3]
+      en: spell[2]
     },
     data: {
       level: spell[0].to_i,
-      school: spell[4],
-      available_for: spell[6].split(','),
-      source: spell[5]
+      school: spell[3],
+      available_for: spell[5].split(','),
+      source: spell[4]
     },
-    available_for: spell[6].split(',')
+    available_for: spell[5].split(',')
   }
 end
 Dnd5::Spell.upsert_all(spells)
@@ -33,34 +32,19 @@ items.map! do |item|
     kind: item[0],
     slug: item[1],
     name: {
-      en: item[2],
-      ru: item[3]
+      en: item[2]
     },
     data: {
-      price: item[4].to_i,
-      weight: item[5].to_f
+      price: item[3].to_i,
+      weight: item[4].to_f
     }
   }
 end
 Dnd5::Item.upsert_all(items)
 
-# виды урона оружия
-# колющий - pierce
-# рубящий - slash
-# дробящий - bludge
-
-# свойства оружия
-# ближний бой - melee
-# метательное - thrown
-# дальний бой - range
-
-# фехтовальное - finesse
-# лёгкое - light
-# тяжёлое - heavy
-# универсальное - versatile
-# двуручное - 2handed
-# досягаемость - reach
-# перезарядка - reload
+# weapon damage kinds: pierce, slash, bludge
+# weapon properties: melee, thrown, range,
+#   finesse, light, heavy, versatile, 2handed, reach, reload
 
 Dir[File.join(Rails.root.join('db/data/dnd5/features/*.json'))].each do |filename|
   puts "seeding - #{filename}"
@@ -88,7 +72,7 @@ if psychic_blades_feat
   Dnd5::Item.create!(
     slug: 'psychic_blades',
     kind: 'weapon',
-    name: { en: 'Psychic Blades', ru: 'Психические клинки' },
+    name: { en: 'Psychic Blades' },
     data: {},
     info: {
       weapon_skill: 'light',

@@ -1,10 +1,11 @@
 [
   {
     "slug": "fey_ancestry",
-    "title": { "en": "Fey Ancestry", "ru": "Наследие фей" },
+    "title": {
+      "en": "Fey Ancestry"
+    },
     "description": {
-      "en": "You have advantage on saving throws against being charmed, and magic can't put you to sleep.",
-      "ru": "Вы совершаете с преимуществом спасброски от очарования, и вас невозможно магически усыпить."
+      "en": "You have advantage on saving throws against being charmed, and magic can't put you to sleep."
     },
     "origin": "race",
     "origin_value": "elf",
@@ -12,10 +13,11 @@
   },
   {
     "slug": "mask_of_the_wild",
-    "title": { "en": "Mask of the Wild", "ru": "Маскировка в дикой местности" },
+    "title": {
+      "en": "Mask of the Wild"
+    },
     "description": {
-      "en": "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena.",
-      "ru": "Вы можете предпринять попытку спрятаться, даже если вы слабо заслонены листвой, сильным дождём, снегопадом, туманом или другими природными явлениями."
+      "en": "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena."
     },
     "origin": "subrace",
     "origin_value": "wood_elf",
@@ -23,10 +25,11 @@
   },
   {
     "slug": "sun_light_sensitivity",
-    "title": { "en": "Sun Light Sensitivity", "ru": "Чувствительность к солнцу" },
+    "title": {
+      "en": "Sun Light Sensitivity"
+    },
     "description": {
-      "en": "You have disadvantage on attack rolls and on Wisdom (Perception) checks thal rely on sight when you, the targel of your attack, or whatever you are trying to perceive is in direct sunlight.",
-      "ru": "Вы совершаете с помехой броски атаки и проверки Мудрости (Внимательность), основанные на зрении, если вы, цель вашей атаки или изучаемый предмет расположены на прямом солнечном свете."
+      "en": "You have disadvantage on attack rolls and on Wisdom (Perception) checks thal rely on sight when you, the targel of your attack, or whatever you are trying to perceive is in direct sunlight."
     },
     "origin": "subrace",
     "origin_value": "drow",

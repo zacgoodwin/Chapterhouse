@@ -1,10 +1,11 @@
 [
   {
     "slug": "luck",
-    "title": { "en": "Luck", "ru": "Везучий" },
+    "title": {
+      "en": "Luck"
+    },
     "description": {
-      "en": "When you roll a 1 on a d20 test, you can reroll instead. You must take the new dice roll.",
-      "ru": "Когда вы выбрасываете 1 на кости при выполнении d20 теста, то вы можете перебросить кость и должны использовать новый результат."
+      "en": "When you roll a 1 on a d20 test, you can reroll instead. You must take the new dice roll."
     },
     "origin": "species",
     "origin_value": "halfling",
@@ -12,10 +13,11 @@
   },
   {
     "slug": "brave",
-    "title": { "en": "Brave", "ru": "Храбрый" },
+    "title": {
+      "en": "Brave"
+    },
     "description": {
-      "en": "You have advantage on saving throws against or to end being frightened.",
-      "ru": "Вы имеете преимущество на спасброски, которые вы совершаете, чтобы избежать или прекратить состояние Испуганный."
+      "en": "You have advantage on saving throws against or to end being frightened."
     },
     "origin": "species",
     "origin_value": "halfling",
@@ -23,10 +25,11 @@
   },
   {
     "slug": "halfling_nimbleness",
-    "title": { "en": "Halfling Nimbleness", "ru": "Проворство полуросликов" },
+    "title": {
+      "en": "Halfling Nimbleness"
+    },
     "description": {
-      "en": "You can move through a space when occupied by someone who is one size larger than you.",
-      "ru": "Вы можете проходить сквозь пространство, занятое существами, чей размер больше вашего."
+      "en": "You can move through a space when occupied by someone who is one size larger than you."
     },
     "origin": "species",
     "origin_value": "halfling",
@@ -34,10 +37,11 @@
   },
   {
     "slug": "naturally_stealthy",
-    "title": { "en": "Naturally Stealthy", "ru": "Естественная скрытность" },
+    "title": {
+      "en": "Naturally Stealthy"
+    },
     "description": {
-      "en": "You can take the Hide action even when only behind someone of a size larger than you.",
-      "ru": "Вы можете совершить действие Засада, даже если вы скрыты только существом, которое хотя бы на один размер больше вас."
+      "en": "You can take the Hide action even when only behind someone of a size larger than you."
     },
     "origin": "species",
     "origin_value": "halfling",

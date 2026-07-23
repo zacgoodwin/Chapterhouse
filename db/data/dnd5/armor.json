@@ -3,8 +3,7 @@
     "slug": "padded_armor",
     "kind": "armor",
     "name": {
-      "en": "Padded Armor",
-      "ru": "Стёганный доспех"
+      "en": "Padded Armor"
     },
     "data": {
       "weight": 8,
@@ -21,8 +20,7 @@
     "slug": "leather_armor",
     "kind": "armor",
     "name": {
-      "en": "Leather Armor",
-      "ru": "Кожаный доспех"
+      "en": "Leather Armor"
     },
     "data": {
       "weight": 10,
@@ -39,8 +37,7 @@
     "slug": "studded_leather_armor",
     "kind": "armor",
     "name": {
-      "en": "Studded Leather Armor",
-      "ru": "Проклёпанная кожа"
+      "en": "Studded Leather Armor"
     },
     "data": {
       "weight": 13,
@@ -57,8 +54,7 @@
     "slug": "hide_armor",
     "kind": "armor",
     "name": {
-      "en": "Hide Armor",
-      "ru": "Шкурный доспех"
+      "en": "Hide Armor"
     },
     "data": {
       "weight": 12,
@@ -75,8 +71,7 @@
     "slug": "chain_shirt",
     "kind": "armor",
     "name": {
-      "en": "Chain Shirt",
-      "ru": "Кольчужная рубаха"
+      "en": "Chain Shirt"
     },
     "data": {
       "weight": 20,
@@ -93,8 +88,7 @@
     "slug": "scale_mail_armor",
     "kind": "armor",
     "name": {
-      "en": "Scale Mail Armor",
-      "ru": "Чешуйчатый доспех"
+      "en": "Scale Mail Armor"
     },
     "data": {
       "weight": 45,
@@ -111,8 +105,7 @@
     "slug": "breastplate",
     "kind": "armor",
     "name": {
-      "en": "Breastplate",
-      "ru": "Кираса"
+      "en": "Breastplate"
     },
     "data": {
       "weight": 20,
@@ -129,8 +122,7 @@
     "slug": "half_plate_armor",
     "kind": "armor",
     "name": {
-      "en": "Half Plate Armor",
-      "ru": "Полулаты"
+      "en": "Half Plate Armor"
     },
     "data": {
       "weight": 40,
@@ -147,8 +139,7 @@
     "slug": "ring_mail_armor",
     "kind": "armor",
     "name": {
-      "en": "Ring Mail Armor",
-      "ru": "Кольчатый доспех"
+      "en": "Ring Mail Armor"
     },
     "data": {
       "weight": 40,
@@ -165,8 +156,7 @@
     "slug": "chain_mail",
     "kind": "armor",
     "name": {
-      "en": "Chain Mail",
-      "ru": "Кольчуга"
+      "en": "Chain Mail"
     },
     "data": {
       "weight": 55,
@@ -183,8 +173,7 @@
     "slug": "splint_armor",
     "kind": "armor",
     "name": {
-      "en": "Splint Armor",
-      "ru": "Наборный доспех"
+      "en": "Splint Armor"
     },
     "data": {
       "weight": 60,
@@ -201,8 +190,7 @@
     "slug": "plate_armor",
     "kind": "armor",
     "name": {
-      "en": "Plate Armor",
-      "ru": "Латы"
+      "en": "Plate Armor"
     },
     "data": {
       "weight": 65,
@@ -219,8 +207,7 @@
     "slug": "shield",
     "kind": "shield",
     "name": {
-      "en": "Shield",
-      "ru": "Щит"
+      "en": "Shield"
     },
     "data": {
       "weight": 6,
