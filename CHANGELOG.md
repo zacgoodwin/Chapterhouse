@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - a separate development instance at https://dev.chapterhouse.tools: its own Fly app and Supabase project (schema and content seeded), so testing never touches live campaign data
 ### Fixed
 - browser sign-in works again: the page now hands the SPA its Supabase identity at runtime (the deployed bundle had shipped with empty keys, so login was silently unavailable), and the Homebrews app gets the same fix
-- the Discord webhook answers 401 instead of crashing when signature headers or the configured key are missing
+- the Discord webhook answers 401 instead of crashing when signature headers or the configured key are missing or malformed
 - the dev instance no longer fails every request without Redis: performance monitoring switches off and caching falls back to in-memory, keeping sign-in token checks fast
 ### Changed
-- every credential lookup (database, Supabase, storage, image proxy, Discord) resolves through one guarded switch: unknown section names fail at boot, and the dev instance can never silently read production credentials
+- every environment-scoped credential lookup (database, Supabase, storage, image proxy, Discord) resolves through one guarded switch: unknown section names fail at boot, and the dev instance can never silently read production credentials
 - local development now targets the dev Supabase project instead of production
 
 ## Unreleased

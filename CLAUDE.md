@@ -30,10 +30,10 @@ Key routing rules:
 - Dev URL: https://dev.chapterhouse.tools (app `chapterhouse-dev`)
 - Deploy workflow: `fly deploy --remote-only` (prod) / `fly deploy -c fly.dev.toml --remote-only` (dev). No local Docker; remote builder. No CI deploy workflow — deploys are manual.
 - Dev instance shape: same image, RAILS_ENV=production, `CREDENTIALS_ENV=development` selects the development credentials section, which points at the separate dev Supabase project (own DB, Storage bucket `charkeeper`, and S3 keys). Web-only (GoodJob async in-process), no Redis (cache errors degrade to misses; rails_performance disabled without REDIS_URL). Dev credentials carry the full set: url, anon (`sb_publishable`), `service_role_key` (`sb_secret`), db (role `chapter`), and storage S3 keys.
-- Deploy status command: `fly status --app chapterhouse`
+- Deploy status command: `fly status --app chapterhouse` (prod) / `fly status --app chapterhouse-dev` (dev)
 - Merge method: squash
 - Project type: web app (Rails 8.1 + SolidJS; Supabase for DB/Auth/Storage/Realtime). Two Fly process groups: `web` (auto-stops to 0) + `worker` (GoodJob, always-on).
-- Post-deploy health check: https://chapterhouse.tools/up
+- Post-deploy health check: https://chapterhouse.tools/up (dev: https://dev.chapterhouse.tools/up)
 - flyctl: installed at `~/.fly/bin/flyctl.exe` (v0.4.72), authed.
 - Note: Procfile and config/deploy.rb are upstream (kortirso) leftovers — never deploy with them.
 - FIRST-DEPLOY GATE: SATISFIED — the app is created, secrets are set, and production is live.

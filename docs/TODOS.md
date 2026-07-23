@@ -73,7 +73,12 @@ Effort scale: S/M/L/XL (human team) → with CC+gstack roughly S→S, M→S, L�
   return 'charkeeper.org' in production, so the cookie-banner cookie is
   rejected on chapterhouse.tools / dev.chapterhouse.tools (Domain mismatch)
   and root_host lies. Fix: host-only cookie (nil domain) + derive root_host
-  from request.host. Found by /ship red-team 2026-07-23.
+  from request.host. Found by /ship red-team 2026-07-23. Scope is wider than
+  the two helpers: charkeeper.org is also hardcoded in the og:url meta
+  (layouts/application.html.erb), the SPA API fallback host (helpers/
+  apiRequest.jsx, appState.jsx, LoginPage.jsx region), avatar host
+  (lib/cache/avatars.rb), and Homebrews links (Equipment.jsx, Feats.jsx,
+  HomebrewTab.jsx).
 - [ ] **Revoke CREATEDB/CREATEROLE/BYPASSRLS on the PROD chapter role** (S) —
   P2. Dev's role is already least-privilege (revoked 2026-07-23); prod's still
   carries all three. One SQL statement in the prod project, but it is a prod

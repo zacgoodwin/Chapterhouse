@@ -8,7 +8,7 @@ One-time project setup (dashboard):
 
 1. Create a project; note the project ref, region, and database password.
 2. Disable the Data API (Project Settings -> Data API). App tables live in `public` with RLS off; a live PostgREST endpoint would expose them.
-3. Auth: enable the Email provider (confirmations off for the personal app), add Google + Discord OAuth apps (callback `https://<ref>.supabase.co/auth/v1/callback`), set Site URL and fill the redirect allow-list per project — prod: `https://chapterhouse.tools/dashboard` (+ `https://chapterhouse.fly.dev/dashboard` fallback); dev: `https://dev.chapterhouse.tools/dashboard` + `http://localhost:3000/dashboard`. A host missing from its project's allow-list fails OAuth round-trips with redirect_uri-not-allowed.
+3. Auth: enable the Email provider (confirmations off for the personal app), add Google + Discord OAuth apps (callback `https://<ref>.supabase.co/auth/v1/callback`), set Site URL and fill the redirect allow-list per project — prod: `https://chapterhouse.tools/dashboard` + `https://www.chapterhouse.tools/dashboard` (+ `https://chapterhouse.fly.dev/dashboard` fallback); dev: `https://dev.chapterhouse.tools/dashboard` + `http://localhost:3000/dashboard`. A host missing from its project's allow-list fails OAuth round-trips with redirect_uri-not-allowed.
 4. Storage: create a private bucket `charkeeper`; create S3 access keys (Project Settings -> Storage).
 5. The SPA reads the project URL and anon key at runtime from meta tags the Rails layout renders out of the encrypted credentials — nothing to bake into the JS for the web app. `supabaseConfig.js` is only a fallback for hosts without the Rails layout: before building a Tauri webview bundle, fill it with the target project's URL and anon key (and never commit the filled values).
 6. Add credentials via `bin/rails credentials:edit`:
@@ -31,7 +31,7 @@ development:
       access_key_id: <s3 key id>
       secret_access_key: <s3 secret>
       bucket: charkeeper
-production: # same shape when cutting over
+production: # same shape, pointing at the prod project
 ```
 
 The app connects as a dedicated `chapter` role, not `postgres`. On a fresh project, create it in the SQL editor before the first schema load (it then owns every table the load creates). Keep it least-privilege: no CREATEDB/CREATEROLE (a CREATEROLE role is a privilege-escalation primitive) and no BYPASSRLS (app tables have RLS off anyway):
