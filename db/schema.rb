@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_22_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -123,21 +123,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "character_feats", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Навыки персонажа", force: :cascade do |t|
-    t.boolean "active", default: false, comment: "Включен ли эффект навыка"
+  create_table "character_feats", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Character feats", force: :cascade do |t|
+    t.boolean "active", default: false, comment: "Whether the feat effect is enabled"
     t.uuid "character_id", null: false
     t.datetime "created_at", null: false
     t.uuid "feat_id", null: false
     t.string "kind", default: "default", null: false
-    t.integer "limit_refresh", limit: 2, comment: "Событие для обновления лимита"
+    t.integer "limit_refresh", limit: 2, comment: "Event that refreshes the limit"
     t.text "notes"
     t.string "prepared_by"
     t.boolean "ready_to_use"
     t.integer "selected_count"
-    t.integer "tokens", comment: "Текущее кол-во токенов"
+    t.integer "tokens", comment: "Current token count"
     t.datetime "updated_at", null: false
-    t.integer "used_count", comment: "Кол-во использований"
-    t.jsonb "value", comment: "Выбранные опции навыка, либо введенный текст"
+    t.integer "used_count", comment: "Uses count"
+    t.jsonb "value", comment: "Selected feat options or entered text"
     t.index ["character_id", "feat_id", "kind", "prepared_by"], name: "idx_on_character_id_feat_id_kind_prepared_by_4db15cdd26", unique: true
   end
 
@@ -145,10 +145,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.uuid "character_id", null: false
     t.integer "charges"
     t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false, comment: "Свойства предметов в экипировке"
+    t.jsonb "data", default: {}, null: false, comment: "Equipped item properties"
     t.uuid "item_id", null: false
     t.jsonb "modifiers", default: {}, null: false
-    t.string "name", comment: "Измененное название предмета"
+    t.string "name", comment: "Customized item name"
     t.text "notes"
     t.integer "state", limit: 2, default: 2, null: false
     t.jsonb "states", default: {}, null: false
@@ -178,19 +178,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
   create_table "character_spells", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "character_id", null: false
     t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false, comment: "Свойства подготовленных заклинания"
+    t.jsonb "data", default: {}, null: false, comment: "Prepared spell properties"
     t.text "notes"
     t.uuid "spell_id", null: false
     t.datetime "updated_at", null: false
     t.index ["character_id", "spell_id"], name: "index_character_spells_on_character_id_and_spell_id"
   end
 
-  create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Персонажи", force: :cascade do |t|
+  create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Characters", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false, comment: "Свойства персонажа"
+    t.jsonb "data", default: {}, null: false, comment: "Character properties"
     t.datetime "equipment_updated_at"
     t.string "name", null: false
-    t.string "type", null: false, comment: "Система, для которой создан персонаж"
+    t.string "type", null: false, comment: "Game system the character was created for"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_characters_on_user_id"
@@ -202,7 +202,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.integer "max_value", default: 1, null: false
     t.string "name", null: false
     t.string "origin_slug"
-    t.integer "reset_direction", default: 0, null: false, comment: "0 - сброс к нулю, 1 - сброс к максимуму"
+    t.integer "reset_direction", default: 0, null: false, comment: "0 - reset to zero, 1 - reset to maximum"
     t.jsonb "resets", default: {}, null: false
     t.uuid "resourceable_id", null: false
     t.string "resourceable_type", null: false
@@ -211,29 +211,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.index ["resourceable_id", "resourceable_type"], name: "idx_on_resourceable_id_resourceable_type_718cca992a"
   end
 
-  create_table "feats", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Навыки", force: :cascade do |t|
+  create_table "feats", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Feats", force: :cascade do |t|
     t.jsonb "bonus_eval_variables"
-    t.jsonb "conditions", default: {}, null: false, comment: "Условия доступности навыка"
-    t.boolean "continious", default: false, comment: "Имеет ли навык включаемый эффект"
+    t.jsonb "conditions", default: {}, null: false, comment: "Feat availability conditions"
+    t.boolean "continious", default: false, comment: "Whether the feat has a toggleable effect"
     t.datetime "created_at", null: false
     t.jsonb "description", default: {}, null: false
-    t.jsonb "description_eval_variables", default: {}, null: false, comment: "Вычисляемые переменные для описания"
-    t.jsonb "eval_variables", default: {}, null: false, comment: "Вычисляемые переменные"
-    t.string "exclude", comment: "Заменяемые навыки", array: true
+    t.jsonb "description_eval_variables", default: {}, null: false, comment: "Evaluated variables for description"
+    t.jsonb "eval_variables", default: {}, null: false, comment: "Evaluated variables"
+    t.string "exclude", comment: "Replaced feats", array: true
     t.jsonb "info", default: {}, null: false
     t.integer "kind", limit: 2, null: false
-    t.integer "limit_refresh", limit: 2, comment: "Событие для обновления лимита"
+    t.integer "limit_refresh", limit: 2, comment: "Event that refreshes the limit"
     t.jsonb "modifiers", default: {}, null: false
-    t.jsonb "options", comment: "Опции для выбора"
-    t.integer "origin", limit: 2, null: false, comment: "Тип применимости навыка"
-    t.string "origin_value", comment: "Значение применимости навыка"
-    t.string "origin_values", comment: "Несколько источников, которые могут иметь навык", array: true
-    t.jsonb "price", default: {}, comment: "Цена активации способности"
+    t.jsonb "options", comment: "Selection options"
+    t.integer "origin", limit: 2, null: false, comment: "Feat applicability type"
+    t.string "origin_value", comment: "Feat applicability value"
+    t.string "origin_values", comment: "Multiple origins that can have the feat", array: true
+    t.jsonb "price", default: {}, comment: "Feature activation price"
     t.boolean "public", default: false
-    t.integer "reset_on_rest", limit: 2, comment: "Сбрасывать выбор на отдыхе"
+    t.integer "reset_on_rest", limit: 2, comment: "Reset selection on rest"
     t.string "slug"
     t.jsonb "title", default: {}, null: false
-    t.jsonb "tokens", comment: "Настройки токенов для навыков"
+    t.jsonb "tokens", comment: "Token settings for feats"
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
@@ -349,7 +349,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "provider", null: false
-    t.boolean "public", default: false, null: false, comment: "Открыть доступ для сторонних пользователей"
+    t.boolean "public", default: false, null: false, comment: "Open access for other users"
     t.boolean "shared"
     t.datetime "updated_at", null: false
     t.integer "upvotes_count", default: 0, null: false
@@ -369,14 +369,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.index ["user_id"], name: "index_homebrew_publications_on_user_id"
   end
 
-  create_table "homebrew_subclasses", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Кастомные подклассы", force: :cascade do |t|
-    t.string "class_name", null: false, comment: "Название класса или ID кастомного класса"
+  create_table "homebrew_subclasses", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Custom subclasses", force: :cascade do |t|
+    t.string "class_name", null: false, comment: "Class name or custom class ID"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.datetime "discarded_at"
     t.string "name", null: false
-    t.boolean "public", default: false, null: false, comment: "Открыть доступ для сторонних пользователей"
-    t.string "type", null: false, comment: "Отношение к игровой системе"
+    t.boolean "public", default: false, null: false, comment: "Open access for other users"
+    t.string "type", null: false, comment: "Game system association"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.index ["discarded_at"], name: "index_homebrew_subclasses_on_discarded_at"
@@ -413,19 +413,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.index ["user_id"], name: "index_item_recipes_on_user_id"
   end
 
-  create_table "items", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Предметы", force: :cascade do |t|
+  create_table "items", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Items", force: :cascade do |t|
     t.integer "charges"
     t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false, comment: "Свойства предмета"
-    t.jsonb "description", default: {"en" => "", "ru" => ""}, null: false
+    t.jsonb "data", default: {}, null: false, comment: "Item properties"
+    t.jsonb "description", default: {"en" => ""}, null: false
     t.datetime "discarded_at"
     t.jsonb "info", default: {}, null: false
     t.uuid "itemable_id"
     t.string "itemable_type"
-    t.string "kind", null: false, comment: "Тип предмета"
+    t.string "kind", null: false, comment: "Item kind"
     t.jsonb "modifiers", default: {}, null: false
     t.jsonb "name", default: {}, null: false
-    t.boolean "public", default: false, null: false, comment: "Открыть доступ для сторонних пользователей"
+    t.boolean "public", default: false, null: false, comment: "Open access for other users"
     t.string "slug"
     t.string "type", null: false
     t.datetime "updated_at", null: false
@@ -440,16 +440,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
 
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "locale", null: false, comment: "Локаль пользователя для получения"
-    t.string "targets", default: [], null: false, comment: "Получатели отправлений", array: true
+    t.string "locale", null: false, comment: "Recipient user locale"
+    t.string "targets", default: [], null: false, comment: "Notification targets", array: true
     t.datetime "updated_at", null: false
     t.text "value", null: false
   end
 
-  create_table "spells", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Заклинания", force: :cascade do |t|
+  create_table "spells", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Spells", force: :cascade do |t|
     t.string "available_for", array: true
     t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false, comment: "Свойства заклинания"
+    t.jsonb "data", default: {}, null: false, comment: "Spell properties"
     t.jsonb "name", default: {}, null: false
     t.string "slug", null: false
     t.string "type", null: false
@@ -483,7 +483,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.text "value"
   end
 
-  create_table "user_homebrews", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Заранее сформированный список всех доступных homebrew", force: :cascade do |t|
+  create_table "user_homebrews", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "Precomputed list of all available homebrew", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.datetime "updated_at", null: false
@@ -516,7 +516,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_120000) do
     t.datetime "discarded_at"
     t.datetime "homebrew_updated_at"
     t.string "locale", default: "en", null: false
-    t.jsonb "provider_locales", default: {}, comment: "Альтернативные переводы"
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
