@@ -34,8 +34,9 @@ picking one up later starts from the reasoning, not from scratch.
 - [ ] **Change-log/audit of every character mutation** (M) — P3. Design-doc
   requirement (batched per-character log + admin log); needs storage design.
   Not load-bearing for playability.
-- [ ] **ru/es translations of TLC content** (M) — P3. Content seeds are en-only;
-  i18n keys fall back to en. Translate once the corpus stabilizes after B2.
+- ~~**ru/es translations of TLC content**~~ — dropped in v0.5.0.0: the app is
+  English-only and the locale infrastructure (ru/es dictionaries, per-user
+  provider sublocales) was removed; translating again means restoring i18n first.
 - [ ] **Owlbear integration for TLC** (M) — P3. `owlbear` namespace exists for
   other providers; wire tlc after MVP.
 - [ ] **Rank-up ceremony UI** (S) — P3. Delight moment on rank promotion;

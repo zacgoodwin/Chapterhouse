@@ -6,7 +6,7 @@ STI record (`Tlc::Feat`, `Tlc::Spell`, `Tlc::Item`) sharing the feats / spells /
 items tables with the D&D content.
 
 Access is HTTP Basic, inherited from every adminbook page (gated to
-production / ru_production; open locally). Credentials live in encrypted
+production; open locally). Credentials live in encrypted
 credentials under `admin.username` / `admin.password`.
 
 ## Routes

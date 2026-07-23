@@ -68,9 +68,7 @@ the official 2024 character sheet and there is no TLC one to fill.
 
 ## Language support
 
-The TLC-specific prose — the provider name and the form's intro note — is
-English-only for now. Russian and Spanish fall back to English for those two and
-keep their own translations everywhere else, because every field label on this
-form is shared with the D&D 2024 form. Nothing renders blank in any locale: each
-dictionary is layered over English in `context/appLocale.jsx`, so a key a locale
-has not translated yet resolves to the English string.
+The app is English-only as of v0.5.0.0: the Russian and Spanish interface
+options were removed along with the language picker. A browser or account
+still carrying an old language setting simply gets the English dictionary
+(`context/appLocale.jsx` always serves `en`), so nothing renders blank.
