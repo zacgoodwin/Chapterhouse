@@ -33,6 +33,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - updating hb mechanics for dh characters
 
+## [0.5.0.0] - 2026-07-22
+### Changed
+- the app is now English-only: every menu, character sheet, admin form, and content description is in English; the Russian and Spanish interface options are gone, and a browser or account still carrying an old language setting falls back to English instead of erroring
+- all D&D spell, item, and feat content ships with English names and descriptions only (previously bilingual en/ru data files)
+- a one-time cleanup migration strips the leftover Russian/Spanish values from the live database and repairs the seed-content bugs below
+
+### Fixed
+- upstream seed-content bugs: invisible Cyrillic look-alike letters inside the Stonecunning slug/title and the Pact of the Tome description, a Russian title on Gaze of Two Minds, a mistyped ability key on smith's tools, and five feats whose slugs contained spaces (Boon of Recovery, Unarmed Fighting, Blind Fighting, Persistent Rage, Beast Spells)
+- web pages no longer render as Not Found for visitors whose browser still holds an old ru/es language cookie
+- development avatar URLs now point at http://localhost:5000 instead of the upstream Russian domain (and use http, not https)
+
+### Removed
+- the Russian production deployment: its Rails environment, database/deploy/nginx configs, sitemaps and robots file, the RU/EU server-switch buttons, and the desktop login region picker
+- the prebuilt desktop/mobile/extension binaries and their landing-page download links (the extension source-code links remain); landing-page copy updated to match
+- the footer language links and the profile language picker (dead controls in an English-only app)
+- the unused per-user provider translations column
+
 ## [0.4.39] - 2026-07-11
 
 ## [0.4.38] - 2026-07-05
