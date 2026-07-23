@@ -22,11 +22,17 @@ class EnglishOnlyContent < ActiveRecord::Migration[8.1]
   }.freeze
 
   def up
-    fix_seed_typos
-    strip_locale_values
+    # safety_assured: strong_migrations cannot inspect raw execute calls.
+    # Every statement below is data-only (no DDL beyond a column default),
+    # scoped with WHERE predicates, and runs in milliseconds at this data
+    # size (hundreds to ~2k rows per table).
+    safety_assured do
+      fix_seed_typos
+      strip_locale_values
 
-    execute "UPDATE users SET locale = 'en' WHERE locale <> 'en'"
-    change_column_default :items, :description, from: { en: '', ru: '' }, to: { en: '' }
+      execute "UPDATE users SET locale = 'en' WHERE locale <> 'en'"
+      change_column_default :items, :description, from: { en: '', ru: '' }, to: { en: '' }
+    end
   end
 
   def down
