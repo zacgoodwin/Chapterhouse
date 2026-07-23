@@ -44,5 +44,3 @@ test:
 production:
   <<: *supabase
 
-ru_production:
-  <<: *supabase

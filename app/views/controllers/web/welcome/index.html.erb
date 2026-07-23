@@ -11,14 +11,6 @@
     <div class="mb-16">
       <%= image_tag 'screenshots/general.webp', alt: 'charkeeper', width: 900, height: 544 %>
     </div>
-    <div class="max-w-5xl">
-      <p class="text-lg mb-4"><%= t('web.welcome.index_v2.description3') %></p>
-      <% if Rails.env.production? %>
-        <%= link_to t('web.welcome.index_v2.switch_ru'), 'https://charkeeper.ru', target: '_blank', rel: 'noopener noreferrer', class: 'btn btn-primary inline-block' %>
-      <% else %>
-        <%= link_to t('web.welcome.index_v2.switch_eu'), 'https://charkeeper.org', target: '_blank', rel: 'noopener noreferrer', class: 'btn btn-primary inline-block' %>
-      <% end %>
-    </div>
   </div>
 </section>
 <section class="w-full bg-cosmos px-8">
@@ -38,7 +30,7 @@
     <div class="flex-1 flex flex-col items-center lg:items-start">
       <h2 class="text-2xl mb-4 lg:text-4xl text-center lg:text-left"><%= t('web.welcome.index_v2.cross') %></h2>
       <p class="mb-4 text-center lg:text-left"><%= t('web.welcome.index_v2.cross_desc') %></p>
-      <div class="mb-4 flex gap-x-4">
+      <div class="flex gap-x-4">
         <%= link_to 'https://apps.apple.com/us/app/charkeeper/id6752808498', target: '_blank', rel: 'noopener noreferrer' do %>
           <%= image_tag 'app_store.svg', alt: 'App store', width: 132, height: 44 %>
         <% end %>
@@ -46,8 +38,6 @@
           <%= image_tag 'google_store.svg', alt: 'Google store', width: 149, height: 44 %>
         <% end %>
       </div>
-      <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'MacOS', "#{root_url}Charkeeper_aarch64.dmg", class: 'underline', download: 'Charkeeper_aarch64.dmg' %></p>
-      <p class="mb-4"><%= t('web.welcome.index_v2.app_for') %> <%= link_to 'Android', "#{root_url}Charkeeper.apk", class: 'underline', download: 'Charkeeper.apk' %></p>
     </div>
     <div class="flex-1">
       <%= image_tag 'screenshots/apps.webp', alt: 'apps', width: 624, height: 364 %>
@@ -64,7 +54,6 @@
       <p class="text-center lg:text-left"><%= t('web.welcome.index_v2.integrations_desc') %></p>
       <h2 id="extensions" class="mt-8 text-2xl mb-4 lg:text-4xl text-center lg:text-left"><%= t('web.welcome.index_v2.extension') %></h2>
       <p class="text-center lg:text-left mb-4"><%= t('web.welcome.index_v2.extension_desc') %></p>
-      <p class="mb-4"><%= t('web.welcome.index_v2.extension_for') %> <%= link_to 'Firefox', "#{root_url}charkeeper-1.0.xpi", class: 'underline', download: 'Charkeeper.xpi' %></p>
       <p class="mb-4"><%= t('web.welcome.index_v2.extension_for') %> <%= link_to 'Firefox (source code)', 'https://github.com/kortirso/charkeeper_mozext', class: 'underline' %></p>
       <p><%= t('web.welcome.index_v2.extension_for') %> <%= link_to 'Chrome (source code)', 'https://github.com/kortirso/charkeeper_chromext', class: 'underline' %></p>
     </div>

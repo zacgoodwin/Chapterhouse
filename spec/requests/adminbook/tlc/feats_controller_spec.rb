@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Request specs for the TLC feats admin (ticket #32). Auth is HTTP Basic on
-# Adminbook::BaseController, gated to production/ru_production — in the test env
+# Adminbook::BaseController, gated to production — in the test env
 # it is off, so the CRUD examples run unauthenticated and the 401 example stubs
 # the env to prove the gate is inherited.
 describe 'Adminbook::Tlc::Feats' do

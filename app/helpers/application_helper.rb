@@ -3,10 +3,6 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def change_locale(locale)
-    url_for(request.params.merge(switch_locale: locale.to_s))
-  end
-
   def close_cookie_banner
     url_for(request.params.merge(close_cookie_banner: true))
   end
@@ -25,7 +21,6 @@ module ApplicationHelper
   end
 
   def root_host
-    return 'charkeeper.ru' if Rails.env.ru_production?
     return 'charkeeper.org' if Rails.env.production?
 
     'localhost:5000'

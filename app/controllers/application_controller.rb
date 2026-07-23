@@ -36,6 +36,8 @@ class ApplicationController < ActionController::Base
   end
 
   def user_locale
-    current_user.locale || I18n.default_locale
+    # Guard against a stale locale value (e.g. :ru) raising I18n::InvalidLocale.
+    locale = current_user.locale&.to_sym
+    I18n.available_locales.include?(locale) ? locale : I18n.default_locale
   end
 end
