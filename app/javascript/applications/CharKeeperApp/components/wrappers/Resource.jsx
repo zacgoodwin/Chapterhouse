@@ -33,48 +33,6 @@ const TRANSLATION = {
       }
     }
   },
-  ru: {
-    title: 'Персональные ресурсы',
-    name: 'Название',
-    description: 'Описание',
-    limit: 'Лимит',
-    resetDirection: 'Направление сброса',
-    directions: {
-      0: 'Сброс до 0',
-      1: 'Сброс до максимума'
-    },
-    rests: {
-      dnd5: {
-        short: 'Короткий отдых',
-        long: 'Длинный отдых'
-      },
-      dnd2024: {
-        short: 'Короткий отдых',
-        long: 'Длинный отдых'
-      }
-    }
-  },
-  es: {
-    title: 'Custom Resources',
-    name: 'Name',
-    description: 'Description',
-    limit: 'Limit',
-    resetDirection: 'Reset direction',
-    directions: {
-      0: 'Reset to 0',
-      1: 'Reset to max'
-    },
-    rests: {
-      dnd5: {
-        short: 'Descanso corto',
-        long: 'Descanso largo'
-      },
-      dnd2024: {
-        short: 'Descanso corto',
-        long: 'Descanso largo'
-      }
-    }
-  }
 }
 
 export const ResourceWrapper = (props) => {

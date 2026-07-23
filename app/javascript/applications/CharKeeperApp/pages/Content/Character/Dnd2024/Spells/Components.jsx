@@ -7,16 +7,6 @@ const TRANSLATION = {
     's': 'S',
     'm': 'M'
   },
-  ru: {
-    'v': 'В',
-    's': 'С',
-    'm': 'М',
-  },
-  es: {
-    'v': 'Vis',
-    's': 'S',
-    'm': 'Voc',
-  }
 };
 
 export const SpellComponents = (props) => {

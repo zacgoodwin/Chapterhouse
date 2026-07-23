@@ -23,32 +23,6 @@ const TRANSLATION = {
     disabled: 'Modificator is disabled',
     noValues: 'At least one modificator should be present'
   },
-  ru: {
-    cancel: 'Отменить',
-    save: 'Сохранить',
-    newBonus: 'Добавить модификатор',
-    addBonus: 'Добавить изменение',
-    bonusModify: 'Цель изменения',
-    bonusType: 'Тип изменения',
-    bonusValue: 'Значение изменения',
-    newBonusComment: 'Название модификатора',
-    enabled: 'Модификатор активен',
-    disabled: 'Модификатор не активен',
-    noValues: 'Необходимо указать хотя бы один модификатор со значением'
-  },
-  es: {
-    cancel: 'Cancelar',
-    save: 'Guardar',
-    newBonus: 'Añadir modificador',
-    addBonus: 'Añadir bonificación',
-    bonusModify: 'Objetivo de la bonificación',
-    bonusType: 'Tipo de bonificación',
-    bonusValue: 'Valor de la bonificación',
-    newBonusComment: 'Nombre del modificador',
-    enabled: 'El modificador está activo',
-    disabled: 'El modificador no está activo',
-    noValues: 'Debe haber al menos un modificador'
-  }
 }
 
 export const SharedBonuses = (props) => {
@@ -179,7 +153,7 @@ export const SharedBonuses = (props) => {
                         <Select
                           containerClassList="flex-1"
                           labelText={localize(TRANSLATION, locale()).bonusType}
-                          items={translate(bonus().modify === props.proficiencyName ? { "static": { "name": { "en": "Static", "ru": "Статичный" } } } : { "static": { "name": { "en": "Static", "ru": "Статичный" } }, "dynamic": { "name": { "en": "Dynamic", "ru": "Динамический" } } }, locale())}
+                          items={translate(bonus().modify === props.proficiencyName ? { "static": { "name": { "en": "Static" } } } : { "static": { "name": { "en": "Static" } }, "dynamic": { "name": { "en": "Dynamic" } } }, locale())}
                           selectedValue={bonus().type}
                           onSelect={(value) => updateNewBonus(bonus(), 'type', value)}
                         />

@@ -24,38 +24,6 @@ const TRANSLATION = {
     meters: 'm',
     attacks: 'Attks'
   },
-  ru: {
-    attack: 'Атака',
-    damage: 'Урон',
-    distance: 'Дист',
-    primary: 'Подготовленное',
-    additional: 'Запасное',
-    showSquares: 'Дистанция в квадратах',
-    narrative: 'Нарративная дистанция',
-    imperial: 'Имперская система',
-    metric: 'Метрическая система',
-    settings: 'Настройки дистанции',
-    squares: 'кв',
-    feet: 'фт',
-    meters: 'м',
-    attacks: 'Атак'
-  },
-  es: {
-    attack: 'Ataque',
-    damage: 'Daño',
-    distance: 'rango',
-    primary: 'Listo para usar',
-    additional: 'Reserva',
-    showSquares: 'Mostrar distancia en cuadrados',
-    narrative: 'Distancia narrativa',
-    imperial: 'Sistema imperial',
-    metric: 'Sistema métrico',
-    settings: 'Configuración de distancia',
-    squares: 'cuad',
-    feet: 'ft',
-    meters: 'm',
-    attacks: 'Attks'
-  }
 }
 export const Combat = (props) => {
   const character = () => props.character;

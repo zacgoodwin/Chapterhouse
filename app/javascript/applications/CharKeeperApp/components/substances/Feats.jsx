@@ -31,42 +31,6 @@ const TRANSLATION = {
     here: 'here',
     tokens: 'Tokens'
   },
-  ru: {
-    activeFeat: 'Активен',
-    allFeatures: 'Все способности',
-    personalFeats: 'Личные способности могут быть добавлены через homebrew',
-    settings: 'Настройки фильтров',
-    showPersonal: 'Показать личные',
-    groupFeatures: 'Группировать',
-    showPassive: 'Показать пассивные',
-    expandAll: 'Раскрывать все',
-    repeatable: 'Многократное',
-    prices: {
-      ap: 'ОД',
-      sp: 'ОВ',
-      'ap/sp': 'ОД/ОВ'
-    },
-    here: 'тут',
-    tokens: 'Жетоны'
-  },
-  es: {
-    activeFeat: 'Activo',
-    allFeatures: 'Todas las habilidades',
-    personalFeats: 'Las habilidades personales pueden ser agregadas a través de homebrew',
-    settings: 'Configuración del filtro',
-    showPersonal: 'Mostrar personales',
-    groupFeatures: 'Agrupar características',
-    showPassive: 'Mostrar pasivas',
-    expandAll: 'Expandir todo',
-    repeatable: 'Repetible',
-    prices: {
-      ap: 'PA',
-      sp: 'PE',
-      'ap/sp': 'PA/PE'
-    },
-    here: 'aquí',
-    tokens: 'Tokens'
-  }
 }
 
 export const Feats = (props) => {

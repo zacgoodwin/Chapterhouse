@@ -18,34 +18,16 @@ const TRANSLATION = {
     attack: 'Attack',
     damage: 'Damage'
   },
-  ru: {
-    advantage: 'Преимущество',
-    disadvantage: 'Помеха',
-    roll: 'Бросить',
-    crit: 'Крит',
-    critFailure: 'Крит провал',
-    attack: 'Атака',
-    damage: 'Урон'
-  },
-  es: {
-    advantage: 'Ventaja',
-    disadvantage: 'Desventaja',
-    roll: 'Tirar',
-    crit: 'Crítico',
-    critFailure: 'Fallo crítico',
-    attack: 'Ataque',
-    damage: 'Daño'
-  }
 }
 const SINGLE_ADVANTAGE_PROVIDERS = ['dnd'];
 const D20_TESTS_PROVIDERS = ['dnd'];
 
 export const createRoll = () => {
-  // данные для проверки D20
+  // D20 check data
   const [d20Test, setD20Test] = createStore({});
   const [d20TestResult, setD20TestResult] = createSignal(undefined);
 
-  // данные для общих бросков
+  // generic roll data
   const [dices, setDices] = createStore({});
   const [dicesResult, setDicesResult] = createSignal(undefined);
 
@@ -242,7 +224,7 @@ export const createRoll = () => {
             >
               <div class="dice-tests-box">
                 <div class="flex flex-col gap-2 flex-1">
-                  {/* Блок для тестов D20 - D&D */}
+                  {/* D20 check block - D&D */}
                   <Show when={d20Test.command}>
                     <div class="blockable dice-test">
                       <Show when={d20Test.title}><p>{d20Test.title}</p></Show>
@@ -313,7 +295,7 @@ export const createRoll = () => {
                       </div>
                     </div>
                   </Show>
-                  {/* Блок для всевозможных бросков */}
+                  {/* generic dice roll block */}
                   <Show when={dices.open}>
                     <div class="blockable dice-test">
                       <Show when={dices.title}>
@@ -347,7 +329,7 @@ export const createRoll = () => {
                       </div>
                     </div>
                   </Show>
-                  {/* Кнопка бросков */}
+                  {/* roll button */}
                   <Show when={open()}>
                     <Button withSuspense default textable classList="flex-1" onClick={performRoll}>
                       {localize(TRANSLATION, locale()).roll}
@@ -364,7 +346,7 @@ export const createRoll = () => {
                     </Show>
                   </div>
                 </div>
-                {/* Выбор кубиков */}
+                {/* dice selection */}
                 <Show when={!open() || dices.open}>
                   <div class="blockable ml-2 p-2 flex flex-col gap-2" classList={{ 'w-auto': open() }}>
                     <Show when={open()}>

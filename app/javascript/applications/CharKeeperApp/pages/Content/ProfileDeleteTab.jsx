@@ -15,20 +15,6 @@ const TRANSLATION = {
     deleteProfileConfirm2: 'This action is not revertable, add data will be removed.',
     cancel: 'Cancel'
   },
-  ru: {
-    profileDeleting: 'Удаление профиля',
-    delete: 'Удалить',
-    deleteProfileConfirm1: 'Вы точно хотите удалить свой профиль?',
-    deleteProfileConfirm2: 'Это действие нельзя отменить, все данные будут удалены.',
-    cancel: 'Отменить'
-  },
-  es: {
-    profileDeleting: 'Borrando perfil',
-    delete: 'Borrar',
-    deleteProfileConfirm1: '¿Estás seguro de que deseas eliminar tu perfil?',
-    deleteProfileConfirm2: 'Esta acción no es reversible, los datos añadidos se eliminarán.',
-    cancel: 'Cancelar'
-  }
 }
 
 export const ProfileDeleteTab = (props) => {

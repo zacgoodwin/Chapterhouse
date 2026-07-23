@@ -28,34 +28,6 @@ const TRANSLATION = {
     or: ' or ',
     abilityBoost: 'Ability increase by 1'
   },
-  ru: {
-    talents: 'Черты',
-    existingTalentPoints: 'Доступно черт',
-    selectTalent: 'Выберите новую черту',
-    saveButton: 'Сохранить',
-    selectedTalents: 'Выбранные черты',
-    origin: 'Происхождение',
-    general: 'Общее',
-    epic: 'Эпическая',
-    selectAdditionalTalent: 'Выберите дополнительную черту (если хотите)',
-    requiredAbility: 'Одна из характеристик должна быть 13+',
-    or: ' или ',
-    abilityBoost: 'Повышение характеристики на 1'
-  },
-  es: {
-    talents: 'Hazañas',
-    existingTalentPoints: 'Hazañas disponibles',
-    selectTalent: 'Selecciona una nueva hazaña',
-    saveButton: 'Guardar',
-    selectedTalents: 'Hazañas seleccionadas',
-    origin: 'Origen',
-    general: 'General',
-    epic: 'Épica',
-    selectAdditionalTalent: 'Selecciona una hazaña adicional (si lo necesitas)',
-    requiredAbility: 'Una de las habilidades debe ser 13+',
-    or: ' o ',
-    abilityBoost: 'Aumento de habilidad en 1'
-  }
 }
 
 export const Dnd5ClassLevels = (props) => {

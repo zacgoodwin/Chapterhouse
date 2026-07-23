@@ -15,22 +15,6 @@ const TRANSLATION = {
     settings: 'Settings',
     showBardic: 'Show Bardic inspire'
   },
-  ru: {
-    proficiencyBonus: 'Бонус мастерства',
-    hitDices: 'Кости хитов',
-    heroic: 'Героическое вдохновение',
-    bardic: 'Бардовское вдохновение',
-    settings: 'Настройки',
-    showBardic: 'Показывать вдохновение барда'
-  },
-  es: {
-    proficiencyBonus: 'Bonificación de competencia',
-    hitDices: 'Dados de golpe',
-    heroic: 'Inspiración heroica',
-    bardic: 'Inspiración bardica',
-    settings: 'Configuración',
-    showBardic: 'Mostrar inspiración bardica'
-  }
 }
 const SETTINGS_CACHE_NAME = 'DndStaticSettings';
 

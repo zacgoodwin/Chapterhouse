@@ -18,28 +18,6 @@ const TRANSLATION = {
       gold: 'Gold'
     }
   },
-  ru: {
-    measure: 'Мера изменения',
-    amount: 'Кол-во',
-    negativeMoney: 'Деньги не могут быть отрицательными',
-    tooMuchMoney: 'Указано слишком много денег :)',
-    dnd: {
-      copper: 'Медь',
-      silver: 'Серебро',
-      gold: 'Золото'
-    }
-  },
-  es: {
-    measure: 'Cambio de medida',
-    amount: 'Cantidad',
-    negativeMoney: 'El dinero no puede ser negativo',
-    tooMuchMoney: 'Demasiado dinero :)',
-    dnd: {
-      copper: 'Cobre',
-      silver: 'Plata',
-      gold: 'Oro'
-    }
-  }
 }
 
 const divMod = (a, b) => [Math.trunc(a / b), a % b];

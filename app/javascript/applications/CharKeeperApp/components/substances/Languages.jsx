@@ -10,14 +10,6 @@ const TRANSLATION = {
     title: 'Languages',
     add: 'Add language'
   },
-  ru: {
-    title: 'Известные языки',
-    add: 'Добавить язык'
-  },
-  es: {
-    title: 'Lenguajes',
-    add: 'Añadir idioma'
-  }
 }
 
 export const Languages = (props) => {

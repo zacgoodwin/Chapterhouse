@@ -58,94 +58,6 @@ const TRANSLATION = {
     weight: 'Weight',
     price: 'Price, cc'
   },
-  ru: {
-    add: 'Добавить оружие',
-    newItemTitle: 'Редактирование оружия',
-    name: 'Название оружия',
-    weaponSkill: 'Категория',
-    damageType: 'Тип урона',
-    damage: 'Урон',
-    mastery: 'Приём',
-    type: 'Тип',
-    range: 'Дальность',
-    features: 'Свойства',
-    description: 'Описание',
-    save: 'Сохранить',
-    requiredName: 'Название оружия - обязательное поле',
-    requiredDamage: 'Урон оружия - обязательное поле',
-    showPublic: 'Показать общедоступные',
-    public: 'Общедоступное',
-    copyCompleted: 'Копирование оружия завершено',
-    skills: {
-      light: 'Простое',
-      martial: 'Воинское'
-    },
-    damageTypes: {
-      bludge: 'Дробящий',
-      pierce: 'Колющий',
-      slash: 'Рубящий'
-    },
-    types: {
-      melee: 'Рукопашное',
-      range: 'Дальнобойное',
-      thrown: 'Метательное'
-    },
-    featuresList: {
-      finesse: 'Фехтовальное',
-      reload: 'Перезарядка',
-      '2handed': 'Двуручное',
-      heavy: 'Тяжёлое',
-      light: 'Лёгкое',
-      versatile: 'Универсальное',
-      reach: 'Досягаемость'
-    },
-    weight: 'Вес',
-    price: 'Цена, медяки'
-  },
-  es: {
-      add: 'Agregar arma',
-      newItemTitle: 'Forma de arma',
-      name: 'Nombre del arma',
-      weaponSkill: 'Categoría',
-      damageType: 'Tipo de daño',
-      damage: 'Daño',
-      mastery: 'Maestría',
-      type: 'Tipo',
-      range: 'Alcance',
-      features: 'Características',
-      description: 'Descripción',
-      save: 'Guardar',
-      requiredName: 'El nombre del arma es obligatorio',
-      requiredDamage: 'El daño del arma es obligatorio',
-      showPublic: 'Mostrar públicas',
-      public: 'Público',
-      copyCompleted: 'La copia del arma se ha completado',
-      skills: {
-        light: 'Ligera',
-        martial: 'Marcial'
-      },
-      damageTypes: {
-        bludge: 'Contundente',
-        pierce: 'Perforante',
-        slash: 'Cortante'
-      },
-      types: {
-        melee: 'Cuerpo a cuerpo',
-        range: 'A distancia',
-        thrown: 'Lanzable'
-      },
-      featuresList: {
-        finesse: 'Fineza',
-        reload: 'Recarga',
-        '2handed': 'a dos manos',
-        heavy: 'Pesado',
-        light: 'Ligera',
-        versatile: 'Versátil',
-        reach: 'Alcance'
-      },
-      weight: 'Peso',
-      price: 'Precio, monedas de cobre'
-  }
 }
 
 const MAPPING = {
@@ -179,36 +91,6 @@ const MAPPING = {
     'thrown_damage': 'Thrown damage',
     'range_damage': 'Range damage'
   },
-  ru: {
-    'str': 'Сила',
-    'dex': 'Ловкость',
-    'con': 'Телосложение',
-    'int': 'Интеллект',
-    'wis': 'Мудрость',
-    'cha': 'Харизма',
-    'save_dc.str': 'Сила спасбросок',
-    'save_dc.dex': 'Ловкость спасбросок',
-    'save_dc.con': 'Телосложение спасбросок',
-    'save_dc.int': 'Интеллект спасбросок',
-    'save_dc.wis': 'Мудрость спасбросок',
-    'save_dc.cha': 'Харизма спасбросок',
-    'armor_class': 'Класс брони',
-    'initiative': 'Инициатива',
-    'speed': 'Скорость',
-    'speeds.swim': 'Скорость плавания',
-    'speeds.flight': 'Скорость полёта',
-    'speeds.climb': 'Скорость лазания',
-    'attack': 'Атака',
-    'unarmed_attacks': 'Безоружные атаки',
-    'melee_attacks': 'Рукопашные атаки',
-    'thrown_attacks': 'Метательные атаки',
-    'range_attacks': 'Дистанционные атаки',
-    'damage': 'Урон',
-    'unarmed_damage': 'Безоружный урон',
-    'melee_damage': 'Рукопашный урон',
-    'thrown_damage': 'Метательный урон',
-    'range_damage': 'Дистанционный урон'
-  }
 }
 
 const ONLY_ADD = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'attack', 'damage'];
@@ -226,18 +108,6 @@ const VARIABLES = {
     no_body_armor: 'No body armor',
     no_armor: 'No armor'
   },
-  ru: {
-    str: 'Сила',
-    dex: 'Ловкость',
-    con: 'Телосложение',
-    int: 'Интеллект',
-    wis: 'Мудрость',
-    cha: 'Харизма',
-    level: 'Уровень',
-    proficiency_bonus: 'Бонус мастерства',
-    no_body_armor: 'Без доспеха',
-    no_armor: 'Без брони'
-  }
 }
 
 export const DndWeapons = () => {
@@ -369,8 +239,8 @@ export const DndWeapons = () => {
 
         return {
           ...formData,
-          name: { en: itemForm.name, ru: itemForm.name },
-          description: { en: itemForm.description, ru: itemForm.description },
+          name: { en: itemForm.name },
+          description: { en: itemForm.description },
           data: { weight: itemForm.weight, price: itemForm.price },
           own: true,
           public: itemForm.public,

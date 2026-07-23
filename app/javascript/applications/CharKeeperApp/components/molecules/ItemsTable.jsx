@@ -18,16 +18,6 @@ const TRANSLATION = {
     delete: 'Remove',
     info: 'Info'
   },
-  ru: {
-    change: 'Изменить',
-    delete: 'Убрать',
-    info: 'Информация'
-  },
-  es: {
-    change: 'Editar',
-    delete: 'Eliminar',
-    info: 'Información'
-  }
 }
 const ITEMS_INFO = ['dnd2024', 'dnd5'];
 

@@ -13,20 +13,6 @@ const TRANSLATION = {
     'h': 'hr',
     'd': 'd'
   },
-  ru: {
-    'instant': 'Мгн',
-    'r': 'рн',
-    'm': 'мин',
-    'h': 'ч',
-    'd': 'д'
-  },
-  es: {
-    'instant': 'Inst',
-    'r': 'rn',
-    'm': 'min',
-    'h': 'h',
-    'd': 'd'
-  }
 };
 
 export const SpellDuration = (props) => {

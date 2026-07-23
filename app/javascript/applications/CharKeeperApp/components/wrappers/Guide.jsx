@@ -11,16 +11,6 @@ const TRANSLATION = {
     next: 'Next step',
     finish: 'Finish'
   },
-  ru: {
-    skip: 'Пропустить',
-    next: 'Дальше',
-    finish: 'Закончить'
-  },
-  es: {
-    skip: 'Saltar',
-    next: 'Siguiente paso',
-    finish: 'Finalizar'
-  }
 }
 
 export const GuideWrapper = (props) => {

@@ -13,9 +13,7 @@ const { TlcCharacterForm } = await import(
 const { fetchDictionary } = await import('../../app/javascript/applications/CharKeeperApp/context/appLocale.jsx');
 const { default: tlcDelta } = await import('../../app/javascript/applications/CharKeeperApp/data/tlc.json');
 
-const DICTIONARIES = Object.fromEntries(
-  await Promise.all(['en', 'ru', 'es'].map(async (locale) => [locale, await fetchDictionary(locale)]))
-);
+const DICTIONARIES = { en: await fetchDictionary() };
 
 // Renders the real form with the barrels stubbed (support/stubs.js): the field
 // components record their props instead of drawing, and CharacterForm hands back
@@ -116,7 +114,7 @@ test('a redefined dnd2024 species takes the TLC size, not the 2024 one', async (
   assert.equal(submitted.size, 'medium');
 });
 
-test('every locale renders the form with real labels, en filling in for what it lags', () => {
+test('the form renders with real labels and the tlc intro paragraph', () => {
   const enStart = DICTIONARIES.en['newCharacterPage.tlc.start'];
   // Everything up to the first character renderToString would escape.
   const rendered = enStart.slice(0, enStart.search(/[&<>'"]/));
@@ -124,40 +122,25 @@ test('every locale renders the form with real labels, en filling in for what it 
   assert.ok(enStart.includes('level 3') && enStart.includes('point-buy'));
   assert.ok(rendered.length > 40);
 
-  for (const locale of ['en', 'ru', 'es']) {
-    const { html, fields } = renderForm(locale);
+  const { html, fields } = renderForm('en');
 
-    for (const item of fields) {
-      assert.ok(
-        typeof item.labelText === 'string' && item.labelText.length > 0,
-        `${locale} renders a blank label on the ${item.kind} field`
-      );
-    }
-    // `start` is en-only (plan L134); it is the paragraph at the top of the form.
-    assert.ok(html.includes(rendered), `${locale} drops the tlc intro paragraph`);
+  for (const item of fields) {
+    assert.ok(
+      typeof item.labelText === 'string' && item.labelText.length > 0,
+      `blank label on the ${item.kind} field`
+    );
   }
+  // `start` is the paragraph at the top of the form.
+  assert.ok(html.includes(rendered), 'the tlc intro paragraph is dropped');
 });
 
-test('a locale keeps its own translation where it has one', () => {
-  const skipGuide = (locale) => renderForm(locale).fields.at(-1).labelText;
-
-  assert.equal(skipGuide('ru'), DICTIONARIES.ru['newCharacterPage.tlc.skipGuide']);
-  assert.notEqual(skipGuide('ru'), skipGuide('en'));
-  assert.notEqual(skipGuide('es'), skipGuide('en'));
-});
-
-test('fetchDictionary layers en under every lagging locale and under the ru alias', async () => {
-  const en = DICTIONARIES.en;
-
-  for (const locale of ['ru', 'es']) {
-    const dictionary = DICTIONARIES[locale];
+test('fetchDictionary serves the flattened en dictionary regardless of argument', async () => {
+  // The app is English-only: any historical locale value a stale client sends
+  // (ru, es, the ru-DHM alias) must still resolve to a working dictionary.
+  for (const stale of [undefined, 'en', 'ru', 'ru-DHM', 'es']) {
+    const dictionary = await fetchDictionary(stale);
 
     assert.equal(dictionary['pages.characterNavigation.tlc'], "The Leyfarer's Chronicle");
-    assert.equal(dictionary['newCharacterPage.tlc.start'], en['newCharacterPage.tlc.start']);
-    // The locale still wins wherever it translates a key.
-    assert.notEqual(dictionary['newCharacterPage.dnd2024.species'], en['newCharacterPage.dnd2024.species']);
-    assert.notEqual(dictionary['newCharacterPage.tlc.skipGuide'], en['newCharacterPage.tlc.skipGuide']);
+    assert.ok(dictionary['newCharacterPage.tlc.skipGuide'].length > 0);
   }
-
-  assert.deepEqual(await fetchDictionary('ru-DHM'), DICTIONARIES.ru);
 });

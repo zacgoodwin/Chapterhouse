@@ -26,40 +26,6 @@ const TRANSLATION = {
     a: 'A',
     r: 'R'
   },
-  ru: {
-    one_at_short_rest: 'Короткий - 1, длинный - все',
-    short_rest: 'Короткий отдых',
-    long_rest: 'Длинный отдых',
-    session: 'Между сессиями',
-    combat: 'Между боями',
-    ap: 'ОД',
-    sp: 'ОВ',
-    mp: 'ОМ',
-    hope: 'Надежда',
-    stress: 'Стресс',
-    health: 'Здоровье',
-    armor: 'Броня',
-    spent: 'Ресурс потрачен',
-    a: 'Д',
-    r: 'Р'
-  },
-  es: {
-    one_at_short_rest: 'Corto - 1, largo - todo',
-    short_rest: 'Descanso corto',
-    long_rest: 'Descanso largo',
-    session: 'Descanso entre sesiones',
-    combat: 'Descanso entre batallas',
-    ap: 'PA',
-    sp: 'PE',
-    mp: 'PM',
-    hope: 'Esperanza',
-    stress: 'Estrés',
-    health: 'Health',
-    armor: 'Armor',
-    spent: 'Resource is spent',
-    a: 'A',
-    r: 'R'
-  }
 }
 const PRICE_WITHOUT_VALUE = ['r'];
 

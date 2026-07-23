@@ -10,14 +10,6 @@ const TRANSLATION = {
     clear: 'Cancel selection',
     search: 'Type for filtering (from 3 characters)'
   },
-  ru: {
-    clear: 'Отменить выбор',
-    search: 'Ввод для фильтра (от 3 символов)'
-  },
-  es: {
-    clear: 'Cancelar selección',
-    search: 'Escribe para filtrar (al menos 3 caracteres)'
-  }
 }
 
 export const Select = (props) => {

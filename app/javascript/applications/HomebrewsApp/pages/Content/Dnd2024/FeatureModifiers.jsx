@@ -34,36 +34,6 @@ const TRANSLATION = {
     'thrown_damage': 'Thrown damage',
     'range_damage': 'Range damage'
   },
-  ru: {
-    'str': 'Сила',
-    'dex': 'Ловкость',
-    'con': 'Телосложение',
-    'int': 'Интеллект',
-    'wis': 'Мудрость',
-    'cha': 'Харизма',
-    'save_dc.str': 'Сила спасбросок',
-    'save_dc.dex': 'Ловкость спасбросок',
-    'save_dc.con': 'Телосложение спасбросок',
-    'save_dc.int': 'Интеллект спасбросок',
-    'save_dc.wis': 'Мудрость спасбросок',
-    'save_dc.cha': 'Харизма спасбросок',
-    'armor_class': 'Класс брони',
-    'initiative': 'Инициатива',
-    'speed': 'Скорость',
-    'speeds.swim': 'Скорость плавания',
-    'speeds.flight': 'Скорость полёта',
-    'speeds.climb': 'Скорость лазания',
-    'attack': 'Атака',
-    'unarmed_attacks': 'Безоружные атаки',
-    'melee_attacks': 'Рукопашные атаки',
-    'thrown_attacks': 'Метательные атаки',
-    'range_attacks': 'Дистанционные атаки',
-    'damage': 'Урон',
-    'unarmed_damage': 'Безоружный урон',
-    'melee_damage': 'Рукопашный урон',
-    'thrown_damage': 'Метательный урон',
-    'range_damage': 'Дистанционный урон'
-  }
 }
 
 export const FeatureModifiers = (props) => {

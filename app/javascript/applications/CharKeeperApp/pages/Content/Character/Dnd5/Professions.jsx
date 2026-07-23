@@ -11,12 +11,6 @@ const TRANSLATION = {
   en: {
     weaponMastery: 'Weapon mastery'
   },
-  ru: {
-    weaponMastery: 'Оружейное мастерство'
-  },
-  es: {
-    weaponMastery: 'Maestría de armas'
-  }
 }
 
 export const Dnd5Professions = (props) => {

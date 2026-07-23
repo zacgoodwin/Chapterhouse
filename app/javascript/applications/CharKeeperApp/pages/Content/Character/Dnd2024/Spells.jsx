@@ -44,40 +44,6 @@ const TRANSLATION = {
     damageUp: '<p>The damage increases by 1 dice when you reach levels 5, 11 and 17.</p>',
     check: 'Spell attack'
   },
-  ru: {
-    cantrips: 'Заговоры',
-    level: 'уровень',
-    knownSpells: 'Изучение заклинаний',
-    prepared: 'Подготовленные',
-    known: 'Известные',
-    spellAttack: 'Бонус атаки',
-    saveDC: 'Спасброски',
-    onlyAvailableSpells: 'Только доступные',
-    onlyPreparedSpells: 'Только подготовленные',
-    customSpellAbility: 'Изучить с магической характеристикой',
-    back: 'Назад',
-    noValue: 'Стандартная',
-    filterByClass: 'Фильтр по классам',
-    damageUp: '<p>Урон увеличивается на 1 кость, когда вы достигаете 5, 11 и 17 уровня.</p>',
-    check: 'Атака заклинанием'
-  },
-  es: {
-    cantrips: 'Trucos',
-    level: 'nivel',
-    knownSpells: 'Aprender conjuros',
-    prepared: 'Preparados',
-    known: 'Conocidos',
-    spellAttack: 'Ataque de hechizo',
-    saveDC: 'DC de salvación',
-    onlyAvailableSpells: 'Solo disponibles',
-    onlyPreparedSpells: 'Solo preparados',
-    customSpellAbility: 'Aprender con habilidad de hechizo personalizada',
-    back: 'Volver',
-    noValue: 'Predeterminado',
-    filterByClass: 'Filtrar por clase',
-    damageUp: '<p>El daño aumenta en 1 dado cuando alcanzas los niveles 5, 11 y 17.</p>',
-    check: 'Tirada de hechizo'
-  }
 }
 
 export const Dnd2024Spells = (props) => {
@@ -145,7 +111,7 @@ export const Dnd2024Spells = (props) => {
     return `${modifier}d`;
   });
 
-  // все заклинания доступные для изучения
+  // all spells available to learn
   const filteredSpellsList = createMemo(() => {
     if (spells() === undefined) return [];
     if (lastActiveCharacterId() !== character().id) return [];
@@ -158,7 +124,7 @@ export const Dnd2024Spells = (props) => {
     });
   });
 
-  // заклинания выбранного персонажа
+  // current character's spells
   const filteredCharacterSpells = createMemo(() => {
     if (characterSpells() === undefined) return [];
     if (lastActiveCharacterId() !== character().id) return [];
@@ -182,10 +148,10 @@ export const Dnd2024Spells = (props) => {
     return result;
   });
 
-  // id врождённых заклинаний
+  // innate spell ids
   const staticSpellIds = createMemo(() => character().formatted_static_spells.map(({ feat_id }) => feat_id));
 
-  // id всех известных заклинаний
+  // ids of all known spells
   const knownSpellIds = createMemo(() => {
     if (lastActiveCharacterId() !== character().id) return [];
     if (characterSpells() === undefined) return [];

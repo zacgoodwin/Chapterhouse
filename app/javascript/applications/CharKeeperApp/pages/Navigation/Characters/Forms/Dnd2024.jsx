@@ -20,18 +20,6 @@ const TRANSLATION = {
     beyondFile: 'You can import your character from D&D Beyond by using JSON file (you can find extension description at main page)',
     showHomebrew: 'Allow to select homebrews'
   },
-  ru: {
-    options: 'В разделе Homebrews/Модули доступны книги для расширения возможных вариантов при создании персонажа.',
-    skipGuide: 'Пропустить настройку нового персонажа',
-    beyondFile: 'Вы можете импортировать своего персонажа из D&D Beyond, используя JSON-файл (описание расширения можно найти на главной странице).',
-    showHomebrew: 'Выбирать из homebrew'
-  },
-  es: {
-    options: 'Hay libros disponibles en la sección Homebrews/Módulos para opciones adicionales para la creación de personajes.',
-    skipGuide: 'Omitir guía de personaje nuevo',
-    beyondFile: 'Puedes importar tu personaje usando de D&D Beyond un archivo JSON (puedes encontrar la descripción de la extensión en la página principal).',
-    showHomebrew: 'Allow to select homebrews'
-  }
 }
 
 export const Dnd2024CharacterForm = (props) => {

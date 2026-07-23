@@ -7,12 +7,6 @@ const TRANSLATION = {
   en: {
     loading: 'Loading'
   },
-  ru: {
-    loading: 'Загрузка данных'
-  },
-  es: {
-    loading: 'Cargando'
-  }
 }
 
 export const Loading = (props) => {

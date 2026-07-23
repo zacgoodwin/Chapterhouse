@@ -9,18 +9,6 @@ const TRANSLATION = {
     avatarUrl: 'or paste link to image',
     avatarTransform: 'Image will be converted to square format'
   },
-  ru: {
-    fileSizeLimit: 'Размер файла должен быть меньше 1 МБ',
-    avatarFile: 'Выберите файл аватара',
-    avatarUrl: 'или укажите ссылку на изображение',
-    avatarTransform: 'Изображение будет конфертировано в квадратный формат'
-  },
-  es: {
-    fileSizeLimit: 'El tamaño del archivo debe ser menor a 1 MB',
-    avatarFile: 'Selecciona el archivo del avatar',
-    avatarUrl: 'o pega el enlace a la imagen',
-    avatarTransform: 'La imagen se convertirá a un formato cuadrado'
-  }
 }
 
 export const AvatarInput = (props) => {

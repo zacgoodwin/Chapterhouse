@@ -26,40 +26,15 @@ const MAPPING = {
     'attack': 'Attack',
     'proficiency_bonus': 'Proficiency bonus'
   },
-  ru: {
-    'str': 'Сила',
-    'dex': 'Ловкость',
-    'con': 'Телосложение',
-    'int': 'Интеллект',
-    'wis': 'Мудрость',
-    'cha': 'Харизма',
-    'strSave': 'Сила спасбросок',
-    'dexSave': 'Ловкость спасбросок',
-    'conSave': 'Телосложение спасбросок',
-    'intSave': 'Интеллект спасбросок',
-    'wisSave': 'Мудрость спасбросок',
-    'chaSave': 'Харизма спасбросок',
-    'armor_class': 'Класс брони',
-    'initiative': 'Инициатива',
-    'speed': 'Скорость',
-    'attack': 'Атака',
-    'proficiency_bonus': 'Бонус мастерства'
-  }
 }
 const DYNAMIC_ITEMS = {
-  "proficiency_bonus": { "name": { "en": "Proficiency", "ru": "Мастерство" } },
-  "level": { "name": { "en": "Level", "ru": "Уровень" } }
+  "proficiency_bonus": { "name": { "en": "Proficiency" } },
+  "level": { "name": { "en": "Level" } }
 };
 const TRANSLATION = {
   en: {
     save: 'saving throw'
   },
-  ru: {
-    save: 'спасбросок'
-  },
-  es: {
-    save: 'tirada de salvación'
-  }
 };
 const ABILITIES = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 const SAVES = ['strSave', 'dexSave', 'conSave', 'intSave', 'wisSave', 'chaSave'];

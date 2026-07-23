@@ -8,12 +8,6 @@ const TRANSLATION = {
   en: {
     title: 'Wild shape features'
   },
-  ru: {
-    title: 'Способности облика'
-  },
-  es: {
-    title: 'Características de forma salvaje'
-  }
 }
 
 export const BeastFeatures = (props) => {

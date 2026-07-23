@@ -15,12 +15,6 @@ const TRANSLATION = {
   en: {
     delete: 'Delete'
   },
-  ru: {
-    delete: 'Удалить'
-  },
-  es: {
-    delete: 'Eliminar'
-  }
 }
 
 export const CharactersListItem = (props) => {

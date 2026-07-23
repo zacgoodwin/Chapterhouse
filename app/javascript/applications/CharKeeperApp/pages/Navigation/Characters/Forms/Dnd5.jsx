@@ -17,12 +17,6 @@ const TRANSLATION = {
   en: {
     beyondFile: 'You can import your character from D&D Beyond by using JSON file (you can find extension description at main page)'
   },
-  ru: {
-    beyondFile: 'Вы можете импортировать своего персонажа из D&D Beyond, используя JSON-файл (описание расширения можно найти на главной странице).'
-  },
-  es: {
-    beyondFile: 'Puedes importar tu personaje usando de D&D Beyond un archivo JSON (puedes encontrar la descripción de la extensión en la página principal).'
-  }
 }
 
 export const Dnd5CharacterForm = (props) => {
