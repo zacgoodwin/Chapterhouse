@@ -20,7 +20,10 @@ if defined?(RailsPerformance)
     config.slow_requests_threshold = 500 # ms
 
     config.debug = false # currently not used>
-    config.enabled = true
+    # The middleware and monitor thread hard-require Redis on every request.
+    # The dev Fly app runs production env with no REDIS_URL (no Redis at all),
+    # so enabling there 503s the whole app, /up included.
+    config.enabled = ENV['REDIS_URL'].present? || !Rails.env.production?
 
     # default path where to mount gem
     config.mount_at = '/performance'
