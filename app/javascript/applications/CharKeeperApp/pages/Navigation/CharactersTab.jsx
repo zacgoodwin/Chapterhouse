@@ -20,16 +20,6 @@ const TRANSLATION = {
     deleteCharacterTitle: 'Deleting character',
     delete: 'Delete'
   },
-  ru: {
-    deleteCharacterConfirm: 'Вы точно хотите избавиться от этого персонажа?',
-    deleteCharacterTitle: 'Удаление персонажа',
-    delete: 'Удалить'
-  },
-  es: {
-    deleteCharacterConfirm: '¿Estás seguro de que quieres eliminar este personaje?',
-    deleteCharacterTitle: 'Eliminando personaje',
-    delete: 'Eliminar'
-  }
 }
 
 export const CharactersTab = () => {

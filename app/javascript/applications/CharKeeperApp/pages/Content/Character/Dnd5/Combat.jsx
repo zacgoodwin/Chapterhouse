@@ -17,18 +17,6 @@ const TRANSLATION = {
     climb: 'Climb speed',
     check: 'Initiative'
   },
-  ru: {
-    flight: 'Скорость полёта',
-    swim: 'Скорость плавания',
-    climb: 'Скорость лазания',
-    check: 'Инициатива'
-  },
-  es: {
-    flight: 'Velocidad de vuelo',
-    swim: 'Velocidad de nado',
-    climb: 'Velocidad de trepar',
-    check: 'Iniciativa'
-  }
 }
 
 export const Dnd5Combat = (props) => {

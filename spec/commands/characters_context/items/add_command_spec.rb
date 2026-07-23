@@ -37,7 +37,7 @@ describe CharactersContext::Items::AddCommand do
 
     context 'with existing custom item' do
       let!(:character_item) do
-        create :character_item, character: character, item: item, states: { 'hands' => 1 }, name: 'Топор +1'
+        create :character_item, character: character, item: item, states: { 'hands' => 1 }, name: 'Axe +1'
       end
 
       it 'adds item', :aggregate_failures do
@@ -63,7 +63,7 @@ describe CharactersContext::Items::AddCommand do
 
   context 'with name and modifiers' do
     let(:params) do
-      { character: character, item: item, name: 'Топор +1', modifiers: { 'str' => { 'type' => 'add', 'value' => 1 } } }
+      { character: character, item: item, name: 'Axe +1', modifiers: { 'str' => { 'type' => 'add', 'value' => 1 } } }
     end
 
     it 'adds item' do

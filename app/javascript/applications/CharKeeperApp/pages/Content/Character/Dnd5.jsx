@@ -18,14 +18,6 @@ const TRANSLATION = {
     equipmentHelpMessage: 'Here you can select equipment for your character.',
     levelingHelpMessage: 'In the future on this tab you can level up your character.'
   },
-  ru: {
-    equipmentHelpMessage: 'На этой вкладке вы можете выбрать снаряжение для вашего персонажа.',
-    levelingHelpMessage: 'В будущем на этой вкладке вы сможете указывать уровень вашего персонажа.'
-  },
-  es: {
-    equipmentHelpMessage: 'Aquí puedes seleccionar el equipo para tu personaje.',
-    levelingHelpMessage: 'En el futuro en esta pestaña podrás subir de nivel a tu personaje.'
-  }
 }
 
 export const Dnd5 = (props) => {

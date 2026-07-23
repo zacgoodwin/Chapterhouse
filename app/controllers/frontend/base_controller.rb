@@ -14,7 +14,6 @@ module Frontend
 
     def set_active_storage_url_options
       return if Rails.env.production?
-      return if Rails.env.ru_production?
 
       ActiveStorage::Current.url_options = {
         protocol: request.protocol,

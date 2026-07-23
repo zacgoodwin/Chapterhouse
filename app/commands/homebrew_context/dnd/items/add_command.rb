@@ -16,8 +16,8 @@ module HomebrewContext
         private
 
         def do_prepare(input)
-          input[:name] = { en: sanitize(input[:name]), ru: sanitize(input[:name]) }
-          input[:description] = { en: sanitize(input[:description]), ru: sanitize(input[:description]) }
+          input[:name] = { en: sanitize(input[:name]) }
+          input[:description] = { en: sanitize(input[:description]) }
         end
 
         def do_persist(input)

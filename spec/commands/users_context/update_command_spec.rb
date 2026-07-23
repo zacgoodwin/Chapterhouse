@@ -42,6 +42,17 @@ describe UsersContext::UpdateCommand do
       end
     end
 
+    context 'for formerly valid locale' do
+      # english-only conversion: 'ru' and 'es' left the Locales enum, so a
+      # stale client resubmitting its old locale must be rejected, not saved.
+      let(:locale) { 'ru' }
+
+      it 'does not update user', :aggregate_failures do
+        expect(command_call[:errors]).not_to be_nil
+        expect(user.reload.locale).to eq 'ru'
+      end
+    end
+
     context 'for valid locale' do
       let(:locale) { 'en' }
 

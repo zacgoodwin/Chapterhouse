@@ -3,8 +3,7 @@
     "slug": "quarterstaff",
     "kind": "weapon",
     "name": {
-      "en": "Quarterstaff",
-      "ru": "Боевой посох"
+      "en": "Quarterstaff"
     },
     "data": {
       "weight": 4,
@@ -15,7 +14,9 @@
       "type": "melee",
       "damage": "1d6",
       "damage_type": "bludge",
-      "caption": ["versatile-1d8"],
+      "caption": [
+        "versatile-1d8"
+      ],
       "mastery": "topple"
     }
   },
@@ -23,8 +24,7 @@
     "slug": "mace",
     "kind": "weapon",
     "name": {
-      "en": "Mace",
-      "ru": "Булава"
+      "en": "Mace"
     },
     "data": {
       "weight": 4,
@@ -43,8 +43,7 @@
     "slug": "club",
     "kind": "weapon",
     "name": {
-      "en": "Club",
-      "ru": "Дубинка"
+      "en": "Club"
     },
     "data": {
       "weight": 2,
@@ -55,7 +54,9 @@
       "type": "melee",
       "damage": "1d4",
       "damage_type": "bludge",
-      "caption": ["light"],
+      "caption": [
+        "light"
+      ],
       "mastery": "slow"
     }
   },
@@ -63,8 +64,7 @@
     "slug": "dagger",
     "kind": "weapon",
     "name": {
-      "en": "Dagger",
-      "ru": "Кинжал"
+      "en": "Dagger"
     },
     "data": {
       "weight": 1,
@@ -76,7 +76,10 @@
       "damage": "1d4",
       "damage_type": "pierce",
       "dist": "20/60",
-      "caption": ["light", "finesse"],
+      "caption": [
+        "light",
+        "finesse"
+      ],
       "mastery": "nick"
     }
   },
@@ -84,8 +87,7 @@
     "slug": "spear",
     "kind": "weapon",
     "name": {
-      "en": "Spear",
-      "ru": "Копьё"
+      "en": "Spear"
     },
     "data": {
       "weight": 3,
@@ -97,7 +99,9 @@
       "damage": "1d6",
       "damage_type": "pierce",
       "dist": "20/60",
-      "caption": ["versatile-1d8"],
+      "caption": [
+        "versatile-1d8"
+      ],
       "mastery": "sap"
     }
   },
@@ -105,8 +109,7 @@
     "slug": "light_hammer",
     "kind": "weapon",
     "name": {
-      "en": "Light Hammer",
-      "ru": "Лёгкий молот"
+      "en": "Light Hammer"
     },
     "data": {
       "weight": 2,
@@ -118,7 +121,9 @@
       "damage": "1d4",
       "damage_type": "bludge",
       "dist": "20/60",
-      "caption": ["light"],
+      "caption": [
+        "light"
+      ],
       "mastery": "nick"
     }
   },
@@ -126,8 +131,7 @@
     "slug": "javelin",
     "kind": "weapon",
     "name": {
-      "en": "Javelin",
-      "ru": "Метательное копьё"
+      "en": "Javelin"
     },
     "data": {
       "weight": 2,
@@ -147,8 +151,7 @@
     "slug": "greatclub",
     "kind": "weapon",
     "name": {
-      "en": "Greatclub",
-      "ru": "Палица"
+      "en": "Greatclub"
     },
     "data": {
       "weight": 10,
@@ -159,7 +162,9 @@
       "type": "melee",
       "damage": "1d8",
       "damage_type": "bludge",
-      "caption": ["2handed"],
+      "caption": [
+        "2handed"
+      ],
       "mastery": "push"
     }
   },
@@ -167,8 +172,7 @@
     "slug": "handaxe",
     "kind": "weapon",
     "name": {
-      "en": "Handaxe",
-      "ru": "Ручной топор"
+      "en": "Handaxe"
     },
     "data": {
       "weight": 2,
@@ -180,7 +184,9 @@
       "damage": "1d6",
       "damage_type": "slash",
       "dist": "20/60",
-      "caption": ["light"],
+      "caption": [
+        "light"
+      ],
       "mastery": "vex"
     }
   },
@@ -188,8 +194,7 @@
     "slug": "sickle",
     "kind": "weapon",
     "name": {
-      "en": "Sickle",
-      "ru": "Серп"
+      "en": "Sickle"
     },
     "data": {
       "weight": 2,
@@ -200,7 +205,9 @@
       "type": "melee",
       "damage": "1d4",
       "damage_type": "slash",
-      "caption": ["light"],
+      "caption": [
+        "light"
+      ],
       "mastery": "nick"
     }
   },
@@ -208,8 +215,7 @@
     "slug": "light_crossbow",
     "kind": "weapon",
     "name": {
-      "en": "Light Crossbow",
-      "ru": "Лёгкий арбалет"
+      "en": "Light Crossbow"
     },
     "data": {
       "weight": 5,
@@ -221,7 +227,10 @@
       "damage": "1d8",
       "damage_type": "pierce",
       "dist": "80/320",
-      "caption": ["2handed", "reload"],
+      "caption": [
+        "2handed",
+        "reload"
+      ],
       "mastery": "slow"
     }
   },
@@ -229,8 +238,7 @@
     "slug": "dart",
     "kind": "weapon",
     "name": {
-      "en": "Dart",
-      "ru": "Дротик"
+      "en": "Dart"
     },
     "data": {
       "weight": 0.25,
@@ -242,7 +250,9 @@
       "damage": "1d4",
       "damage_type": "pierce",
       "dist": "20/60",
-      "caption": ["finesse"],
+      "caption": [
+        "finesse"
+      ],
       "mastery": "vex"
     }
   },
@@ -250,8 +260,7 @@
     "slug": "shortbow",
     "kind": "weapon",
     "name": {
-      "en": "Shortbow",
-      "ru": "Короткий лук"
+      "en": "Shortbow"
     },
     "data": {
       "weight": 2,
@@ -263,7 +272,9 @@
       "damage": "1d6",
       "damage_type": "pierce",
       "dist": "80/320",
-      "caption": ["2handed"],
+      "caption": [
+        "2handed"
+      ],
       "mastery": "vex"
     }
   },
@@ -271,8 +282,7 @@
     "slug": "sling",
     "kind": "weapon",
     "name": {
-      "en": "Sling",
-      "ru": "Праща"
+      "en": "Sling"
     },
     "data": {
       "weight": 0,
@@ -284,7 +294,10 @@
       "damage": "1d4",
       "damage_type": "bludge",
       "dist": "30/120",
-      "caption": ["2handed", "reload"],
+      "caption": [
+        "2handed",
+        "reload"
+      ],
       "mastery": "slow"
     }
   },
@@ -292,8 +305,7 @@
     "slug": "halberd",
     "kind": "weapon",
     "name": {
-      "en": "Halberd",
-      "ru": "Алебарда"
+      "en": "Halberd"
     },
     "data": {
       "weight": 6,
@@ -304,7 +316,11 @@
       "type": "melee",
       "damage": "1d10",
       "damage_type": "slash",
-      "caption": ["2handed", "heavy", "reach"],
+      "caption": [
+        "2handed",
+        "heavy",
+        "reach"
+      ],
       "mastery": "cleave"
     }
   },
@@ -312,8 +328,7 @@
     "slug": "war_pick",
     "kind": "weapon",
     "name": {
-      "en": "War Pick",
-      "ru": "Боевая кирка"
+      "en": "War Pick"
     },
     "data": {
       "weight": 2,
@@ -332,8 +347,7 @@
     "slug": "warhammer",
     "kind": "weapon",
     "name": {
-      "en": "Warhammer",
-      "ru": "Боевой молот"
+      "en": "Warhammer"
     },
     "data": {
       "weight": 2,
@@ -344,7 +358,9 @@
       "type": "melee",
       "damage": "1d8",
       "damage_type": "bludge",
-      "caption": ["versatile-1d10"],
+      "caption": [
+        "versatile-1d10"
+      ],
       "mastery": "push"
     }
   },
@@ -352,8 +368,7 @@
     "slug": "battleaxe",
     "kind": "weapon",
     "name": {
-      "en": "Battleaxe",
-      "ru": "Боевой топор"
+      "en": "Battleaxe"
     },
     "data": {
       "weight": 4,
@@ -364,7 +379,9 @@
       "type": "melee",
       "damage": "1d8",
       "damage_type": "slash",
-      "caption": ["versatile-1d10"],
+      "caption": [
+        "versatile-1d10"
+      ],
       "mastery": "topple"
     }
   },
@@ -372,8 +389,7 @@
     "slug": "glaive",
     "kind": "weapon",
     "name": {
-      "en": "Glaive",
-      "ru": "Глефа"
+      "en": "Glaive"
     },
     "data": {
       "weight": 6,
@@ -384,7 +400,11 @@
       "type": "melee",
       "damage": "1d10",
       "damage_type": "slash",
-      "caption": ["2handed", "heavy", "reach"],
+      "caption": [
+        "2handed",
+        "heavy",
+        "reach"
+      ],
       "mastery": "graze"
     }
   },
@@ -392,8 +412,7 @@
     "slug": "greatsword",
     "kind": "weapon",
     "name": {
-      "en": "Greatsword",
-      "ru": "Двуручный меч"
+      "en": "Greatsword"
     },
     "data": {
       "weight": 6,
@@ -404,7 +423,10 @@
       "type": "melee",
       "damage": "2d6",
       "damage_type": "slash",
-      "caption": ["2handed", "heavy"],
+      "caption": [
+        "2handed",
+        "heavy"
+      ],
       "mastery": "graze"
     }
   },
@@ -412,8 +434,7 @@
     "slug": "lance",
     "kind": "weapon",
     "name": {
-      "en": "Lance",
-      "ru": "Длинное копьё"
+      "en": "Lance"
     },
     "data": {
       "weight": 6,
@@ -424,7 +445,9 @@
       "type": "melee",
       "damage": "1d12",
       "damage_type": "pierce",
-      "caption": ["reach"],
+      "caption": [
+        "reach"
+      ],
       "mastery": "topple"
     }
   },
@@ -432,8 +455,7 @@
     "slug": "longsword",
     "kind": "weapon",
     "name": {
-      "en": "Longsword",
-      "ru": "Длинный меч"
+      "en": "Longsword"
     },
     "data": {
       "weight": 3,
@@ -444,7 +466,9 @@
       "type": "melee",
       "damage": "1d8",
       "damage_type": "slash",
-      "caption": ["versatile-1d10"],
+      "caption": [
+        "versatile-1d10"
+      ],
       "mastery": "sap"
     }
   },
@@ -452,8 +476,7 @@
     "slug": "whip",
     "kind": "weapon",
     "name": {
-      "en": "Whip",
-      "ru": "Кнут"
+      "en": "Whip"
     },
     "data": {
       "weight": 3,
@@ -464,7 +487,9 @@
       "type": "melee",
       "damage": "1d4",
       "damage_type": "slash",
-      "caption": ["reach"],
+      "caption": [
+        "reach"
+      ],
       "mastery": "slow"
     }
   },
@@ -472,8 +497,7 @@
     "slug": "shortsword",
     "kind": "weapon",
     "name": {
-      "en": "Shortsword",
-      "ru": "Короткий меч"
+      "en": "Shortsword"
     },
     "data": {
       "weight": 2,
@@ -484,7 +508,10 @@
       "type": "melee",
       "damage": "1d6",
       "damage_type": "pierce",
-      "caption": ["light", "finesse"],
+      "caption": [
+        "light",
+        "finesse"
+      ],
       "mastery": "vex"
     }
   },
@@ -492,8 +519,7 @@
     "slug": "maul",
     "kind": "weapon",
     "name": {
-      "en": "Maul",
-      "ru": "Молот"
+      "en": "Maul"
     },
     "data": {
       "weight": 10,
@@ -504,7 +530,10 @@
       "type": "melee",
       "damage": "2d6",
       "damage_type": "bludge",
-      "caption": ["2handed", "heavy"],
+      "caption": [
+        "2handed",
+        "heavy"
+      ],
       "mastery": "topple"
     }
   },
@@ -512,8 +541,7 @@
     "slug": "morningstar",
     "kind": "weapon",
     "name": {
-      "en": "Morningstar",
-      "ru": "Моргенштерн"
+      "en": "Morningstar"
     },
     "data": {
       "weight": 4,
@@ -532,8 +560,7 @@
     "slug": "pike",
     "kind": "weapon",
     "name": {
-      "en": "Pike",
-      "ru": "Пика"
+      "en": "Pike"
     },
     "data": {
       "weight": 18,
@@ -544,7 +571,11 @@
       "type": "melee",
       "damage": "1d10",
       "damage_type": "pierce",
-      "caption": ["2handed", "heavy", "reach"],
+      "caption": [
+        "2handed",
+        "heavy",
+        "reach"
+      ],
       "mastery": "push"
     }
   },
@@ -552,8 +583,7 @@
     "slug": "rapier",
     "kind": "weapon",
     "name": {
-      "en": "Rapier",
-      "ru": "Рапира"
+      "en": "Rapier"
     },
     "data": {
       "weight": 2,
@@ -564,7 +594,9 @@
       "type": "melee",
       "damage": "1d8",
       "damage_type": "pierce",
-      "caption": ["finesse"],
+      "caption": [
+        "finesse"
+      ],
       "mastery": "vex"
     }
   },
@@ -572,8 +604,7 @@
     "slug": "greataxe",
     "kind": "weapon",
     "name": {
-      "en": "Greataxe",
-      "ru": "Секира"
+      "en": "Greataxe"
     },
     "data": {
       "weight": 7,
@@ -584,7 +615,10 @@
       "type": "melee",
       "damage": "1d12",
       "damage_type": "slash",
-      "caption": ["2handed", "heavy"],
+      "caption": [
+        "2handed",
+        "heavy"
+      ],
       "mastery": "cleave"
     }
   },
@@ -592,8 +626,7 @@
     "slug": "scimitar",
     "kind": "weapon",
     "name": {
-      "en": "Scimitar",
-      "ru": "Скимитар"
+      "en": "Scimitar"
     },
     "data": {
       "weight": 3,
@@ -604,7 +637,10 @@
       "type": "melee",
       "damage": "1d6",
       "damage_type": "slash",
-      "caption": ["light", "finesse"],
+      "caption": [
+        "light",
+        "finesse"
+      ],
       "mastery": "nick"
     }
   },
@@ -612,8 +648,7 @@
     "slug": "trident",
     "kind": "weapon",
     "name": {
-      "en": "Trident",
-      "ru": "Трезубец"
+      "en": "Trident"
     },
     "data": {
       "weight": 4,
@@ -625,7 +660,9 @@
       "damage": "1d6",
       "damage_type": "pierce",
       "dist": "20/60",
-      "caption": ["versatile-1d8"],
+      "caption": [
+        "versatile-1d8"
+      ],
       "mastery": "topple"
     }
   },
@@ -633,8 +670,7 @@
     "slug": "flail",
     "kind": "weapon",
     "name": {
-      "en": "Flail",
-      "ru": "Цеп"
+      "en": "Flail"
     },
     "data": {
       "weight": 2,
@@ -653,8 +689,7 @@
     "slug": "hand_crossbow",
     "kind": "weapon",
     "name": {
-      "en": "Hand Crossbow",
-      "ru": "Ручной арбалет"
+      "en": "Hand Crossbow"
     },
     "data": {
       "weight": 3,
@@ -666,7 +701,10 @@
       "damage": "1d6",
       "damage_type": "pierce",
       "dist": "30/120",
-      "caption": ["light", "reload"],
+      "caption": [
+        "light",
+        "reload"
+      ],
       "mastery": "vex"
     }
   },
@@ -674,8 +712,7 @@
     "slug": "heavy_crossbow",
     "kind": "weapon",
     "name": {
-      "en": "Heavy Crossbow",
-      "ru": "Тяжёлый арбалет"
+      "en": "Heavy Crossbow"
     },
     "data": {
       "weight": 18,
@@ -687,7 +724,11 @@
       "damage": "1d10",
       "damage_type": "pierce",
       "dist": "100/400",
-      "caption": ["2handed", "reload", "heavy"],
+      "caption": [
+        "2handed",
+        "reload",
+        "heavy"
+      ],
       "mastery": "push"
     }
   },
@@ -695,8 +736,7 @@
     "slug": "longbow",
     "kind": "weapon",
     "name": {
-      "en": "Longbow",
-      "ru": "Длинный лук"
+      "en": "Longbow"
     },
     "data": {
       "weight": 2,
@@ -708,7 +748,10 @@
       "damage": "1d8",
       "damage_type": "pierce",
       "dist": "150/600",
-      "caption": ["2handed", "heavy"],
+      "caption": [
+        "2handed",
+        "heavy"
+      ],
       "mastery": "slow"
     }
   },
@@ -716,8 +759,7 @@
     "slug": "blowgun",
     "kind": "weapon",
     "name": {
-      "en": "Blowgun",
-      "ru": "Духовая трубка"
+      "en": "Blowgun"
     },
     "data": {
       "weight": 1,
@@ -729,7 +771,9 @@
       "damage": "1",
       "damage_type": "pierce",
       "dist": "25/100",
-      "caption": ["reload"],
+      "caption": [
+        "reload"
+      ],
       "mastery": "vex"
     }
   },
@@ -737,8 +781,7 @@
     "slug": "net",
     "kind": "weapon",
     "name": {
-      "en": "Net",
-      "ru": "Сеть"
+      "en": "Net"
     },
     "data": {
       "weight": 3,
@@ -755,8 +798,7 @@
     "slug": "musket",
     "kind": "weapon",
     "name": {
-      "en": "Musket",
-      "ru": "Мушкет"
+      "en": "Musket"
     },
     "data": {
       "weight": 10,
@@ -768,7 +810,10 @@
       "damage": "1d12",
       "damage_type": "pierce",
       "dist": "40/120",
-      "caption": ["reload", "2handed"],
+      "caption": [
+        "reload",
+        "2handed"
+      ],
       "mastery": "slow"
     }
   },
@@ -776,8 +821,7 @@
     "slug": "pistol",
     "kind": "weapon",
     "name": {
-      "en": "Pistol",
-      "ru": "Пистоль"
+      "en": "Pistol"
     },
     "data": {
       "weight": 3,
@@ -789,7 +833,9 @@
       "damage": "1d10",
       "damage_type": "pierce",
       "dist": "30/90",
-      "caption": ["reload"],
+      "caption": [
+        "reload"
+      ],
       "mastery": "vex"
     }
   }

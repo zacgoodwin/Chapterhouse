@@ -17,14 +17,6 @@ const TRANSLATION = {
     askDm: 'Campaign ID',
     delete: 'Delete'
   },
-  ru: {
-    askDm: 'ID кампании',
-    delete: 'Удалить'
-  },
-  es: {
-    askDm: 'ID de campaña',
-    delete: 'Borrar'
-  }
 }
 
 export const CampaignsTab = () => {

@@ -17,7 +17,7 @@ module Cache
     def push_item(item:)
       Rails.cache.write(
         CACHE_KEY,
-        fetch_list.merge(item.record_id => rails_blob_url(item, host: host, protocol: 'https'))
+        fetch_list.merge(item.record_id => rails_blob_url(item, host: host, protocol: protocol))
       )
     end
 
@@ -31,14 +31,19 @@ module Cache
       ActiveStorage::Attachment.where(name: 'avatar', record_type: 'Character')
         .includes(:blob)
         .each_with_object({}) do |item, acc|
-          acc[item.record_id] = rails_blob_url(item, host: host, protocol: 'https')
+          acc[item.record_id] = rails_blob_url(item, host: host, protocol: protocol)
         end
     end
 
     def host
-      return 'charkeeper.ru' if Rails.env.ru_production? || Rails.env.development?
+      return 'localhost:5000' if Rails.env.development?
 
       'charkeeper.org'
+    end
+
+    # dev serves plain HTTP; a hardcoded https would fail TLS on localhost
+    def protocol
+      Rails.env.development? ? 'http' : 'https'
     end
   end
 end

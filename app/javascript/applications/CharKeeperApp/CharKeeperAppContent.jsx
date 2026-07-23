@@ -1,4 +1,4 @@
-import { createEffect, createMemo, Switch, Match, batch } from 'solid-js';
+import { createEffect, createMemo, Switch, Match } from 'solid-js';
 import * as i18n from '@solid-primitives/i18n';
 import { createWindowSize } from '@solid-primitives/resize-observer';
 
@@ -14,7 +14,7 @@ export const CharKeeperAppContent = () => {
 
   const [appState, { setAccessToken, navigate, changeUnreadNotificationsCount, changeUserInfo }] = useAppState();
 
-  const [, dict, { setLocale }] = useAppLocale();
+  const [, dict] = useAppLocale();
 
   const t = i18n.translator(dict);
 
@@ -49,13 +49,10 @@ export const CharKeeperAppContent = () => {
         performResponse(
           userInfoData,
           function() {
-            batch(() => {
-              setLocale(userInfoData.locale);
-              changeUserInfo({
-                username: userInfoData.username,
-                isAdmin: userInfoData.admin,
-                colorSchema: userInfoData.color_schema
-              });
+            changeUserInfo({
+              username: userInfoData.username,
+              isAdmin: userInfoData.admin,
+              colorSchema: userInfoData.color_schema
             });
           },
           function() {

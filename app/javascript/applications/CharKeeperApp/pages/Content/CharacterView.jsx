@@ -16,22 +16,6 @@ const TRANSLATION = {
     minimize: 'Minimize',
     maximize: 'Maximize'
   },
-  ru: {
-    download: 'Скачать',
-    sharePdf: 'Поделиться PDF ссылкой',
-    back: 'Закрыть',
-    copied: 'Скопировано, можете передать это значение',
-    minimize: 'Свернуть',
-    maximize: 'Развернуть'
-  },
-  es: {
-    download: 'Descargar',
-    sharePdf: 'Compartir enlace del PDF',
-    back: 'Cerca',
-    copied: 'Copiado, puedes compartir el valor copiado',
-    minimize: 'Minimize',
-    maximize: 'Maximize'
-  }
 }
 
 export const CharacterView = (props) => {

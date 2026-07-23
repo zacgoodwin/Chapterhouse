@@ -87,11 +87,11 @@ module CharactersContext
 
         rule(:avatar_file, :avatar_url, :file).validate(:check_only_one_present)
 
-        # ключи classes и subclasses должны быть одинаковые
+        # classes and subclasses must have the same keys
         rule(:classes) do
           next if value.nil?
 
-          # добавить проверку, что main_class присутствует в списке классов
+          # add validation that main_class is present in the classes list
           key.failure(:invalid_class_name) unless value.keys.all? { |item| item.in?(::Dnd2024::Character.classes_info.keys) }
           key.failure(:invalid_level) unless value.values.all? { |item| item.to_i.between?(1, 20) }
         end

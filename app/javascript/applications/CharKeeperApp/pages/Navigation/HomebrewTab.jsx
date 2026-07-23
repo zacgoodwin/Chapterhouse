@@ -13,18 +13,6 @@ const TRANSLATION = {
     link: 'The list of available books and individual homebrews can be viewed and expanded',
     here: 'here'
   },
-  ru: {
-    title: 'Homebrew',
-    page: 'На этой вкладке вы можете ознакомиться с Homebrew книгами, которые доступны для различных систем, и изменять их доступность.',
-    link: 'Список доступных книг и отдельных homebrew можно посмотреть и дополнить',
-    here: 'тут'
-  },
-  es: {
-    title: 'Homebrew',
-    page: 'En esta pestaña puedes explorar los libros de Homebrew disponibles para varios sistemas y cambiar su disponibilidad.',
-    link: 'La lista de libros disponibles y de cervezas artesanales individuales puede consultarse y ampliarse',
-    here: 'aquí'
-  }
 }
 const PROVIDERS = {
   dnd: 'D&D 5.5'

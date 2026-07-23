@@ -24,34 +24,6 @@ const TRANSLATION = {
     allVariables: 'You can use all available variables for formula',
     limitedVariables: 'Variables are not available'
   },
-  ru: {
-    cancel: 'Отменить',
-    save: 'Сохранить',
-    newBonus: 'Добавить модификатор',
-    bonusModify: 'Цель изменения',
-    bonusType: 'Тип изменения',
-    bonusValue: 'Значение изменения',
-    newBonusComment: 'Название модификатора',
-    enabled: 'Модификатор активен',
-    disabled: 'Модификатор не активен',
-    noValues: 'Необходимо указать хотя бы один модификатор со значением',
-    allVariables: 'Можете использовать все переменные для формулы',
-    limitedVariables: 'Использование переменных не доступно'
-  },
-  es: {
-    cancel: 'Cancelar',
-    save: 'Guardar',
-    newBonus: 'Añadir modificador',
-    bonusModify: 'Objetivo de la bonificación',
-    bonusType: 'Tipo de bonificación',
-    bonusValue: 'Valor de la bonificación',
-    newBonusComment: 'Nombre del modificador',
-    enabled: 'El modificador está activo',
-    disabled: 'El modificador no está activo',
-    noValues: 'Debe haber al menos un modificador',
-    allVariables: 'You can use all available variables for formula',
-    limitedVariables: 'Variables are not available'
-  }
 }
 
 export const SharedBonusesV2 = (props) => {
@@ -173,7 +145,7 @@ export const SharedBonusesV2 = (props) => {
                         <Select
                           containerClassList="flex-1"
                           labelText={localize(TRANSLATION, locale()).bonusType}
-                          items={translate(props.onlyAdd.includes(key) ? { "add": { "name": { "en": "Add", "ru": "Добавление" } } } : { "add": { "name": { "en": "Add", "ru": "Добавление" } }, "set": { "name": { "en": "Set", "ru": "Переопределение" } } }, locale())}
+                          items={translate(props.onlyAdd.includes(key) ? { "add": { "name": { "en": "Add" } } } : { "add": { "name": { "en": "Add" } }, "set": { "name": { "en": "Set" } } }, locale())}
                           selectedValue={values().type}
                           onSelect={(value) => setBonusesList({ ...bonusesList(), [key]: { ...bonusesList()[key], type: value } })}
                         />

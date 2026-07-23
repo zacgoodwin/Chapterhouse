@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :character do
     type { 'Dnd5::Character' }
-    sequence(:name) { |i| "Грундар #{i}" }
+    sequence(:name) { |i| "Grundar #{i}" }
     data {
       {
         level: 4,

@@ -12,16 +12,6 @@ const TRANSLATION = {
     selectedSkills: 'Skill expertise',
     feats: 'Feat'
   },
-  ru: {
-    selectedAbilities: 'Характеристики для повышения',
-    selectedSkills: 'Владение навыками',
-    feats: 'Черта'
-  },
-  es: {
-    selectedAbilities: 'Habilidades para mejorar',
-    selectedSkills: 'Maestría en habilidades',
-    feats: 'Proesa'
-  }
 }
 
 export const Dnd2024Backgrounds = () => {

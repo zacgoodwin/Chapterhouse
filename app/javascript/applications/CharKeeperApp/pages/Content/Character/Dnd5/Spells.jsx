@@ -41,36 +41,6 @@ const TRANSLATION = {
     noValue: 'Default',
     filterByClass: 'Filter by class'
   },
-  ru: {
-    cantrips: 'Заговоры',
-    level: 'уровень',
-    knownSpells: 'Изучение заклинаний',
-    prepared: 'Подготовленные',
-    known: 'Известные',
-    spellAttack: 'Бонус атаки',
-    saveDC: 'Спасброски',
-    onlyAvailableSpells: 'Только доступные',
-    onlyPreparedSpells: 'Только подготовленные',
-    customSpellAbility: 'Изучить с магической характеристикой',
-    back: 'Назад',
-    noValue: 'Стандартная',
-    filterByClass: 'Фильтр по классам'
-  },
-  es: {
-    cantrips: 'Trucos',
-    level: 'nivel',
-    knownSpells: 'Aprender hechizos',
-    prepared: 'Preparados',
-    known: 'Conocidos',
-    spellAttack: 'Ataque de hechizo',
-    saveDC: 'DC de salvación',
-    onlyAvailableSpells: 'Solo disponibles',
-    onlyPreparedSpells: 'Solo preparados',
-    customSpellAbility: 'Aprender con habilidad de hechizo personalizada',
-    back: 'Volver',
-    noValue: 'Predeterminado',
-    filterByClass: 'Filtrar por clase'
-  }
 }
 
 export const Dnd5Spells = (props) => {
@@ -120,7 +90,7 @@ export const Dnd5Spells = (props) => {
     })
   });
 
-  // все заклинания доступные для изучения
+  // all spells available to learn
   const filteredSpellsList = createMemo(() => {
     if (spells() === undefined) return [];
     if (lastActiveCharacterId() !== character().id) return [];
@@ -133,7 +103,7 @@ export const Dnd5Spells = (props) => {
     });
   });
 
-  // заклинания выбранного персонажа
+  // current character's spells
   const filteredCharacterSpells = createMemo(() => {
     if (characterSpells() === undefined) return [];
     if (lastActiveCharacterId() !== character().id) return [];
@@ -157,10 +127,10 @@ export const Dnd5Spells = (props) => {
     return result;
   });
 
-  // id врождённых заклинаний
+  // innate spell ids
   const staticSpellIds = createMemo(() => character().formatted_static_spells.map(({ id }) => id));
 
-  // id всех известных заклинаний
+  // ids of all known spells
   const knownSpellIds = createMemo(() => {
     if (lastActiveCharacterId() !== character().id) return [];
     if (characterSpells() === undefined) return [];

@@ -12,32 +12,11 @@ const TRANSLATION = {
     light: 'Light',
     dark: 'Dark',
     username: 'Username',
-    locale: 'Locale',
     colorSchema: 'Color schema',
     profile: 'Profile',
     save: 'Save',
     updated: 'Profile is updated'
   },
-  ru: {
-    light: 'Светлая',
-    dark: 'Тёмная',
-    username: 'Имя пользователя',
-    locale: 'Язык',
-    colorSchema: 'Цветовая палитра',
-    profile: 'Профиль',
-    save: 'Сохранить',
-    updated: 'Профиль обновлён'
-  },
-  es: {
-    light: 'Claro',
-    dark: 'Oscuro',
-    username: 'Nombre de usuario',
-    locale: 'Idioma',
-    colorSchema: 'Esquema de colores',
-    profile: 'Perfil',
-    save: 'Guardar',
-    updated: 'Perfil actualizado'
-  }
 }
 
 export const UsernameTab = (props) => {
@@ -45,22 +24,20 @@ export const UsernameTab = (props) => {
 
   const [username, setUsername] = createSignal('');
   const [colorSchema, setColorSchema] = createSignal('');
-  const [localeValue, setLocaleValue] = createSignal(undefined);
 
   const [appState, { changeUserInfo }] = useAppState();
   const [{ renderAlerts, renderNotice }] = useAppAlert();
-  const [locale, , { setLocale }] = useAppLocale();
+  const [locale] = useAppLocale();
 
   createEffect(() => {
     batch(() => {
       setUsername(appState.username);
       setColorSchema(appState.colorSchema);
-      setLocaleValue(locale());
     });
   });
 
   const updateProfile = async () => {
-    let payload = { color_schema: colorSchema(), locale: localeValue() };
+    let payload = { color_schema: colorSchema() };
     if (username() !== appState.username) payload = { ...payload, username: username() };
 
     const result = await updateUserRequest(appState.accessToken, payload);
@@ -68,10 +45,7 @@ export const UsernameTab = (props) => {
     performResponse(
       result,
       function() { // eslint-disable-line solid/reactivity
-        batch(() => {
-          changeUserInfo({ username: username(), colorSchema: colorSchema() });
-          setLocale(localeValue());
-        });
+        changeUserInfo({ username: username(), colorSchema: colorSchema() });
         renderNotice(localize(TRANSLATION, locale()).updated);
       },
       function() { renderAlerts(result.errors_list) }
@@ -97,13 +71,6 @@ export const UsernameTab = (props) => {
           labelText={localize(TRANSLATION, locale()).username}
           value={username()}
           onInput={setUsername}
-        />
-        <Select
-          containerClassList="mb-2"
-          labelText={localize(TRANSLATION, locale()).locale}
-          items={{ 'en': 'English', 'ru': 'Русский', 'es': 'Español' }}
-          selectedValue={localeValue()}
-          onSelect={setLocaleValue}
         />
         <Select
           containerClassList="mb-2"

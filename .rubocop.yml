@@ -280,7 +280,6 @@ Rails/UnknownEnv:
     - development
     - test
     - production
-    - ru_production
 
 Style/OneClassPerFile:
   Enabled: false

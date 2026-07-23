@@ -9,7 +9,7 @@ describe Frontend::Dnd5::CharactersController do
       let(:request) {
         post :create, params: {
           character: {
-            name: 'Грундар', race: 'human', main_class: 'monk', alignment: 'neutral'
+            name: 'Grundar', race: 'human', main_class: 'monk', alignment: 'neutral'
           }, charkeeper_access_token: access_token
         }
       }
@@ -23,7 +23,7 @@ describe Frontend::Dnd5::CharactersController do
         let(:request) {
           post :create, params: {
             character: {
-              name: 'Грундар', race: 'argh', main_class: 'monk', alignment: 'neutral'
+              name: 'Grundar', race: 'argh', main_class: 'monk', alignment: 'neutral'
             }, charkeeper_access_token: access_token
           }
         }
@@ -57,7 +57,7 @@ describe Frontend::Dnd5::CharactersController do
           }
 
           expect(response).to have_http_status :not_found
-          expect(response.parsed_body['errors']).to eq(['Запись не найдена'])
+          expect(response.parsed_body['errors']).to eq(['Object is not found'])
         end
       end
 
@@ -68,7 +68,7 @@ describe Frontend::Dnd5::CharactersController do
           }
 
           expect(response).to have_http_status :unprocessable_content
-          expect(response.parsed_body['errors']['classes']).to eq(['Недопустимый уровень'])
+          expect(response.parsed_body['errors']['classes']).to eq(['Invalid level'])
         end
       end
     end
@@ -80,7 +80,7 @@ describe Frontend::Dnd5::CharactersController do
         post :import, params: {
           provider: 'beyond',
           data: {
-            name: 'Грундар', race: 'human', size: 'medium', main_class: 'monk', alignment: 'neutral',
+            name: 'Grundar', race: 'human', size: 'medium', main_class: 'monk', alignment: 'neutral',
             classes: { monk: 5 }, max_health: 30, selected_proficiencies: ['nature'],
             languages: %w[common gnomish dwarvish], money: 8_052,
             abilities: { str: 10, dex: 12, con: 14, int: 16, wis: 14, cha: 10 }

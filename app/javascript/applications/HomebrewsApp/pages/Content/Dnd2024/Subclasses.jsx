@@ -15,16 +15,6 @@ const TRANSLATION = {
     level: 'Level',
     staticSpells: 'Static spells'
   },
-  ru: {
-    className: 'Базовый класс',
-    level: 'Уровень',
-    staticSpells: 'Врождённые заклинания'
-  },
-  es: {
-    className: 'Class name',
-    level: 'Level',
-    staticSpells: 'Hechizos estáticos'
-  }
 }
 
 export const Dnd2024Subclasses = () => {

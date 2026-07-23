@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /adminbook/
-Disallow: /dashboard/
-Disallow: /homebrews/
-Sitemap: https://charkeeper.ru/sitemap_ru.xml

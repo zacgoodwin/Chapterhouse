@@ -1,17 +1,13 @@
-import { createSignal, createEffect, Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 
-import { Input, Button, Select } from '../components';
+import { Input, Button } from '../components';
 import { Google, Discord } from '../assets';
 import { useAppState, useAppAlert, useAppLocale } from '../context';
-import { writeToCache, readFromCache, localize, supabase, supabaseConfigured } from '../helpers';
+import { writeToCache, localize, supabase, supabaseConfigured } from '../helpers';
 
 const CHARKEEPER_HOST_CACHE_NAME = 'CharKeeperHost';
 const TRANSLATION = {
   en: {
-    region: 'Server region',
-    euRegion: 'EU region',
-    ruRegion: 'RU region',
-    regionHelp: 'The servers operate independently of each other.',
     signin: 'Sign in',
     signup: 'Sign up',
     email: 'Email',
@@ -22,56 +18,19 @@ const TRANSLATION = {
     confirmEmail: 'Check your inbox to confirm the email address.',
     notConfigured: 'Supabase is not configured: fill supabaseConfig.js.'
   },
-  ru: {
-    region: 'Регион сервера',
-    euRegion: 'Евро регион',
-    ruRegion: 'РУ регион',
-    regionHelp: 'Серверы работают независимо от друг друга.',
-    signin: 'Вход',
-    signup: 'Регистрация',
-    email: 'Электронная почта',
-    password: 'Пароль',
-    haveAccount: 'Уже есть аккаунт?',
-    noAccount: 'Еще нет аккаунта?',
-    orContinueWith: 'Или войти через',
-    confirmEmail: 'Проверьте почту, чтобы подтвердить адрес.',
-    notConfigured: 'Supabase не настроен: заполните supabaseConfig.js.'
-  },
-  es: {
-    region: 'Región del servidor',
-    euRegion: 'Región EU',
-    ruRegion: 'Región RU',
-    regionHelp: 'Los servidores funcionan de forma independiente entre sí.',
-    signin: 'Iniciar sesión',
-    signup: 'Registrarse',
-    email: 'Correo electrónico',
-    password: 'Contraseña',
-    haveAccount: '¿Ya tienes una cuenta?',
-    noAccount: '¿No tienes una cuenta?',
-    orContinueWith: 'O continuar con',
-    confirmEmail: 'Revisa tu correo para confirmar la dirección.',
-    notConfigured: 'Supabase no está configurado: completa supabaseConfig.js.'
-  }
 }
 
 export const LoginPage = () => {
   const [page, setPage] = createSignal('signin');
   const [email, setEmail] = createSignal('');
   const [password, setPassword] = createSignal('');
-  const [region, setRegion] = createSignal('charkeeper.org');
+  // Tauri desktop builds cache the API host; the RU/EU region picker is gone,
+  // so the host is fixed to the single remaining server.
+  const [region] = createSignal('charkeeper.org');
 
   const [, { setAccessToken }] = useAppState();
   const [{ renderAlerts, renderNotice }] = useAppAlert();
   const [locale] = useAppLocale();
-
-  const readRegion = async () => {
-    const cacheValue = await readFromCache(CHARKEEPER_HOST_CACHE_NAME);
-    if (cacheValue) setRegion(cacheValue);
-  }
-
-  createEffect(() => {
-    readRegion();
-  });
 
   const guardConfigured = () => {
     if (supabaseConfigured()) return true;
@@ -121,19 +80,6 @@ export const LoginPage = () => {
     <div class="min-h-screen flex flex-col justify-center items-center">
       <div class="max-w-sm w-full p-4">
         <h2 class="text-2xl mb-4">{localize(TRANSLATION, locale())[page()]}</h2>
-        <Show when={window.__TAURI_INTERNALS__}>
-          <Select
-            containerClassList="mb-1"
-            labelText={localize(TRANSLATION, locale()).region}
-            items={{
-              'charkeeper.org': localize(TRANSLATION, locale()).euRegion,
-              'charkeeper.ru': localize(TRANSLATION, locale()).ruRegion,
-            }}
-            selectedValue={region()}
-            onSelect={setRegion}
-          />
-          <p class="text-sm mb-2">{localize(TRANSLATION, locale()).regionHelp}</p>
-        </Show>
         <Input
           containerClassList="form-field mb-2"
           labelText={localize(TRANSLATION, locale()).email}

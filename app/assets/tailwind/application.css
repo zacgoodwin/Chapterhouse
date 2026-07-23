@@ -67,11 +67,11 @@
 
 #charkeeper_app_html,
 #charkeeper_app_body {
-  overscroll-behavior-y: contain; /* Предотвращает перетягивание на iOS */
+  overscroll-behavior-y: contain; /* prevents pull-to-refresh on iOS */
 }
 
 #charkeeper_app_body::-webkit-scrollbar {
-  display: none; /* Скрыть скроллбар в Webkit (например, Safari, Chrome) */
+  display: none; /* hide scrollbar in Webkit (e.g. Safari, Chrome) */
 }
 
 .modal {

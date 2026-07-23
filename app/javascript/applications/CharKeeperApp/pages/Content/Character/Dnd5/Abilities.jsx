@@ -18,26 +18,6 @@ const TRANSLATION = {
     save: 'Save',
     saveCheck: 'Saving Throw'
   },
-  ru: {
-    abilityBoosts: 'Распределите 3 очка по, как минимум, 2 характеристикам из списка:',
-    levelingAbilityBoosts: 'У вас есть доступные повышения характеристик',
-    splitBoosts: 'Распределите повышения между:',
-    anySplitBoosts: 'Распределите между любыми характеристиками',
-    helpMessage: 'Ваш персонаж может начать со стандартным набором характеристик. Или вы можете сгенерировать их любым способом согласно правилам.',
-    check: 'Проверка',
-    save: 'Спас',
-    saveCheck: 'Спасбросок'
-  },
-  es: {
-    abilityBoosts: 'Distribuye 3 puntos entre al menos 2 habilidades de la lista:',
-    levelingAbilityBoosts: 'Tienes mejoras de habilidad disponibles',
-    splitBoosts: 'Comparte las mejoras entre:',
-    anySplitBoosts: 'Comparte las mejoras entre cualquier habilidad',
-    helpMessage: 'Tu personaje puede comenzar con un conjunto estándar de habilidades, o puedes generarlas de cualquier manera según las reglas.',
-    check: 'Verificando',
-    save: 'Guardar',
-    saveCheck: 'Tirada de Salvación'
-  }
 }
 
 export const Dnd5Abilities = (props) => {

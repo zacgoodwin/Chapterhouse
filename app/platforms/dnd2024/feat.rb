@@ -12,14 +12,14 @@ module Dnd2024
 
     STATIC = 'static'
     TEXT = 'text'
-    UPDATE_RESULT = 'update_result' # не рендерится, обновляются данные декоратора
-    ONE_FROM_LIST = 'one_from_list' # рендерится список, выбирается одно значение
-    MANY_FROM_LIST = 'many_from_list' # рендерится список, выбирается несколько значений
+    UPDATE_RESULT = 'update_result' # not rendered, updates decorator data
+    ONE_FROM_LIST = 'one_from_list' # renders a list, one value is selected
+    MANY_FROM_LIST = 'many_from_list' # renders a list, multiple values are selected
     HIDDEN = 'hidden'
 
     SHORT_REST = 'short_rest'
     LONG_REST = 'long_rest'
-    ONE_AT_SHORT_REST = 'one_at_short_rest' # 1 заряд восстанавливается при коротком отдыхе
+    ONE_AT_SHORT_REST = 'one_at_short_rest' # 1 charge is restored on a short rest
 
     SELECTABLE_ORIGINS = [4, 5, 6].freeze
 

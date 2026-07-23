@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :item do
     type { 'Dnd5::Item' }
     slug { 'torch' }
-    name { { en: 'Torch', ru: 'Факел' } }
+    name { { en: 'Torch' } }
     kind { 'item' }
     data {
       {
@@ -17,7 +17,7 @@ FactoryBot.define do
       initialize_with { Tlc::Item.new }
       type { 'Tlc::Item' }
       sequence(:slug) { |i| "tlc-item-#{i}" }
-      name { { en: 'Leyfarers Journal', ru: 'Leyfarers Journal' } }
+      name { { en: 'Leyfarers Journal' } }
       kind { 'gear' }
     end
   end

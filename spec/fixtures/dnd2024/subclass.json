@@ -49,7 +49,7 @@
         /* str/dex/con/int/wis/cha */
         "static_spells": {
           "Blade Ward": { "modifier": "int" },
-          "Разговор с животными": { "modifier": ["int", "wis", "cha"] }
+          "Speak with Animals": { "modifier": ["int", "wis", "cha"] }
         }
       }
     ]

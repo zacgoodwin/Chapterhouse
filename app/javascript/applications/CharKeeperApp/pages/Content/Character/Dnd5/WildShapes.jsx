@@ -13,18 +13,6 @@ const TRANSLATION = {
     selectedBeastforms: 'Available beastforms',
     activeBeastform: 'Active beastform'
   },
-  ru: {
-    noShape: 'Естественная форма',
-    beastforms: 'Дикие формы',
-    selectedBeastforms: 'Доступные дикие формы',
-    activeBeastform: 'Активная дикая форма'
-  },
-  es: {
-    noShape: 'Forma natural',
-    beastforms: 'Formas salvajes',
-    selectedBeastforms: 'Formas salvajes disponibles',
-    activeBeastform: 'Forma salvaje activa'
-  }
 }
 
 export const Dnd2024WildShapes = (props) => {

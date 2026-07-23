@@ -24,13 +24,13 @@ module Dnd5
     attribute :coins, array: true, default: { 'gold' => 0, 'silver' => 0, 'copper' => 0 }
     attribute :money, :integer, default: 0
     attribute :spent_spell_slots, array: true, default: {}
-    attribute :hit_dice, array: true, default: {} # максимальные кости хитов
-    attribute :spent_hit_dice, array: true, default: {} # потраченные кости хитов
-    attribute :tools, array: true, default: [] # владение инструментами
-    attribute :music, array: true, default: [] # владение музыкальными инструментами
-    attribute :resistance, array: true, default: [] # сопротивления
-    attribute :immunity, array: true, default: [] # иммунитеты
-    attribute :vulnerability, array: true, default: [] # уязвимости
+    attribute :hit_dice, array: true, default: {} # maximum hit dice
+    attribute :spent_hit_dice, array: true, default: {} # spent hit dice
+    attribute :tools, array: true, default: [] # tool proficiencies
+    attribute :music, array: true, default: [] # musical instrument proficiencies
+    attribute :resistance, array: true, default: [] # resistances
+    attribute :immunity, array: true, default: [] # immunities
+    attribute :vulnerability, array: true, default: [] # vulnerabilities
     attribute :conditions, array: true, default: []
     attribute :heroic_inspiration, :boolean, default: false
     attribute :bardic_inspiration, :integer
@@ -114,13 +114,13 @@ module Dnd5
       PALADIN => 10, RANGER => 10, ROGUE => 8, SORCERER => 6, WARLOCK => 8, WIZARD => 6, ARTIFICER => 8
     }.freeze
 
-    # учат заклинания при получении уровня, сразу подготовлены
+    # learn spells on level up, prepared immediately
     CLASSES_LEARN_SPELLS = [BARD, RANGER, SORCERER, WARLOCK, WIZARD].freeze
 
-    # сразу известен весь классовый список заклинаний
+    # the full class spell list is known immediately
     CLASSES_KNOW_SPELLS_LIST = [CLERIC, DRUID, PALADIN, ARTIFICER].freeze
 
-    # подготавливают список к использованию после сна
+    # prepare the list for use after a long rest
     CLASSES_PREPARE_SPELLS = [CLERIC, DRUID, PALADIN, ARTIFICER, WIZARD].freeze
 
     attribute :data, Dnd5::CharacterData.to_type

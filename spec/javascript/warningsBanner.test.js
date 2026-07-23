@@ -111,7 +111,7 @@ test('a non-dismissible warning renders the row but no Dismiss button', () => {
   assert.equal(buttons.length, 0);
 });
 
-test('es and ru render the message and source from their own warnings block, never blank', () => {
+test('a stale es/ru locale serves the en dictionary: message and source render, never blank', () => {
   for (const locale of ['es', 'ru']) {
     const { html } = render(character(), locale);
 
@@ -119,11 +119,12 @@ test('es and ru render the message and source from their own warnings block, nev
     const source = DICTIONARIES[locale]['warnings.source.PHB'];
 
     assert.ok(typeof message === 'string' && message.length > 0, `${locale} has no message`);
-    assert.ok(html.includes(message), `${locale} drops its translated message`);
+    assert.ok(html.includes(message), `${locale} drops its message`);
     assert.ok(html.includes(source), `${locale} drops its source label`);
     assert.ok(html.includes(DICTIONARIES[locale]['warnings.title']), `${locale} drops its title`);
-    // The locale actually applied: its message is not the en string.
-    assert.notEqual(message, DICTIONARIES.en['warnings.multiclassPrereq']);
+    // The app is en-only: a stale locale must serve the real en message,
+    // not a blank or renamed key (literal match so a dictionary regression REDs).
+    assert.match(message, /multiclass/i);
   }
 });
 

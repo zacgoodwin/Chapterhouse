@@ -5,7 +5,6 @@ module HomebrewsV2Context
     module Dnd2024
       module Feats
         class AddCommand < BaseCommand
-          # rubocop: disable Metrics/BlockLength
           use_contract do
             Origins = Dry::Types['strict.string'].enum('feat', 'spell', 'species', 'subclass')
             Kinds = Dry::Types['strict.string'].enum('static', 'text', 'update_result', 'hidden')
@@ -15,13 +14,9 @@ module HomebrewsV2Context
               required(:user).filled(type?: ::User)
               required(:title).hash do
                 required(:en).filled(:string, max_size?: 50)
-                optional(:ru).maybe(:string, max_size?: 50)
-                optional(:es).maybe(:string, max_size?: 50)
               end
               required(:description).hash do
                 required(:en).filled(:string, max_size?: 1_000)
-                optional(:ru).maybe(:string, max_size?: 1_000)
-                optional(:es).maybe(:string, max_size?: 1_000)
               end
               required(:origin).filled(Origins)
               required(:origin_value).filled(:string) # origin/general/fighting_style/epic classes subclasses
@@ -32,14 +27,13 @@ module HomebrewsV2Context
               optional(:modifiers).hash
               optional(:continious).filled(:bool)
               optional(:static_spells).hash
-              optional(:ability_conditions).maybe(:array).each(:string) # требуемые характеристики, Сил 13+
-              optional(:leveling_ability_boosts).maybe(:array).each(:string) # характеристики, которые могут быть повышены
+              optional(:ability_conditions).maybe(:array).each(:string) # required ability scores, e.g. Str 13+
+              optional(:leveling_ability_boosts).maybe(:array).each(:string) # ability scores that can be boosted
               optional(:public).filled(:bool)
             end
 
             rule(:limit, :limit_refresh).validate(:check_all_or_nothing_present)
           end
-          # rubocop: enable Metrics/BlockLength
 
           private
 

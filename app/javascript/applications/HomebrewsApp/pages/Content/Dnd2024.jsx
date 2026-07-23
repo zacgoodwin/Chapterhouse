@@ -14,26 +14,6 @@ const TRANSLATION = {
     backgrounds: 'Backgrounds',
     races: 'Species'
   },
-  ru: {
-    books: 'Книги',
-    items: 'Предметы',
-    weapons: 'Оружие',
-    subclasses: 'Подклассы',
-    spells: 'Заклинания',
-    feats: 'Черты',
-    backgrounds: 'Происхождения',
-    races: 'Виды'
-  },
-  es: {
-    books: 'Libros',
-    items: 'Objetos',
-    weapons: 'Armas',
-    subclasses: 'Subclases',
-    spells: 'Hechizos',
-    feats: 'Proezas',
-    backgrounds: 'Trasfondos',
-    races: 'Species'
-  }
 }
 
 export const Dnd2024 = () => {

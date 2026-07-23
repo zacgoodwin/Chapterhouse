@@ -1059,7 +1059,7 @@
   },
   {
     "id": "c5c12cf1-bec8-47fd-b786-bd9b0f6fceff",
-    "slug": "boon of recovery",
+    "slug": "boon_of_recovery",
     "eval_variables": {},
     "bonus_eval_variables": {},
     "description_eval_variables": {
@@ -1383,7 +1383,7 @@
   },
   {
     "id": "557c7552-6205-4b22-91b7-e8d2e3569e2b",
-    "slug": "stoneсunning",
+    "slug": "stonecunning",
     "eval_variables": {},
     "bonus_eval_variables": {},
     "description_eval_variables": {
@@ -1787,7 +1787,7 @@
   },
   {
     "id": "1a7422ae-b954-4f9f-8d97-92a9eb46f90f",
-    "slug": "unarmed fighting",
+    "slug": "unarmed_fighting",
     "eval_variables": {},
     "bonus_eval_variables": {},
     "description_eval_variables": {

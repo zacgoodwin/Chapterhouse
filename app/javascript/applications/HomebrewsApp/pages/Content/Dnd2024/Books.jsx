@@ -18,24 +18,6 @@ const TRANSLATION = {
     official: 'Approved',
     races: 'Species'
   },
-  ru: {
-    items: 'Предметы',
-    spells: 'Заклинания',
-    classes: 'Классы',
-    feats: 'Черты',
-    backgrounds: 'Предыстории',
-    official: 'Одобренная',
-    races: 'Виды'
-  },
-  es: {
-    items: 'Objetos',
-    spells: 'Hechizos',
-    classes: 'Clases',
-    feats: 'Proesas',
-    backgrounds: 'Trasfondos',
-    official: 'Aprobado',
-    races: 'Species'
-  }
 }
 
 export const Dnd2024Books = () => {

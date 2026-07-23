@@ -18,18 +18,6 @@ const TRANSLATION = {
     newNoteTitle: 'Title',
     newNoteValue: 'Note text'
   },
-  ru: {
-    textHelp: 'Вы можете использовать Markdown для редактирования описания',
-    newNote: 'Добавить новую заметку',
-    newNoteTitle: 'Заголовок',
-    newNoteValue: 'Текст заметки'
-  },
-  es: {
-    textHelp: 'Puedes usar Markdown para editar la descripción.',
-    newNote: 'Añadir nueva nota',
-    newNoteTitle: 'Título',
-    newNoteValue: 'Nota de texto'
-  }
 }
 
 export const Notes = (props) => {

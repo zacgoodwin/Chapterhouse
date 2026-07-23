@@ -37,7 +37,7 @@ production: # same shape when cutting over
 Database rules:
 
 - Always connect through the **session pooler** (port 5432, user `postgres.<ref>`). Never the transaction pooler (6543): GoodJob needs LISTEN/NOTIFY and `with_advisory_lock` needs session advisory locks. The direct `db.<ref>.supabase.co` host is IPv6-only.
-- First load is `bin/rails db:schema:load` then `bin/rails db:seed` — never `db:migrate` from zero (149 migrations include data backfills), and never `db:create`/`db:drop`/`db:reset` against Supabase.
+- First load is `bin/rails db:schema:load` then `bin/rails db:seed` — never `db:migrate` from zero (159 migrations include data backfills), and never `db:create`/`db:drop`/`db:reset` against Supabase.
 - After running migrations in development, review the `db/schema.rb` diff: a dump from the Supabase catalog can pick up `extensions.*`/`pg_graphql`/`supabase_vault` lines that break localhost test schema loads. The gate spec `spec/config/supabase_migration_gates_spec.rb` catches this.
 
 Known gaps: the Cypress e2e login step used the removed password form and needs a rewrite against Supabase before it can run again.
@@ -56,7 +56,8 @@ Player and DM guides for the TLC provider live in `docs/user-guide/`
 (creating a TLC character, rule warnings, homebrew, admin content).
 The Leyfarers/TLC implementation plan lives at
 `docs/leyfarers-implementation-plan.md` with digests in `docs/` and source
-references in `docs/reference/`.
+references in `docs/reference/`. The architecture map is
+`docs/codebase-map.md`; deferred work is tracked in `docs/TODOS.md`.
 Reference PDFs are NOT in git (GitHub blocks LFS uploads on public forks);
 download the Players Guide from the
 [reference-docs release](https://github.com/zacgoodwin/Chapterhouse/releases/tag/reference-docs)
@@ -74,7 +75,7 @@ Adding TLC content (species, subclasses, feats, spells, items) follows a three-s
 
 2. **Review and merge:** Before committing JSON edits, run `rake tlc:seed` in the shell to verify the content parses and no malformed modifiers or banned-spell auto-grants are present. The tool prints counts per file type and a count of unverified rows (rows carrying `verified: false` for later content-gate review). An `upsert_all` with a partial unique index ensures re-running the seed is safe; rows never duplicate.
 
-3. **Verify and mark:** Content arrives from extraction marked `verified: false`. Seed it, then mark each unverified row after checking the underlying Players Guide rules and interactions match the modifiers. To mark a row verified: visit the adminbook (HTTP Basic, see CLAUDE.md), click the row's slug in the Feats/Spells/Items index, scroll to the Инфо (Info) textarea, edit the JSON to set `"verified": true`, and submit. Alternatively, query the console to find unverified rows: `Tlc::Feat.where("info->>'verified' = ?", 'false')` (or `Tlc::Spell`/`Tlc::Item` for other types). Once all rows in a file are marked `verified: true`, the extraction phase for that file is done.
+3. **Verify and mark:** Content arrives from extraction marked `verified: false`. Seed it, then mark each unverified row after checking the underlying Players Guide rules and interactions match the modifiers. To mark a row verified: visit the adminbook (HTTP Basic, see CLAUDE.md), click the row's slug in the Feats/Spells/Items index, scroll to the Info textarea, edit the JSON to set `"verified": true`, and submit. Alternatively, query the console to find unverified rows: `Tlc::Feat.where("info->>'verified' = ?", 'false')` (or `Tlc::Spell`/`Tlc::Item` for other types). Once all rows in a file are marked `verified: true`, the extraction phase for that file is done.
 
 #### Formula failure runbook
 
@@ -94,7 +95,7 @@ Modifier syntax errors (malformed Dentaku formulas, missing variables) surface a
 $ npm test
 ```
 
-`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label in `en`/`ru`/`es` against the real `fetchDictionary`). `warningsBanner.test.js` mounts the real `WarningsBanner` through the same harness — direct render/dismiss cases plus a gate that the 2024 character sheet actually mounts it. The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
+`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label against the real `fetchDictionary`, which is English-only and serves the `en` dictionary even to a browser still holding a stale persisted locale). `warningsBanner.test.js` mounts the real `WarningsBanner` through the same harness — direct render/dismiss cases plus a gate that the 2024 character sheet actually mounts it. The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
 
 **What this harness cannot reach.** Anything whose state arrives from a `fetch` inside a `createEffect`, because SSR never runs effects and there is no DOM here (no jsdom, no headless browser). Two TLC surfaces sit behind exactly that and are checked by hand only:
 

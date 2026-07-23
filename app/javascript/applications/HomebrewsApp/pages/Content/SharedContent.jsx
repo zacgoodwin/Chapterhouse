@@ -34,54 +34,6 @@ const TRANSLATION = {
     public: 'Public',
     caption: 'Enable books that contain specific homebrews you need, and they will be available for your characters after that.'
   },
-  ru: {
-    add: 'Добавить',
-    showPublic: 'Только общедоступные',
-    avatarFile: 'Выберите файл',
-    success: 'Публикация началась',
-    submit: 'Обработать файл',
-    publications: 'Публикации',
-    noErrors: 'Нет ошибок',
-    fileExample: 'Вы можете скачать шаблон файла, изменить данные и использовать новый файл для импорта данных в Charkeeper.',
-    fileExampleDescription: 'Пример файла',
-    cancel: 'Отменить',
-    selectBook: 'Выберите книгу',
-    selectBookHelp: 'Выберите необходимые элементы для добавления в книгу',
-    save: 'Сохранить',
-    added: 'Контент добавлен в книгу',
-    deletingHomebrew: 'Удаление не обратимо!',
-    delete: 'Удалить',
-    deletingProgress: 'Удаление',
-    deleteAll: 'Удалить выбранные',
-    deletingAll: 'Удаление выбранных homebrews',
-    inBooks: 'Добавлено в книги',
-    public: 'Общедоступное',
-    caption: 'Чтобы определённые homebrew были доступны вашим персонажам, то вам необходимо включить те книги, которые содержат интересующие вас homebrew.'
-  },
-  es: {
-    add: 'Agregar',
-    showPublic: 'Mostrar públicos',
-    avatarFile: 'Selecciona el archivo',
-    success: 'Publication is started',
-    submit: 'Submit',
-    publications: 'Publications',
-    noErrors: 'No errors',
-    fileExample: 'You can download file example, modify it with your data and use it for importing data to Charkeeper.',
-    fileExampleDescription: 'Data example',
-    cancel: 'Cancel',
-    selectBook: 'Seleccionar libro',
-    selectBookHelp: 'Seleccione los elementos necesarios para agregar al libro',
-    save: 'Guardar',
-    added: 'Contenido agregado al libro',
-    deletingHomebrew: 'Deleting is not revertable!',
-    delete: 'Delete',
-    deletingProgress: 'Deleting',
-    deleteAll: 'Delete selected',
-    deletingAll: 'Deleting selected homebrews',
-    inBooks: 'Included in books',
-    public: 'Public',
-    caption: 'Enable books that contain specific homebrews you need, and they will be available for your characters after that.'
-  }
 }
 
 export const SharedContent = (props) => {
@@ -330,7 +282,7 @@ export const SharedContent = (props) => {
         fallback={
           <>
             <p>{localize(TRANSLATION, locale()).fileExample}</p>
-            <p class="mb-4"><a target="_blank" rel="noopener noreferrer" class="underline" href={`https://github.com/kortirso/charkeeper/blob/master/spec/fixtures/${props.provider}/${props.publicationType}.json`}>{localize(TRANSLATION, locale()).fileExampleDescription}</a></p>
+            <p class="mb-4"><a target="_blank" rel="noopener noreferrer" class="underline" href={`https://github.com/zacgoodwin/Chapterhouse/blob/main/spec/fixtures/${props.provider}/${props.publicationType}.json`}>{localize(TRANSLATION, locale()).fileExampleDescription}</a></p>
             <Label labelText={localize(TRANSLATION, locale()).avatarFile} />
             <input class="block mb-2" type="file" accept="application/json" onChange={handleFileChange} />
             <div class="flex gap-1">

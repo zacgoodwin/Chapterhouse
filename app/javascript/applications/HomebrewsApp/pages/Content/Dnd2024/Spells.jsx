@@ -36,62 +36,6 @@ const TRANSLATION = {
     concentration: 'Concentration',
     ritual: 'Ritual'
   },
-  ru: {
-    classes: 'Доступность для классов',
-    schools: {
-      abjuration: 'Ограждение',
-      conjuration: 'Вызов',
-      divination: 'Прорицание',
-      enchantment: 'Очарование',
-      evocation: 'Воплощение',
-      illusion: 'Иллюзия',
-      necromancy: 'Некромантия',
-      transmutation: 'Преобразование'
-    },
-    school: 'Школа магии',
-    time: 'Время',
-    range: 'Дальность',
-    duration: 'Длительность',
-    component: 'Компоненты',
-    components: {
-      v: 'Вербальный',
-      s: 'Соматический',
-      m: 'Материальный'
-    },
-    dc: 'Спасбросок',
-    area: 'Область',
-    hit: 'Необходимо попадание',
-    concentration: 'Концентрация',
-    ritual: 'Ритуал'
-  },
-  es: {
-    classes: 'Clases disponibles',
-    schools: {
-      abjuration: 'Abjuración',
-      conjuration: 'Conjuración',
-      divination: 'Adivinación',
-      enchantment: 'Encantamiento',
-      evocation: 'Evocación',
-      illusion: 'Ilusión',
-      necromancy: 'Nigromancia',
-      transmutation: 'Transmutación'
-    },
-    school: 'Escuela de magia',
-    time: 'Tiempo',
-    range: 'Alcance',
-    duration: 'Duración',
-    component: 'Componentes',
-    components: {
-      v: 'Verbal',
-      s: 'Somatico',
-      m: 'Material'
-    },
-    dc: 'Tirada de salvación',
-    area: 'Area',
-    hit: 'Hit',
-    concentration: 'Concentration',
-    ritual: 'Ritual'
-  }
 }
 
 export const Dnd2024Spells = () => {

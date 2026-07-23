@@ -11,7 +11,6 @@ module HomebrewsV2Context
         # exclusion is enforced on this path too. Create-only, mirroring the
         # dnd2024 feat import (which has no update path).
         class PerformCommand < BaseCommand
-          # rubocop: disable Metrics/BlockLength
           use_contract do
             Kinds = Dry::Types['strict.string'].enum('static', 'text', 'update_result', 'hidden')
             Limits = Dry::Types['strict.string'].enum('short_rest', 'long_rest', 'one_at_short_rest')
@@ -20,13 +19,9 @@ module HomebrewsV2Context
               required(:user).filled(type?: ::User)
               required(:title).hash do
                 required(:en).filled(:string, max_size?: 50)
-                optional(:ru).maybe(:string, max_size?: 50)
-                optional(:es).maybe(:string, max_size?: 50)
               end
               required(:description).hash do
                 required(:en).filled(:string, max_size?: 1_000)
-                optional(:ru).maybe(:string, max_size?: 1_000)
-                optional(:es).maybe(:string, max_size?: 1_000)
               end
               required(:kind).filled(Kinds)
               required(:level).filled(:integer, gteq?: 1)
@@ -43,8 +38,6 @@ module HomebrewsV2Context
 
             rule(:limit, :limit_refresh).validate(:check_all_or_nothing_present)
           end
-          # rubocop: enable Metrics/BlockLength
-
           CONTAINER_INFO_KEYS = %i[repeatable prerequisite unlock].freeze
           FEAT_KEYS = %i[
             user title description kind level limit limit_refresh modifiers continious static_spells public unlock

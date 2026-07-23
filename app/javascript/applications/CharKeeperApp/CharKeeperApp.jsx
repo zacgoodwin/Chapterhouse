@@ -9,7 +9,7 @@ export const CharKeeperApp = (props) => (
     colorSchema={props.colorSchema}
     host={props.host}
   >
-    <AppLocaleProvider locale={props.locale}>
+    <AppLocaleProvider>
       <AppAlertProvider>
         <CharKeeperAppContent />
       </AppAlertProvider>

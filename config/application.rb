@@ -31,8 +31,8 @@ module Charkeeper
     # Rack::Brotli goes directly under Rack::Deflater, if Rack::Deflater is present
     config.middleware.use Rack::Brotli
 
-    I18n.available_locales = %i[en ru es]
-    config.i18n.default_locale = Rails.env.ru_production? ? :ru : :en
+    I18n.available_locales = %i[en]
+    config.i18n.default_locale = :en
 
     config.time_zone = 'UTC'
 
@@ -66,7 +66,6 @@ module Charkeeper
 
     # config.hosts << 'sklh4i-2001-41d0-800-4d0f--.nl.tuna.am'
 
-    config.skylight.environments << 'ru_production'
 
     # Catch 404s
     config.after_initialize do |app|

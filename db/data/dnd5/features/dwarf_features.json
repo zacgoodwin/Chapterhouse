@@ -1,21 +1,23 @@
 [
   {
     "slug": "dwarven_resilience",
-    "title": { "en": "Dwarven Resilience", "ru": "Дварфийская устойчивость" },
+    "title": {
+      "en": "Dwarven Resilience"
+    },
     "description": {
-      "en": "You have advantage on saving throws against poison.",
-      "ru": "Вы совершаете с преимуществом спасброски от яда."
+      "en": "You have advantage on saving throws against poison."
     },
     "origin": "race",
     "origin_value": "dwarf",
     "kind": "static"
   },
   {
-    "slug": "stoneсunning",
-    "title": { "en": "Stoneсunning", "ru": "Знание камня" },
+    "slug": "stonecunning",
+    "title": {
+      "en": "Stonecunning"
+    },
     "description": {
-      "en": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus.",
-      "ru": "Если вы совершаете проверку Интеллекта (История), связанную с происхождением работы по камню, вы считаетесь владеющим навыком История, и добавляете к проверке удвоенный бонус мастерства вместо обычного."
+      "en": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus."
     },
     "origin": "race",
     "origin_value": "dwarf",
@@ -23,10 +25,11 @@
   },
   {
     "slug": "dwarven_toughness",
-    "title": { "en": "Dwarven Toughness", "ru": "Дварфская выдержка" },
+    "title": {
+      "en": "Dwarven Toughness"
+    },
     "description": {
-      "en": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.",
-      "ru": "Максимальное значение ваших хитов увеличивается на 1, и вы получаете 1 дополнительный хит с каждым новым уровнем."
+      "en": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level."
     },
     "origin": "subrace",
     "origin_value": "hill_dwarf",

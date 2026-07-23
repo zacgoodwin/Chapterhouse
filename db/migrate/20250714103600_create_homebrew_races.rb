@@ -4,9 +4,9 @@ class CreateHomebrewRaces < ActiveRecord::Migration[8.0]
   def change
     create_table :homebrew_races, id: :uuid do |t|
       t.uuid :user_id, null: false
-      t.string :type, null: false, comment: 'Отношение к игровой системе'
+      t.string :type, null: false, comment: 'Game system association'
       t.string :name, null: false
-      t.jsonb :data, null: false, default: {}, comment: 'Кастомные данные расы'
+      t.jsonb :data, null: false, default: {}, comment: 'Custom race data'
       t.timestamps
     end
 

@@ -46,36 +46,6 @@ const TRANSLATION = {
     formulas2: 'For dice rolls use D(x), where x - dices amount.',
     formulas3: "For example, 'D(4)+2', '-1 * 2 * D(4) + 3'."
   },
-  ru: {
-    added: 'Контент добавлен в книгу',
-    selectBook: 'Выберите книгу',
-    selectBookHelp: 'Выберите необходимые элементы для добавления в книгу',
-    add: 'Добавить предмет',
-    newItemTitle: 'Редактирование предмета',
-    name: 'Название предмета',
-    description: 'Описание',
-    kind: 'Тип предмета',
-    kindTable: 'Тип',
-    save: 'Сохранить',
-    requiredName: 'Название предмета - обязательное поле',
-    weight: 'Вес',
-    price: 'Цена, медяки',
-    kinds: {
-      item: 'Предмет',
-      potion: 'Зелье',
-      tools: 'Инструмент',
-      music: 'Музыкальный инструмент',
-      focus: 'Фокус',
-      ammo: 'Боеприпас'
-    },
-    convert: 'Конвертировать',
-    addConsume: 'Добавить эффект использования',
-    consumeAttribute: 'Изменяемый атрибут',
-    consumeFormula: 'Формула',
-    formulas1: 'Формула может содержать математические выражения.',
-    formulas2: 'Для броска кубика используёте D(x), где x - кол-во граней.',
-    formulas3: "Например, 'D(4)+2', '-1 * 2 * D(4) + 3'."
-  }
 }
 
 const MAPPING = {
@@ -108,66 +78,6 @@ const MAPPING = {
     'melee_damage': 'Melee damage',
     'thrown_damage': 'Thrown damage',
     'range_damage': 'Range damage'
-  },
-  ru: {
-    'str': 'Сила',
-    'dex': 'Ловкость',
-    'con': 'Телосложение',
-    'int': 'Интеллект',
-    'wis': 'Мудрость',
-    'cha': 'Харизма',
-    'save_dc.str': 'Сила спасбросок',
-    'save_dc.dex': 'Ловкость спасбросок',
-    'save_dc.con': 'Телосложение спасбросок',
-    'save_dc.int': 'Интеллект спасбросок',
-    'save_dc.wis': 'Мудрость спасбросок',
-    'save_dc.cha': 'Харизма спасбросок',
-    'armor_class': 'Класс брони',
-    'initiative': 'Инициатива',
-    'speed': 'Скорость',
-    'speeds.swim': 'Скорость плавания',
-    'speeds.flight': 'Скорость полёта',
-    'speeds.climb': 'Скорость лазания',
-    'attack': 'Атака',
-    'unarmed_attacks': 'Безоружные атаки',
-    'melee_attacks': 'Рукопашные атаки',
-    'thrown_attacks': 'Метательные атаки',
-    'range_attacks': 'Дистанционные атаки',
-    'damage': 'Урон',
-    'unarmed_damage': 'Безоружный урон',
-    'melee_damage': 'Рукопашный урон',
-    'thrown_damage': 'Метательный урон',
-    'range_damage': 'Дистанционный урон'
-  },
-  es:{
-    added: 'Contenido agregado al libro',
-    selectBook: 'Seleccionar libro',
-    selectBookHelp: 'Seleccione los elementos necesarios para agregar al libro',
-    add: 'Agregar objeto',
-    newItemTitle: 'Forma de objeto',
-    name: 'Nombre del objeto',
-    description: 'Descripción',
-    kind: 'Tipo de objeto',
-    kindTable: 'Tipo',
-    save: 'Guardar',
-    requiredName: 'El nombre del objeto es obligatorio',
-    weight: 'Peso',
-    price: 'Precio, cc',
-    kinds: {
-      item: 'Objeto',
-      potion: 'Poción',
-      tools: 'Herramientas',
-      music: 'Instrumento musical',
-      focus: 'Foco',
-      ammo: 'Munición'
-    },
-    convert: 'Convertir',
-    addConsume: 'Agregar efecto de consumo',
-    consumeAttribute: 'Atributo a cambiar',
-    consumeFormula: 'Fórmula',
-    formulas1: 'La fórmula puede contener expresiones matemáticas.',
-    formulas2: 'Para lanzar dados use D(x), donde x - cantidad de dados.',
-    formulas3: "Por ejemplo, 'D(4)+2', '-1 * 2 * D(4) + 3'."
   }
 }
 
@@ -186,18 +96,6 @@ const VARIABLES = {
     no_body_armor: 'No body armor',
     no_armor: 'No armor'
   },
-  ru: {
-    str: 'Сила',
-    dex: 'Ловкость',
-    con: 'Телосложение',
-    int: 'Интеллект',
-    wis: 'Мудрость',
-    cha: 'Харизма',
-    level: 'Уровень',
-    proficiency_bonus: 'Бонус мастерства',
-    no_body_armor: 'Без доспеха',
-    no_armor: 'Без брони'
-  }
 }
 
 export const DndItems = () => {
@@ -297,8 +195,8 @@ export const DndItems = () => {
 
         return {
           ...item,
-          name: { en: formData.name, ru: formData.name },
-          description: { en: formData.description, ru: formData.description },
+          name: { en: formData.name },
+          description: { en: formData.description },
           data: { weight: formData.weight, price: formData.price },
           modifiers: formData.modifiers,
           info: { consume: consume().filter((item) => item.attribute !== null && item.formula.length > 0) }
@@ -406,7 +304,7 @@ export const DndItems = () => {
           <Select
             containerClassList="mb-2"
             labelText={TRANSLATION[locale()].convert}
-            items={translate({ "primary weapon": { "name": { "en": "Primary Weapon", "ru": "Основное оружие" } }, "secondary weapon": { "name": { "en": "Secondary Weapon", "ru": "Запасное оружие" } }, "armor": { "name": { "en": "Armor", "ru": "Броня" } } }, locale())}
+            items={translate({ "primary weapon": { "name": { "en": "Primary Weapon" } }, "secondary weapon": { "name": { "en": "Secondary Weapon" } }, "armor": { "name": { "en": "Armor" } } }, locale())}
             selectedValue={itemForm.convert}
             onSelect={(value) => setItemForm({ ...itemForm, convert: value })}
           />
@@ -465,7 +363,7 @@ export const DndItems = () => {
                 <Select
                   containerClassList="flex-1"
                   labelText={TRANSLATION[locale()].consumeAttribute}
-                  items={translate({ "health": { "name": { "en": "Health", "ru": "Здоровье" } } }, locale())}
+                  items={translate({ "health": { "name": { "en": "Health" } } }, locale())}
                   selectedValue={consumeItem().attribute}
                   onSelect={(value) => changeConsume(consumeItem().id, 'attribute', value)}
                 />

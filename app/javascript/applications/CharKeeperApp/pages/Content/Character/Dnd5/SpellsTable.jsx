@@ -18,28 +18,6 @@ const TRANSLATION = {
     static: 'Static',
     save: 'Save'
   },
-  ru: {
-    attackBonus: 'бонус атаки',
-    saveDC: 'УС',
-    perDay: 'раз в день',
-    spellLevel: 'как на уровне',
-    cantrips: 'Заговоры',
-    level: 'уровень',
-    spellNote: 'Заметка о заклинании',
-    static: 'Врождённое',
-    save: 'Сохранить'
-  },
-  es: {
-    attackBonus: 'bonificación de ataque',
-    saveDC: 'DC de salvación',
-    perDay: ' veces por día',
-    spellLevel: 'a nivel',
-    cantrips: 'Trucos',
-    level: 'nivel',
-    spellNote: 'Nota del hechizo',
-    static: 'Estático',
-    save: 'Guardar'
-  }
 }
 
 export const SpellsTable = (props) => {

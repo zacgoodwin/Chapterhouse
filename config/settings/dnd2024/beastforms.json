@@ -1,138 +1,212 @@
 {
   "wolf": {
     "tier": 0.25,
-    "abilities": { "str": 14, "dex": 15, "con": 12 },
-    "saves": { "str": 2, "dex": 2, "con": 1, "int": -4, "wis": 1, "cha": -2 },
+    "abilities": {
+      "str": 14,
+      "dex": 15,
+      "con": 12
+    },
+    "saves": {
+      "str": 2,
+      "dex": 2,
+      "con": 1,
+      "int": -4,
+      "wis": 1,
+      "cha": -2
+    },
     "ac": 12,
     "initiative": 2,
     "speed": 40,
     "darkvision": 60,
     "perception": 15,
-    "skills": { "perception": 5, "stealth": 4 },
+    "skills": {
+      "perception": 5,
+      "stealth": 4
+    },
     "features": [
       {
-        "name": { "en": "Pack tactics", "ru": "Тактика стаи" },
+        "name": {
+          "en": "Pack tactics"
+        },
         "description": {
-          "en": "The wolf has Advantage on attack rolls against a creature if at least one of the wolrs allies is within S feet of the creature and the ally doesn't have the Incapacitated condition.",
-          "ru": "Волк получает преимущество при броске атаки по существу, если в пределах 5 футов от этого существа находится как минимум 1 союзник волка и союзник не имеет состояние недееспособный."
+          "en": "The wolf has Advantage on attack rolls against a creature if at least one of the wolrs allies is within S feet of the creature and the ally doesn't have the Incapacitated condition."
         }
       },
       {
-        "name": { "en": "Bite", "ru": "Укус" },
+        "name": {
+          "en": "Bite"
+        },
         "description": {
-          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1d6+2 Piercing damage, and the target has the Prone condition if it is Medium or smaller.",
-          "ru": "Рукопашная атака: +4, досягаемость 5 фт. Попадание: 1к6+2 колющего урона и цель получает состояние лежащий ничком, если её размер средний или меньше."
+          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1d6+2 Piercing damage, and the target has the Prone condition if it is Medium or smaller."
         }
       }
     ]
   },
   "boar": {
     "tier": 0.25,
-    "abilities": { "str": 13, "dex": 11, "con": 14 },
-    "saves": { "str": 1, "dex": 0, "con": 2, "int": -4, "wis": 1, "cha": -3 },
+    "abilities": {
+      "str": 13,
+      "dex": 11,
+      "con": 14
+    },
+    "saves": {
+      "str": 1,
+      "dex": 0,
+      "con": 2,
+      "int": -4,
+      "wis": 1,
+      "cha": -3
+    },
     "ac": 11,
     "initiative": 0,
     "speed": 40,
     "perception": 9,
     "features": [
       {
-        "name": { "en": "Bloodied fury", "ru": "Кровавая ярость" },
+        "name": {
+          "en": "Bloodied fury"
+        },
         "description": {
-          "en": "While Bloodied, the boar has Advantage on attack rolls.",
-          "ru": "Пока кабан окровавлен, он имеет преимущество на броски атаки."
+          "en": "While Bloodied, the boar has Advantage on attack rolls."
         }
       },
       {
-        "name": { "en": "Gore", "ru": "Клык" },
+        "name": {
+          "en": "Gore"
+        },
         "description": {
-          "en": "Melee Attack Roll: +3, reach 5 ft. Hit: 1d6+1 Piercing damage. If the boar moved at least 20 feet straight toward the target immediately before the hit, the target takes an extra 1d6 Piercing damage and, if it is Large or smaller, has the Prone condition.",
-          "ru": "Рукопашная атака: +3, досягаемость 5 фт. Попадание: 1к6+1 колющего урона. Если кабан перед попаданием переместился к цели по прямой не менее, чем на 20 фт, то цель получает дополнительно 1к6 колющего урона и если цель имеет размер большой или меньше, то получает состояние лежащий ничком."
+          "en": "Melee Attack Roll: +3, reach 5 ft. Hit: 1d6+1 Piercing damage. If the boar moved at least 20 feet straight toward the target immediately before the hit, the target takes an extra 1d6 Piercing damage and, if it is Large or smaller, has the Prone condition."
         }
       }
     ]
   },
   "panther": {
     "tier": 0.25,
-    "abilities": { "str": 14, "dex": 15, "con": 10 },
-    "saves": { "str": 2, "dex": 2, "con": 0, "int": -4, "wis": 2, "cha": -2 },
+    "abilities": {
+      "str": 14,
+      "dex": 15,
+      "con": 10
+    },
+    "saves": {
+      "str": 2,
+      "dex": 2,
+      "con": 0,
+      "int": -4,
+      "wis": 2,
+      "cha": -2
+    },
     "ac": 12,
     "initiative": 2,
     "speed": 50,
     "darkvision": 60,
     "perception": 14,
-    "skills": { "perception": 4, "stealth": 6 },
+    "skills": {
+      "perception": 4,
+      "stealth": 6
+    },
     "features": [
       {
-        "name": { "en": "Multiattack", "ru": "Мультиатака" },
+        "name": {
+          "en": "Multiattack"
+        },
         "description": {
-          "en": "The panther makes one Pounce attack and uses Prowl.",
-          "ru": "Пантера совершает 1 атаку Наскок и использует умение Подкрадывание."
+          "en": "The panther makes one Pounce attack and uses Prowl."
         }
       },
       {
-        "name": { "en": "Pounce", "ru": "Наскок" },
+        "name": {
+          "en": "Pounce"
+        },
         "description": {
-          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1d4+2 Slashing damage, or the panther deals 2d4+2 Slashing damage if it had Advantage on the attack roll.",
-          "ru": "Рукопашная атака: +4, досягаемость 5 фт. Попадание: 1к4+2 режущего урона или 2к4+2 режущего урона, если у пантеры было преимущество на этот бросок атаки."
+          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1d4+2 Slashing damage, or the panther deals 2d4+2 Slashing damage if it had Advantage on the attack roll."
         }
       },
       {
-        "name": { "en": "Prowl", "ru": "Подкрадывание" },
+        "name": {
+          "en": "Prowl"
+        },
         "description": {
-          "en": "The panther moves up to half its Speed without provoking Opportunity Attacks. At the end of this movement, the panther can take the Hide action.",
-          "ru": "Пантера перемещается на половину своей скорости, не вызывая провоцированных атак. После этого перемещения пантера может использовать действие засада."
+          "en": "The panther moves up to half its Speed without provoking Opportunity Attacks. At the end of this movement, the panther can take the Hide action."
         }
       }
     ]
   },
   "spider": {
     "tier": 0.25,
-    "abilities": { "str": 2, "dex": 14, "con": 8 },
-    "saves": { "str": -4, "dex": 2, "con": -1, "int": -5, "wis": 0, "cha": -4 },
+    "abilities": {
+      "str": 2,
+      "dex": 14,
+      "con": 8
+    },
+    "saves": {
+      "str": -4,
+      "dex": 2,
+      "con": -1,
+      "int": -5,
+      "wis": 0,
+      "cha": -4
+    },
     "ac": 12,
     "initiative": 2,
     "speed": 20,
     "darkvision": 30,
     "perception": 10,
-    "skills": { "stealth": 4 },
+    "skills": {
+      "stealth": 4
+    },
     "features": [
       {
-        "name": { "en": "Spider Climb", "ru": "Паучье лазание" },
+        "name": {
+          "en": "Spider Climb"
+        },
         "description": {
-          "en": "The spider can climb difficult surfaces, including along ceilings, without needing to make an ability check.",
-          "ru": "Паук может лазать по сложным поверхностям, включая потолки, без совершения проверок характеристик."
+          "en": "The spider can climb difficult surfaces, including along ceilings, without needing to make an ability check."
         }
       },
       {
-        "name": { "en": "Web Walker", "ru": "Хождение по паутине" },
+        "name": {
+          "en": "Web Walker"
+        },
         "description": {
-          "en": "The spider ignores movement restrictions caused by webs, and the spider knows the location of any other creature in contact with the same web.",
-          "ru": "Паук игнорирует ограничения перемещения, вызванные паутиной, и знает точное местоположение всех других существ, находящихся в контакте с той же паутиной."
+          "en": "The spider ignores movement restrictions caused by webs, and the spider knows the location of any other creature in contact with the same web."
         }
       },
       {
-        "name": { "en": "Bite", "ru": "Укус" },
+        "name": {
+          "en": "Bite"
+        },
         "description": {
-          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1 Piercing damage plus 1d4 Poison damage.",
-          "ru": "Рукопашная атака: +3, досягаемость 5 фт. Попадание: 1 колющего урона и 1к4 урона ядом."
+          "en": "Melee Attack Roll: +4, reach 5 ft. Hit: 1 Piercing damage plus 1d4 Poison damage."
         }
       }
     ]
   },
   "draft_horse": {
     "tier": 0.25,
-    "abilities": { "str": 18, "dex": 10, "con": 15 },
-    "saves": { "str": 4, "dex": 0, "con": 2, "int": -4, "wis": 0, "cha": -2 },
+    "abilities": {
+      "str": 18,
+      "dex": 10,
+      "con": 15
+    },
+    "saves": {
+      "str": 4,
+      "dex": 0,
+      "con": 2,
+      "int": -4,
+      "wis": 0,
+      "cha": -2
+    },
     "ac": 10,
     "initiative": 0,
     "speed": 40,
     "perception": 10,
     "features": [
       {
-        "name": { "en": "Hooves", "ru": "Копыта" },
+        "name": {
+          "en": "Hooves"
+        },
         "description": {
-          "en": "Melee Attack Roll: +6, reach 5 ft. Hit: 1d4+4 Bludgeoning damage.",
-          "ru": "Рукопашная атака: +5, досягаемость 5 фт. Попадание: 1к8+3 дробящего урона."
+          "en": "Melee Attack Roll: +6, reach 5 ft. Hit: 1d4+4 Bludgeoning damage."
         }
       }
     ]

@@ -6,14 +6,12 @@ FactoryBot.define do
     sequence(:slug) { |i| "slug-#{i}" }
     title {
       {
-        en: 'Name',
-        ru: 'Название'
+        en: 'Name'
       }
     }
     description {
       {
-        en: 'Description',
-        ru: 'Описание'
+        en: 'Description'
       }
     }
     origin { 4 }

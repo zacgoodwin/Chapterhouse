@@ -7,12 +7,6 @@ const TRANSLATION = {
   en: {
     warning: "Formula can contain math expressions and some variables. For example, '2', '-1', '2 * level'. There are integrated functions: 'if (condition, true_result, false_result)', 'SUM(a, b, c)', MAX(a, b, c)."
   },
-  ru: {
-    warning: "Формула может содержать математические выражения и переменные. Например, '2', '-1', '2 * level'. Также есть встроенные функции: 'if (condition, true_result, false_result)', 'SUM(a, b, c)', MAX(a, b, c)."
-  },
-  es: {
-    warning: "La fórmula puede contener expresiones matemáticas y variables. Por ejemplo, '2', '-1', '2 * level'. Hay funciones integradas: 'if (condition, true_result, false_result)', 'SUM(a, b, c)', MAX(a, b, c)."
-  }
 }
 
 const MAPPING = {
@@ -48,38 +42,6 @@ const MAPPING = {
     'spell_save_dc': 'Spell DC',
     'spell_attack_bonus': 'Spell attack'
   },
-  ru: {
-    'str': 'Сила',
-    'dex': 'Ловкость',
-    'con': 'Телосложение',
-    'int': 'Интеллект',
-    'wis': 'Мудрость',
-    'cha': 'Харизма',
-    'save_dc.str': 'Сила спасбросок',
-    'save_dc.dex': 'Ловкость спасбросок',
-    'save_dc.con': 'Телосложение спасбросок',
-    'save_dc.int': 'Интеллект спасбросок',
-    'save_dc.wis': 'Мудрость спасбросок',
-    'save_dc.cha': 'Харизма спасбросок',
-    'armor_class': 'Класс брони',
-    'initiative': 'Инициатива',
-    'speed': 'Скорость',
-    'speeds.swim': 'Скорость плавания',
-    'speeds.flight': 'Скорость полёта',
-    'speeds.climb': 'Скорость лазания',
-    'attack': 'Атака',
-    'unarmed_attacks': 'Безоружные атаки',
-    'melee_attacks': 'Рукопашные атаки',
-    'thrown_attacks': 'Метательные атаки',
-    'range_attacks': 'Дистанционные атаки',
-    'damage': 'Урон',
-    'unarmed_damage': 'Безоружный урон',
-    'melee_damage': 'Рукопашный урон',
-    'thrown_damage': 'Метательный урон',
-    'range_damage': 'Дистанционный урон',
-    'spell_save_dc': 'УС заклинаний',
-    'spell_attack_bonus': 'Заклинательные атаки'
-  }
 }
 const NO_VARIABLES = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 const ONLY_ADD = ['str', 'dex', 'con', 'int', 'wis', 'cha', 'attack', 'damage', 'spell_save_dc', 'spell_attack_bonus'];

@@ -128,7 +128,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
     end
   end
 
-  # модификаторы атаки от обычных предметов, распространяются на всё оружие
+  # attack modifiers from regular items, apply to all weapons
   def find_general_attack_modifiers
     @general_attack_modifiers = modifiers_from_items.flat_map do |(slug, items)|
       items.filter_map do |key, value|
@@ -221,17 +221,17 @@ class Dnd2024Decorator < ApplicationDecoratorV2
     damage_bonus = find_weapon_modifiers({}, {}, %w[damage unarmed_damage])
     {
       type: 'unarmed',
-      name: translate({ en: 'Unarmed', ru: 'Безоружная' }),
+      name: translate({ en: 'Unarmed' }),
       attack_bonus: modifiers['str'] + proficiency_bonus + attack_bonus,
       damage: ([1 + modifiers['str'], 0].max + damage_bonus).to_s,
       damage_bonus: 0,
       kind: 'unarmed',
       tags: {},
       ready_to_use: true,
-      # для обратной совместимости
-      action_type: 'action', # action или bonus action
-      melee_distance: 5, # дальность
-      hands: '1', # используется рук
+      # for backward compatibility
+      action_type: 'action', # action or bonus action
+      melee_distance: 5, # reach
+      hands: '1', # hands used
       damage_type: 'bludge',
       tooltips: [],
       caption: []
@@ -276,7 +276,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
         weapon_mastery.include?(mastery) ? { mastery => I18n.t("tags.dnd.weapon.title.#{mastery}") } : {}
       ),
       ready_to_use: item[:states] ? item[:states]['hands'].positive? : true,
-      # для обратной совместимости
+      # for backward compatibility
       damage_type: damage_type,
       action_type: 'action',
       melee_distance: captions.include?('reach') ? 10 : 5,
@@ -315,7 +315,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
         weapon_mastery.include?(mastery) ? { mastery => I18n.t("tags.dnd.weapon.title.#{mastery}") } : {}
       ),
       ready_to_use: item[:states] ? item[:states]['hands'].positive? : true,
-      # для обратной совместимости
+      # for backward compatibility
       damage_type: damage_type,
       action_type: 'action',
       range_distance: item[:items_info]['dist'],
@@ -387,7 +387,7 @@ class Dnd2024Decorator < ApplicationDecoratorV2
   end
 
   def perform_feature(feature, available_features)
-    # добавлять статические бонусы или включенные
+    # apply static bonuses or enabled ones
     if feature_bonuses_enabled?(feature)
       feature.feat.eval_variables.each do |method_name, variable|
         result = eval_variable(feature.feat, variable)
@@ -554,10 +554,10 @@ class Dnd2024Decorator < ApplicationDecoratorV2
     all_modifiers.map { |(_slug, item)| item.dig(key, 'type') == type && item.dig(key, 'value') }.compact_blank.map(&:to_i)
   end
 
-  # бонусы персонажа - bonus.value
-  # бонусы от надетых предметов и оружия в руках - modifiers
-  # бонусы Character::Item - modifiers
-  # бонусы навыков - modifiers
+  # character bonuses - bonus.value
+  # bonuses from equipped items and wielded weapons - modifiers
+  # Character::Item bonuses - modifiers
+  # feat bonuses - modifiers
   #
   # Each entry is a [slug, modifiers_hash] pair, not a bare hash -- slug is
   # the feat/item slug (or bonus comment) the modifiers came from, threaded

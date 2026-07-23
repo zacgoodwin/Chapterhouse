@@ -3,7 +3,6 @@
 module Web
   class BaseController < ApplicationController
     before_action :close_cookie_banner
-    before_action :update_locale
     before_action :set_locale
 
     rescue_from ActionController::TooManyRequests, with: :too_many_requests
@@ -22,18 +21,6 @@ module Web
       }.compact
     end
 
-    def update_locale
-      switch_locale = params[:switch_locale]
-      return if switch_locale.blank?
-      return if I18n.available_locales.exclude?(switch_locale.to_sym)
-
-      current_user&.update(locale: switch_locale)
-      cookies[:charkeeper_locale] = {
-        value: switch_locale,
-        domain: current_domain
-      }.compact
-    end
-
     def set_locale
       locale = params[:locale]&.to_sym
       I18n.locale =
@@ -45,13 +32,14 @@ module Web
     end
 
     def current_locale
-      current_user&.locale.presence&.to_sym || cookies[:charkeeper_locale].presence&.to_sym || I18n.default_locale
+      # A stale cookie (or user row) can still carry a dropped locale like :ru;
+      # assigning it to I18n.locale would raise I18n::InvalidLocale.
+      locale = current_user&.locale.presence&.to_sym || cookies[:charkeeper_locale].presence&.to_sym
+      I18n.available_locales.include?(locale) ? locale : I18n.default_locale
     end
 
     def current_domain
-      return 'charkeeper.org' if Rails.env.production?
-
-      'charkeeper.ru' if Rails.env.ru_production?
+      'charkeeper.org' if Rails.env.production?
     end
 
     def too_many_requests

@@ -15,22 +15,6 @@ const TRANSLATION = {
     race: 'Race',
     subrace: 'Subrace'
   },
-  ru: {
-    alignment: 'Мировоззрение',
-    background: 'Происхождение',
-    species: 'Вид',
-    legacy: 'Подвид',
-    race: 'Раса',
-    subrace: 'Подраса'
-  },
-  es: {
-    alignment: 'Alineamiento',
-    background: 'Trasfondo',
-    species: 'Especies',
-    legacy: 'Legado',
-    race: 'Raza',
-    subrace: 'Subrazа'
-  }
 }
 
 export const Dnd5Info = (props) => {

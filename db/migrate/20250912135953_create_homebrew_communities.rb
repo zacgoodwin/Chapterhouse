@@ -4,7 +4,7 @@ class CreateHomebrewCommunities < ActiveRecord::Migration[8.0]
   def change
     create_table :homebrew_communities, id: :uuid do |t|
       t.uuid :user_id, null: false
-      t.string :type, null: false, comment: 'Отношение к игровой системе'
+      t.string :type, null: false, comment: 'Game system association'
       t.string :name, null: false
       t.timestamps
     end

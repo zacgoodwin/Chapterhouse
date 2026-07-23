@@ -21,26 +21,6 @@ const TRANSLATION = {
     public: 'Public',
     editMode: 'Edit books content'
   },
-  ru: {
-    add: 'Добавить',
-    showPublic: 'Только общедоступные',
-    enabled: 'Подключено',
-    disabled: 'Отключено',
-    name: 'Название книги',
-    save: 'Сохранить',
-    public: 'Общедоступная',
-    editMode: 'Режим редактирования книг'
-  },
-  es: {
-    add: 'Agregar',
-    showPublic: 'Mostrar públicos',
-    enabled: 'Habilitado',
-    disabled: 'Deshabilitado',
-    name: 'Nombre del libro',
-    save: 'Guardar',
-    public: 'Público',
-    editMode: 'Edit books content'
-  }
 }
 
 export const SharedBookContent = (props) => {

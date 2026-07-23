@@ -13,16 +13,6 @@ const TRANSLATION = {
     changePassword: 'Password',
     profileDeleting: 'Deleting profile'
   },
-  ru: {
-    baseHost: 'Текущий сервер',
-    changePassword: 'Пароль',
-    profileDeleting: 'Удаление профиля'
-  },
-  es: {
-    baseHost: 'Servidor actual',
-    changePassword: 'Contraseña',
-    profileDeleting: 'Borrando perfil'
-  }
 }
 
 export const SettingsTab = () => {

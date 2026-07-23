@@ -10,19 +10,11 @@
       <div><%= title_form.label 'Title (en)', class: 'form-label' %></div>
       <div><%= title_form.text_field :en, value: @record.title['en'], class: 'form-value w-80' %></div>
     </div>
-    <div class="form-field mb-2">
-      <div><%= title_form.label 'Title (ru)', class: 'form-label' %></div>
-      <div><%= title_form.text_field :ru, value: @record.title['ru'], class: 'form-value w-80' %></div>
-    </div>
   <% end %>
   <%= form.fields_for :description, @record.description do |description_form| %>
     <div class="form-field mb-2">
       <div><%= description_form.label 'Description (en)', class: 'form-label' %></div>
       <div><%= description_form.textarea :en, value: @record.description['en'], class: 'form-text text-sm', size: '100x7' %></div>
-    </div>
-    <div class="form-field mb-2">
-      <div><%= description_form.label 'Description (ru)', class: 'form-label' %></div>
-      <div><%= description_form.textarea :ru, value: @record.description['ru'], class: 'form-text text-sm', size: '100x7' %></div>
     </div>
   <% end %>
   <div class="form-field mb-2">

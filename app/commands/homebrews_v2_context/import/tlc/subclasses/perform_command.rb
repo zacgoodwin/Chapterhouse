@@ -22,13 +22,9 @@ module HomebrewsV2Context
               optional(:id).filled(:string, :uuid_v4?)
               required(:title).hash do
                 required(:en).filled(:string, max_size?: 50)
-                optional(:ru).maybe(:string, max_size?: 50)
-                optional(:es).maybe(:string, max_size?: 50)
               end
               required(:description).hash do
                 required(:en).filled(:string, max_size?: 500)
-                optional(:ru).maybe(:string, max_size?: 500)
-                optional(:es).maybe(:string, max_size?: 500)
               end
               required(:class_id).filled(:string)
               optional(:public).filled(:bool)
@@ -46,13 +42,9 @@ module HomebrewsV2Context
                 optional(:id).filled(:string, :uuid_v4?)
                 required(:title).hash do
                   required(:en).filled(:string, max_size?: 50)
-                  optional(:ru).maybe(:string, max_size?: 50)
-                  optional(:es).maybe(:string, max_size?: 50)
                 end
                 required(:description).hash do
                   required(:en).filled(:string, max_size?: 1_000)
-                  optional(:ru).maybe(:string, max_size?: 1_000)
-                  optional(:es).maybe(:string, max_size?: 1_000)
                 end
                 required(:kind).filled(Kinds)
                 optional(:limit).filled(:integer, gteq?: 0, lteq?: 20)

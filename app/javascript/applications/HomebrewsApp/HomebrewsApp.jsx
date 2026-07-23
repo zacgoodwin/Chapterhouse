@@ -2,9 +2,9 @@ import { HomebrewsAppContent } from './HomebrewsAppContent';
 
 import { AppStateProvider, AppLocaleProvider, AppAlertProvider } from './context';
 
-export const HomebrewsApp = (props) => (
+export const HomebrewsApp = () => (
   <AppStateProvider>
-    <AppLocaleProvider locale={props.locale}>
+    <AppLocaleProvider>
       <AppAlertProvider>
         <HomebrewsAppContent />
       </AppAlertProvider>

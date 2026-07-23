@@ -6,13 +6,12 @@ FactoryBot.define do
       type { 'Dnd2024::Feat' }
       sequence(:slug) { |i| "rally-#{i}" }
       title {
-        { en: 'Rally', ru: 'Rally' }
+        { en: 'Rally' }
       }
       # rubocop: disable Layout/LineLength
       description {
         {
-          en: 'Describe how you rally the party and give yourself and each of your allies a Rally Die {{value}}. A PC can spend their Rally Die to roll it, adding the result to their action roll, reaction roll, damage roll, or to clear a number of Stress equal to the result. At the end of each session, clear all unspent Rally Dice.',
-          ru: 'Describe how you rally the party and give yourself and each of your allies a Rally Die {{value}}. A PC can spend their Rally Die to roll it, adding the result to their action roll, reaction roll, damage roll, or to clear a number of Stress equal to the result. At the end of each session, clear all unspent Rally Dice.'
+          en: 'Describe how you rally the party and give yourself and each of your allies a Rally Die {{value}}. A PC can spend their Rally Die to roll it, adding the result to their action roll, reaction roll, damage roll, or to clear a number of Stress equal to the result. At the end of each session, clear all unspent Rally Dice.'
         }
       }
       origin { 2 }
@@ -43,15 +42,13 @@ FactoryBot.define do
       slug { 'bardic_inspiration' }
       title {
         {
-          en: 'Bardic inspiration',
-          ru: 'Вдохновение барда'
+          en: 'Bardic inspiration'
         }
       }
       # rubocop: disable Layout/LineLength
       description {
         {
-          en: 'You can use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic inspiration die, a {{value}}. Once within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes.',
-          ru: 'Вы можете бонусным действием выбрать одно существо, отличное от вас, в пределах 60 футов, которое может вас слышать. Это существо получает кость бардовского вдохновения — {{value}}. В течение следующих 10 минут это существо может один раз бросить эту кость и добавить результат к проверке характеристики, броску атаки или спасброску, который оно совершает.'
+          en: 'You can use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic inspiration die, a {{value}}. Once within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes.'
         }
       }
       origin { 2 }
@@ -72,14 +69,12 @@ FactoryBot.define do
       sequence(:slug) { |i| "slug-#{i}" }
       title {
         {
-          en: 'Name',
-          ru: 'Название'
+          en: 'Name'
         }
       }
       description {
         {
-          en: 'Description',
-          ru: 'Описание'
+          en: 'Description'
         }
       }
       origin { 2 }
@@ -92,14 +87,12 @@ FactoryBot.define do
       sequence(:slug) { |i| "tlc-slug-#{i}" }
       title {
         {
-          en: 'Name',
-          ru: 'Название'
+          en: 'Name'
         }
       }
       description {
         {
-          en: 'Description',
-          ru: 'Описание'
+          en: 'Description'
         }
       }
       origin { 2 }
@@ -111,15 +104,13 @@ FactoryBot.define do
       slug { 'bardic_inspiration' }
       title {
         {
-          en: 'Bardic inspiration',
-          ru: 'Вдохновение барда'
+          en: 'Bardic inspiration'
         }
       }
       # rubocop: disable Layout/LineLength
       description {
         {
-          en: 'You can use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic inspiration die, a {{value}}. Once within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes.',
-          ru: 'Вы можете бонусным действием выбрать одно существо, отличное от вас, в пределах 60 футов, которое может вас слышать. Это существо получает кость бардовского вдохновения — {{value}}. В течение следующих 10 минут это существо может один раз бросить эту кость и добавить результат к проверке характеристики, броску атаки или спасброску, который оно совершает.'
+          en: 'You can use a bonus action on your turn to choose one creature other than yourself within 60 feet of you who can hear you. That creature gains one Bardic inspiration die, a {{value}}. Once within the next 10 minutes, the creature can roll the die and add the number rolled to one ability check, attack roll, or saving throw it makes.'
         }
       }
       origin { 2 }

@@ -17,26 +17,6 @@ const TRANSLATION = {
     craft: 'Craft',
     crafted: 'Items are crafted'
   },
-  ru: {
-    noTools: 'У вас нет иструментов, которыми вы владеете',
-    selectTool: 'Выберите инструмент для изготовления предметов',
-    selectItem: 'Выберите изготавливаемый предмет',
-    amount: 'Количество предметов',
-    price: 'Цена (медяки)',
-    craftTime: 'Время изготовления (рабочих дней)',
-    craft: 'Изготовить',
-    crafted: 'Предметы изготовлены'
-  },
-  es: {
-    noTools: "No tienes las herramientas que sabes usar",
-    selectTool: 'Selecciona la herramienta para fabricar',
-    selectItem: 'Selecciona el objeto a fabricar',
-    amount: 'Cantidad de objetos',
-    price: 'Precio (cobre)',
-    craftTime: 'Tiempo de fabricación (días de trabajo)',
-    craft: 'Fabricar',
-    crafted: 'Objetos fabricados'
-  }
 }
 
 export const Dnd5Craft = (props) => {

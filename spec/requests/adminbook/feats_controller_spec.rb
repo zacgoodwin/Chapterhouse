@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Request specs for the base adminbook feats admin (ticket #41). Auth is HTTP
-# Basic on Adminbook::BaseController, gated to production/ru_production — in
+# Basic on Adminbook::BaseController, gated to production — in
 # the test env it is off, so these run unauthenticated (see
 # spec/requests/adminbook/tlc/feats_controller_spec.rb for the 401 coverage).
 describe 'Adminbook::Feats' do

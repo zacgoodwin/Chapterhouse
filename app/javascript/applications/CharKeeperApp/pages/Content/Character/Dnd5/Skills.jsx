@@ -15,20 +15,6 @@ const TRANSLATION = {
     check: 'Skill',
     skills: 'Skills'
   },
-  ru: {
-    helpMessage: 'Заполните данные по умениям.',
-    anySkillBoosts: 'Вы можете изучить любые умения, кол-во - ',
-    skillBoosts: 'Вы можете изучить умения из следующего списка, кол-во - ',
-    check: 'Умение',
-    skills: 'Умения'
-  },
-  es: {
-    helpMessage: 'Rellena los datos sobre las habilidades.',
-    anySkillBoosts: 'Puedes aprender cualquier habilidad, cantidad - ',
-    skillBoosts: 'Puedes aprender habilidades de la siguiente lista, cantidad - ',
-    check: 'Habilidad',
-    skills: 'Habilidades'
-  }
 }
 
 export const Dnd5Skills = (props) => {

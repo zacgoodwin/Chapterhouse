@@ -82,7 +82,7 @@ The slug list is one constant, `Tlc::Warnings::SLUGS` in
   freezing every later mutation behind a 422.
 
 Adding a warning means adding a registry row, a private method on
-`Tlc::Warnings` named after the slug, and one message per frontend locale.
+`Tlc::Warnings` named after the slug, and a message entry in `i18n/en.json`.
 `spec/lib/tlc/warnings_spec.rb` fails if any of the three is missing.
 
 Each entry serializes as:

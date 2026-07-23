@@ -3,16 +3,9 @@ import { createSignal, createContext, useContext } from 'solid-js';
 const AppLocaleContext = createContext();
 
 export function AppLocaleProvider(props) {
-  const [locale, setLocale] = createSignal(props.locale || 'en'); // eslint-disable-line solid/reactivity
+  const [locale] = createSignal('en'); // English-only app
 
-  const store = [
-    locale,
-    {
-      setLocale(value) {
-        setLocale(value);
-      }
-    }
-  ];
+  const store = [locale];
 
   return (
     <AppLocaleContext.Provider value={store}>
