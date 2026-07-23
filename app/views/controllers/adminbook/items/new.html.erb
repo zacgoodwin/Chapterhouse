@@ -1,38 +1,30 @@
 <%= form_with model: @item, scope: :item, url: adminbook_items_path(provider: params[:provider]), method: 'post', class: 'font-cascadia-light' do |form| %>
   <div class="form-field mb-2">
-    <div><%= form.label 'Псевдоним', class: 'form-label' %></div>
+    <div><%= form.label 'Slug', class: 'form-label' %></div>
     <div><%= form.text_field :slug, class: 'form-value w-80', required: true %></div>
   </div>
   <%= form.fields_for :name do |name_form| %>
     <div class="form-field mb-2">
-      <div><%= name_form.label 'Название (en)', class: 'form-label' %></div>
+      <div><%= name_form.label 'Name', class: 'form-label' %></div>
       <div><%= name_form.text_field :en, class: 'form-value w-80' %></div>
-    </div>
-    <div class="form-field mb-2">
-      <div><%= name_form.label 'Название (ru)', class: 'form-label' %></div>
-      <div><%= name_form.text_field :ru, class: 'form-value w-80' %></div>
     </div>
   <% end %>
   <%= form.fields_for :description do |description_form| %>
     <div class="form-field mb-2">
-      <div><%= description_form.label 'Описание (en)', class: 'form-label' %></div>
+      <div><%= description_form.label 'Description', class: 'form-label' %></div>
       <div><%= description_form.textarea :en, class: 'form-text text-sm', size: '100x7' %></div>
-    </div>
-    <div class="form-field mb-2">
-      <div><%= description_form.label 'Описание (ru)', class: 'form-label' %></div>
-      <div><%= description_form.textarea :ru, class: 'form-text text-sm', size: '100x7' %></div>
     </div>
   <% end %>
   <div class="form-field mb-2">
-    <div><%= form.label 'Тип', class: 'form-label' %></div>
+    <div><%= form.label 'Kind', class: 'form-label' %></div>
     <div><%= form.text_field :kind, required: true, class: 'form-value w-80' %></div>
   </div>
   <div class="form-field mb-2">
-    <div><%= form.label 'Вес/Цена', class: 'form-label' %></div>
+    <div><%= form.label 'Weight/Price', class: 'form-label' %></div>
     <div><%= form.textarea :data, value: '{}', class: 'form-text text-sm', required: true, size: '100x7' %></div>
   </div>
   <div class="form-field mb-2">
-    <div><%= form.label 'Переменные для расчетов', class: 'form-label' %></div>
+    <div><%= form.label 'Evaluation variables', class: 'form-label' %></div>
     <div><%= form.textarea :info, class: 'form-text text-sm', required: true, size: '100x7' %></div>
   </div>
   <%= form.submit 'Create', class: 'btn btn-primary' %>

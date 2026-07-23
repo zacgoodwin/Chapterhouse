@@ -4,7 +4,7 @@ class UpdateDnd2024SpellsForArtificer < ActiveRecord::Migration[8.0]
   def up
     # Dnd2024::Spell.create!({
     #   slug: 'homunculus_servant',
-    #   name: { en: 'Homunculus Servant', ru: 'Гомункул-прислужник' },
+    #   name: { en: 'Homunculus Servant' },
     #   data: {
     #     level: 2,
     #     school: 'conjuration',

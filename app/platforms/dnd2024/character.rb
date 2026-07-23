@@ -25,18 +25,18 @@ module Dnd2024
     attribute :languages, array: true, default: []
     attribute :weapon_core_skills, array: true
     attribute :weapon_skills, array: true
-    attribute :weapon_mastery, array: true, default: [] # Оружейные приёмы
+    attribute :weapon_mastery, array: true, default: [] # weapon masteries
     attribute :armor_proficiency, array: true
     attribute :coins, array: true, default: { 'gold' => 0, 'silver' => 0, 'copper' => 0 }
     attribute :money, :integer, default: 0
     attribute :spent_spell_slots, array: true, default: {}
-    attribute :hit_dice, array: true, default: {} # максимальные кости хитов
-    attribute :spent_hit_dice, array: true, default: {} # потраченные кости хитов
-    attribute :tools, array: true, default: [] # владение инструментами
-    attribute :music, array: true, default: [] # владение музыкальными инструментами
-    attribute :resistance, array: true, default: [] # сопротивления
-    attribute :immunity, array: true, default: [] # иммунитеты
-    attribute :vulnerability, array: true, default: [] # уязвимости
+    attribute :hit_dice, array: true, default: {} # maximum hit dice
+    attribute :spent_hit_dice, array: true, default: {} # spent hit dice
+    attribute :tools, array: true, default: [] # tool proficiencies
+    attribute :music, array: true, default: [] # musical instrument proficiencies
+    attribute :resistance, array: true, default: [] # resistances
+    attribute :immunity, array: true, default: [] # immunities
+    attribute :vulnerability, array: true, default: [] # vulnerabilities
     attribute :selected_beastforms, array: true, default: []
     attribute :beastform, :string
     attribute :conditions, array: true, default: []
@@ -45,12 +45,12 @@ module Dnd2024
     attribute :selected_talents, array: true, default: {}
     attribute :selected_additional_talents, array: true, default: 0
     attribute :exhaustion, :integer, default: 0
-    # только для 1 уровня
-    attribute :guide_step, :integer # этап помощи при создании персонажа
-    attribute :ability_boosts, array: true, default: [] # дополнительные повышения характеристик от происхождения
-    attribute :any_skill_boosts, :integer, default: 0 # дополнительные повышения любого навыка
-    attribute :skill_boosts, :integer, default: 0 # дополнительные повышения навыков от класса
-    attribute :skill_boosts_list, array: true, default: [] # дополнительные повышения навыков от класса
+    # level 1 only
+    attribute :guide_step, :integer # character creation guide step
+    attribute :ability_boosts, array: true, default: [] # extra ability score increases from background
+    attribute :any_skill_boosts, :integer, default: 0 # extra increases for any skill
+    attribute :skill_boosts, :integer, default: 0 # extra skill increases from class
+    attribute :skill_boosts_list, array: true, default: [] # extra skill increases from class
     attribute :leveling_ability_boosts, :integer, default: 0
     attribute :leveling_ability_boosts_list, array: true, default: []
   end
@@ -134,21 +134,21 @@ module Dnd2024
       'paladin' => 10, 'ranger' => 10, 'rogue' => 8, 'sorcerer' => 6, 'warlock' => 8, 'wizard' => 6, 'artificer' => 8
     }.freeze
 
-    # бард знает все заклинания, подготавливает новое и/или меняет подготовленное после получения уровня
-    # колдун знает все заклинания, подготавливает новое и/или меняет подготовленное после получения уровня
-    # чародей знает все заклинания, подготавливает новое и/или меняет подготовленное после получения уровня
+    # bard knows all spells, prepares a new one and/or swaps a prepared one on level up
+    # warlock knows all spells, prepares a new one and/or swaps a prepared one on level up
+    # sorcerer knows all spells, prepares a new one and/or swaps a prepared one on level up
 
-    # жрец знает все заклинания, меняет подготовленные после сна
-    # друид знает все заклинания, меняет подготовленные после сна
-    # изобретатель знает все заклинания, меняет подготовленные после сна
+    # cleric knows all spells, swaps prepared ones after a long rest
+    # druid knows all spells, swaps prepared ones after a long rest
+    # artificer knows all spells, swaps prepared ones after a long rest
 
-    # следопыт знает все заклинания, меняет 1 подготовленное после сна
-    # паладин знает все заклинания, меняет 1 подготовленное после сна
+    # ranger knows all spells, swaps 1 prepared one after a long rest
+    # paladin knows all spells, swaps 1 prepared one after a long rest
 
-    # волшебник добавляет заклинания в книгу при получении уровня
-    # волшебник меняет подготовленные после сна
+    # wizard adds spells to the spellbook on level up
+    # wizard swaps prepared spells after a long rest
 
-    # сразу известен весь классовый список заклинаний (все, кроме волшебника)
+    # the full class spell list is known immediately (all except wizard)
     CLASSES_KNOW_SPELLS_LIST = %w[bard cleric druid paladin ranger sorcerer warlock artificer].freeze
 
     attribute :data, Dnd2024::CharacterData.to_type

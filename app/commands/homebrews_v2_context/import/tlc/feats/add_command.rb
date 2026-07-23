@@ -28,13 +28,9 @@ module HomebrewsV2Context
               required(:user).filled(type?: ::User)
               required(:title).hash do
                 required(:en).filled(:string, max_size?: 50)
-                optional(:ru).maybe(:string, max_size?: 50)
-                optional(:es).maybe(:string, max_size?: 50)
               end
               required(:description).hash do
                 required(:en).filled(:string, max_size?: 1_000)
-                optional(:ru).maybe(:string, max_size?: 1_000)
-                optional(:es).maybe(:string, max_size?: 1_000)
               end
               required(:origin).filled(Origins)
               required(:origin_value).filled(:string)

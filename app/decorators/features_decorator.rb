@@ -32,7 +32,7 @@ class FeaturesDecorator
   private
 
   def perform_feature(feature)
-    # добавлять статические бонусы или включенные
+    # apply static bonuses or enabled ones
     if feature_bonuses_enabled?(feature)
       feature.feat.eval_variables.each do |method_name, variable|
         result = eval_variable(feature.feat, variable)

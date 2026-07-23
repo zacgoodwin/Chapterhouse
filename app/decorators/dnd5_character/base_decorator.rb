@@ -116,17 +116,17 @@ module Dnd5Character
     def unarmed_attack
       {
         type: 'unarmed',
-        name: translate({ en: 'Unarmed', ru: 'Безоружная' }),
+        name: translate({ en: 'Unarmed' }),
         attack_bonus: modifiers['str'] + proficiency_bonus,
         damage: '1',
         damage_bonus: modifiers['str'],
         kind: 'unarmed',
         tags: {},
         ready_to_use: true,
-        # для обратной совместимости
-        action_type: 'action', # action или bonus action
-        melee_distance: 5, # дальность
-        hands: '1', # используется рук
+        # for backward compatibility
+        action_type: 'action', # action or bonus action
+        melee_distance: 5, # reach
+        hands: '1', # hands used
         damage_type: 'bludge',
         tooltips: [],
         caption: []
@@ -182,7 +182,7 @@ module Dnd5Character
           captions.index_with { |type| I18n.t("tags.dnd.weapon.title.#{type}") }
         ),
         ready_to_use: item[:state] ? item[:state].in?(::Character::Item::HANDS) : true,
-        # для обратной совместимости
+        # for backward compatibility
         damage_type: damage_type,
         action_type: 'action',
         melee_distance: captions.include?('reach') ? 10 : 5,
@@ -213,7 +213,7 @@ module Dnd5Character
           captions.index_with { |type| I18n.t("tags.dnd.weapon.title.#{type}") }
         ),
         ready_to_use: item[:state] ? item[:state].in?(::Character::Item::HANDS) : true,
-        # для обратной совместимости
+        # for backward compatibility
         damage_type: damage_type,
         action_type: 'action',
         range_distance: item[:items_info]['dist'],

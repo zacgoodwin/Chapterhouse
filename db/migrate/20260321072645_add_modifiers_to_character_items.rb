@@ -1,6 +1,6 @@
 class AddModifiersToCharacterItems < ActiveRecord::Migration[8.1]
   def up
-    add_column :character_items, :name, :string, comment: 'Измененное название предмета'
+    add_column :character_items, :name, :string, comment: 'Customized item name'
     add_column :character_items, :modifiers, :jsonb, null: false, default: {}
     safety_assured { remove_column :characters, :modifiers }
   end

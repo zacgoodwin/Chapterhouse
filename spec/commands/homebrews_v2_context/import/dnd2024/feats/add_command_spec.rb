@@ -32,4 +32,29 @@ describe HomebrewsV2Context::Import::Dnd2024::Feats::AddCommand do
     expect(feat.description_eval_variables).to eq({})
     expect(feat.bonus_eval_variables).to be_nil
   end
+
+  context 'when a stale client still sends ru/es locale values' do
+    # english-only conversion: optional(:ru)/optional(:es) left the contract.
+    # The same undeclared-key stripping that guards eval fields must apply --
+    # the import succeeds and only en persists, instead of a 422 or stored ru.
+    let(:payload) do
+      {
+        user: user,
+        title: { en: 'Sneaky', ru: 'Хитрый', es: 'Astuto' },
+        description: { en: 'A homebrew feat.', ru: 'Русское описание', es: 'Descripción casera' },
+        origin: 'feat',
+        origin_value: 'general',
+        kind: 'static',
+        level: 4
+      }
+    end
+
+    it 'creates the feat with en-only title and description', :aggregate_failures do
+      expect { command_call }.to change(Dnd2024::Feat, :count).by(1)
+
+      feat = command_call[:result]
+      expect(feat.title).to eq('en' => 'Sneaky')
+      expect(feat.description).to eq('en' => 'A homebrew feat.')
+    end
+  end
 end

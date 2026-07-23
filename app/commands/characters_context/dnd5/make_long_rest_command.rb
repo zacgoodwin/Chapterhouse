@@ -14,10 +14,10 @@ module CharactersContext
       def do_prepare(input) # rubocop: disable Metrics/AbcSize
         data = input[:character].data
 
-        # полное восстановление ячеек заклинаний
+        # fully restore spell slots
         data.spent_spell_slots.transform_values! { 0 }
 
-        # восстановление половины максимальных костей хитов
+        # restore half of the maximum hit dice
         # { 6 => 4, 8 => 0, 10 => 3 } => { 6 => 2, 8 => 0, 10 => 2 }
         restore_hit_dice = data.hit_dice.transform_values do |value|
           value - (value / 2)
@@ -26,10 +26,10 @@ module CharactersContext
           [v1 - v2, 0].max
         end
 
-        # полное восстановление здоровья
+        # fully restore health
         data.health['current'] = data.health['max']
 
-        # восстановление истощения
+        # reduce exhaustion
         data.exhaustion = [data.exhaustion - 1, 0].max
       end
 

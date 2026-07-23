@@ -1,6 +1,6 @@
 class CreateUserHomebrews < ActiveRecord::Migration[8.0]
   def change
-    create_table :user_homebrews, id: :uuid, comment: 'Заранее сформированный список всех доступных homebrew' do |t|
+    create_table :user_homebrews, id: :uuid, comment: 'Precomputed list of all available homebrew' do |t|
       t.uuid :user_id, null: false
       t.jsonb :data, null: false, default: {}
       t.timestamps

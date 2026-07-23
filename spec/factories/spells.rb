@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :spell do
     type { 'Dnd5::Spell' }
     sequence(:slug) { |i| "magic_missile-#{i}" }
-    name { { en: 'Magic Missile', ru: 'Волшебная стрела' } }
+    name { { en: 'Magic Missile' } }
     data {
       {
         level: 1,
@@ -20,7 +20,7 @@ FactoryBot.define do
       initialize_with { Tlc::Spell.new }
       type { 'Tlc::Spell' }
       sequence(:slug) { |i| "tlc-spell-#{i}" }
-      name { { en: 'Leyward', ru: 'Leyward' } }
+      name { { en: 'Leyward' } }
     end
   end
 end

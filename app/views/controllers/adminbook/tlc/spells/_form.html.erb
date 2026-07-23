@@ -10,10 +10,6 @@
       <div><%= name_form.label 'Name (en)', class: 'form-label' %></div>
       <div><%= name_form.text_field :en, value: @record.name['en'], class: 'form-value w-80' %></div>
     </div>
-    <div class="form-field mb-2">
-      <div><%= name_form.label 'Name (ru)', class: 'form-label' %></div>
-      <div><%= name_form.text_field :ru, value: @record.name['ru'], class: 'form-value w-80' %></div>
-    </div>
   <% end %>
   <div class="form-field mb-2">
     <div><%= form.label 'Data (JSON)', class: 'form-label' %></div>

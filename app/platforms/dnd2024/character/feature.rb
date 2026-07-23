@@ -13,21 +13,21 @@ module Dnd2024
 
       # STATIC = 'static'
       # TEXT = 'text'
-      # ONE_FROM_LIST = 'one_from_list' # рендерится список, выбирается одно значение
-      # MANY_FROM_LIST = 'many_from_list' # рендерится список, выбирается несколько значений
-      # UPDATE_RESULT = 'update_result' # не рендерится, обновляются данные декоратора
+      # ONE_FROM_LIST = 'one_from_list' # renders a list, one value is selected
+      # MANY_FROM_LIST = 'many_from_list' # renders a list, multiple values are selected
+      # UPDATE_RESULT = 'update_result' # not rendered, updates decorator data
 
-      STATIC = 'static' # рендерится текст
-      STATIC_LIST = 'static_list' # рендерится список, выбирается одно значение
-      DYNAMIC_LIST = 'dynamic_list' # рендерится список, выбирается несколько значений
-      CHOOSE_FROM = 'choose_from' # рендерится динамический список, выбирается несколько значений
-      CHOOSE_ONE_FROM = 'choose_one_from' # рендерится динамический список, выбирается одно значение
-      TEXT = 'text' # рендерится текст, вводится текст
-      UPDATE_RESULT = 'update_result' # не рендерится, обновляются данные декоратора
+      STATIC = 'static' # renders text
+      STATIC_LIST = 'static_list' # renders a list, one value is selected
+      DYNAMIC_LIST = 'dynamic_list' # renders a list, multiple values are selected
+      CHOOSE_FROM = 'choose_from' # renders a dynamic list, multiple values are selected
+      CHOOSE_ONE_FROM = 'choose_one_from' # renders a dynamic list, one value is selected
+      TEXT = 'text' # renders text, text is entered
+      UPDATE_RESULT = 'update_result' # not rendered, updates decorator data
 
       SHORT_REST = 'short_rest'
       LONG_REST = 'long_rest'
-      ONE_AT_SHORT_REST = 'one_at_short_rest' # 1 заряд восстанавливается при коротком отдыхе
+      ONE_AT_SHORT_REST = 'one_at_short_rest' # 1 charge is restored on a short rest
 
       enum :origin, { SPECIES_ORIGIN => 0, CLASS_ORIGIN => 1, LEGACY_ORIGIN => 2, SUBCLASS_ORIGIN => 3, FEAT_ORIGIN => 4 }
       enum :kind, {

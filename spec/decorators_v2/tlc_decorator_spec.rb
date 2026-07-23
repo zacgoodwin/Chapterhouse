@@ -77,13 +77,13 @@ describe TlcDecorator do
                        'attack' => { 'type' => 'add', 'value' => 2 }
                      }
       melee_weapon = create :item,
-                            name: { en: 'Melee', ru: 'Рукопашное' },
+                            name: { en: 'Melee' },
                             kind: 'weapon',
                             info: { type: 'melee', caption: [], damage: '1d6' },
                             modifiers: { 'damage' => { 'type' => 'add', 'value' => 2 } }
       range_weapon = create(:item,
                             kind: 'weapon',
-                            name: { en: 'Range', ru: 'Дистанционное' },
+                            name: { en: 'Range' },
                             info: { damage: '1d6', type: 'range', caption: [] })
       create :character_item, character: character, item: torch, states: Character::Item.default_states.merge('hands' => 1)
       create :character_item, character: character, item: melee_weapon, states: Character::Item.default_states.merge('hands' => 1)

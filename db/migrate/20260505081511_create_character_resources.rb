@@ -9,7 +9,7 @@ class CreateCharacterResources < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_column :custom_resources, :reset_direction, :integer, null: false, default: 0, comment: '0 - сброс к нулю, 1 - сброс к максимуму'
+    add_column :custom_resources, :reset_direction, :integer, null: false, default: 0, comment: '0 - reset to zero, 1 - reset to maximum'
 
     add_index :custom_resources, [:resourceable_id, :resourceable_type], algorithm: :concurrently
     add_index :character_resources, :character_id, algorithm: :concurrently

@@ -1,6 +1,6 @@
 class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
   def up
-    add_column :feats, :reset_on_rest, :integer, limit: 2, comment: 'Сбрасывать выбор на отдыхе'
+    add_column :feats, :reset_on_rest, :integer, limit: 2, comment: 'Reset selection on rest'
 
     Daggerheart::Character.find_each do |character|
       character.data.selected_features = character.data.selected_features.except('elemental_incarnation', 'elemental_dominion', 'elemental_aura')
@@ -12,8 +12,7 @@ class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
 
     Daggerheart::Feat.find_by(slug: 'elemental_aura')&.update(
       description: {
-        en: 'While Channeling, you can assume an aura matching your element. The aura affects targets within Close range until your Incarnation ends.',
-        ru: 'Вы можете принять ауру вашей стихии. Аура действует на цели в пределах Средней дистанции, пока ваше Воплощение не закончится.'
+        en: 'While Channeling, you can assume an aura matching your element. The aura affects targets within Close range until your Incarnation ends.'
       },
       options: {},
       continious: true,
@@ -35,8 +34,7 @@ class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
 
     Daggerheart::Feat.find_by(slug: 'elemental_dominion_earth')&.update(
       description: {
-        en: 'When you would mark Hit Points, roll a d6 per Hit Point marked. For each result of 6, reduce the number of Hit Points you mark by 1.',
-        ru: 'Когда вы отмечаете Рану, бросьте d6 за каждую отмеченную ячейку. За каждый результат 6, уменьшите количество отмеченных Ран на 1.'
+        en: 'When you would mark Hit Points, roll a d6 per Hit Point marked. For each result of 6, reduce the number of Hit Points you mark by 1.'
       },
       exclude: [],
       options: {},
@@ -44,8 +42,7 @@ class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
     )
     Daggerheart::Feat.find_by(slug: 'elemental_dominion_water')&.update(
       description: {
-        en: 'When an attack against you succeeds, you can mark a Stress to make the attacker temporarily Vulnerable.',
-        ru: 'Если атака против вас успешна, вы можете отметить Стресс, чтобы сделать атакующего временно Уязвимым.'
+        en: 'When an attack against you succeeds, you can mark a Stress to make the attacker temporarily Vulnerable.'
       },
       exclude: [],
       options: {},
@@ -53,8 +50,7 @@ class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
     )
     Daggerheart::Feat.find_by(slug: 'elemental_dominion_fire')&.update(
       description: {
-        en: 'You gain a +1 situative bonus to your Proficiency for attacks and spells that deal damage.',
-        ru: 'Вы получаете ситуативный бонус +1 к вашему Мастерству для атак и заклинаний, которые наносят урон.'
+        en: 'You gain a +1 situative bonus to your Proficiency for attacks and spells that deal damage.'
       },
       exclude: [],
       options: {},
@@ -62,8 +58,7 @@ class AddResetOnRestToFeats < ActiveRecord::Migration[8.1]
     )
     Daggerheart::Feat.find_by(slug: 'elemental_dominion_air')&.update(
       description: {
-        en: 'You gain a +1 calculated bonus to your Evasion and can fly.',
-        ru: 'Вы получаете добавленный бонус +1 к вашему Уклонению и можете летать.'
+        en: 'You gain a +1 calculated bonus to your Evasion and can fly.'
       },
       exclude: [],
       options: {},

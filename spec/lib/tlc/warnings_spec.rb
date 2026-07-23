@@ -42,15 +42,6 @@ describe Tlc::Warnings do
       expect(missing).to be_empty
     end
 
-    it 'ships the same key set in every frontend locale' do
-      others = %w[ru es].map { |locale|
-        JSON.parse(Rails.root.join("app/javascript/applications/CharKeeperApp/i18n/#{locale}.json").read)
-            .fetch('warnings').keys.sort
-      }
-
-      expect(others).to all(eq(i18n.fetch('warnings').keys.sort))
-    end
-
     it 'implements a check for every slug' do
       unimplemented = described_class::SLUGS.keys.reject { |slug| described_class.private_method_defined?(slug) }
 
