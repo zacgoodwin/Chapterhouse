@@ -43,9 +43,13 @@ module Webhooks
     end
 
     def validate_discord_signature
+      # A section without the key or a request without the headers must be a
+      # 401, not a TypeError 500 — this endpoint is unauthenticated.
+      return head :unauthorized if public_key.blank? || signature.blank? || timestamp.blank?
+
       verify_key = RbNaCl::VerifyKey.new([public_key].pack('H*'))
       verify_key.verify([signature].pack('H*'), "#{timestamp}#{body}")
-    rescue RbNaCl::BadSignatureError => _e
+    rescue RbNaCl::BadSignatureError, RbNaCl::LengthError => _e
       head :unauthorized
     end
 
@@ -57,7 +61,7 @@ module Webhooks
       )
     end
 
-    def public_key = Rails.application.credentials.dig(:production, :discord_public_key)
+    def public_key = Rails.application.credentials.dig(Charkeeper.credentials_env, :discord_public_key)
     def signature = request.headers['X-Signature-Ed25519']
     def timestamp = request.headers['X-Signature-Timestamp']
     def body = request.body.string

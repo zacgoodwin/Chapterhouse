@@ -17,7 +17,7 @@ default: &default
 # master key, where reading credentials raises MissingKeyError; resolve to an
 # empty hash there. No connection is made during precompile, so nil values are
 # never dialed. The leading # keeps YAML linters happy; ERB still executes.
-# <% supabase_db = begin; Rails.application.credentials.dig(Rails.env.to_sym, :supabase, :db) || {}; rescue ActiveSupport::EncryptedFile::MissingKeyError; {}; end %>
+# <% supabase_db = begin; Rails.application.credentials.dig(Charkeeper.credentials_env, :supabase, :db) || {}; rescue ActiveSupport::EncryptedFile::MissingKeyError; {}; end %>
 supabase: &supabase
   <<: *default
   host: <%= supabase_db[:host] %>

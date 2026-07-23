@@ -22,7 +22,7 @@ module ImgproxyApi
       end
 
       def credentials
-        Rails.application.credentials.dig(Rails.env.to_sym, :imgproxy)
+        Rails.application.credentials.dig(Charkeeper.credentials_env, :imgproxy)
       end
     end
   end

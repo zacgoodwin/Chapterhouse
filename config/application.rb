@@ -21,6 +21,26 @@ require 'sprockets/railtie'
 Bundler.require(*Rails.groups)
 
 module Charkeeper
+  # Which credentials section (db/supabase/storage) this process reads.
+  # Defaults to RAILS_ENV; the dev Fly app runs RAILS_ENV=production with
+  # CREDENTIALS_ENV=development to get production behavior on dev data.
+  # A typo must fail loudly at boot, not silently dig a nil section.
+  CREDENTIALS_ENVS = %w[production development test local_production].freeze
+
+  def self.credentials_env
+    env = ENV['CREDENTIALS_ENV'].presence || Rails.env
+    raise ArgumentError, "unknown CREDENTIALS_ENV #{env.inspect}" unless CREDENTIALS_ENVS.include?(env.to_s)
+
+    # The dev Fly app must never fall through to the production section: a
+    # dropped CREDENTIALS_ENV line would point it (and its release-step
+    # db:migrate) at the prod database. FLY_APP_NAME is injected by Fly.
+    if ENV['FLY_APP_NAME'] == 'chapterhouse-dev' && env.to_s == 'production'
+      raise ArgumentError, 'chapterhouse-dev resolved the production credentials section — is CREDENTIALS_ENV missing?'
+    end
+
+    env.to_sym
+  end
+
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
