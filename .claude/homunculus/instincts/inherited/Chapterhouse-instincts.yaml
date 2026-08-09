@@ -1,0 +1,134 @@
+# Instincts generated from https://github.com/zacgoodwin/Chapterhouse
+# Generated: 2026-08-09T17:47:23.221Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: Chapterhouse-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Commit Length
+
+## Action
+
+Keep commit messages concise (~42 characters)
+
+## Evidence
+
+- Average commit message length: 42 chars
+- Based on 200 commits
+
+---
+id: Chapterhouse-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: Chapterhouse-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: Chapterhouse-test-naming
+trigger: "when creating a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Test Naming
+
+## Action
+
+Name test files using the pattern: *.test.js
+
+## Evidence
+
+- File pattern: *.test.js
+- Consistent across test files
+
+---
+id: Chapterhouse-workflow-database-migration
+trigger: "when modifying the database schema or adding tables"
+confidence: 0.7
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Workflow Database Migration
+
+## Action
+
+Follow the database-migration workflow:
+1. Create migration file
+2. Update schema definitions
+3. Generate/update types
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~4x per month
+- Files: **/schema.*
+
+---
+id: Chapterhouse-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/zacgoodwin/Chapterhouse
+---
+
+# Chapterhouse Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~9x per month
+- Files: app/javascript/applications/charkeeperapp/components/*, app/javascript/applications/charkeeperapp/components/molecules/*, **/*.test.*
+
