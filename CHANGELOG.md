@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - every environment-scoped credential lookup (database, Supabase, storage, image proxy, Discord) resolves through one guarded switch: unknown section names fail at boot, and the dev instance can never silently read production credentials
 - local development now targets the dev Supabase project instead of production
 
+## [0.5.3.0] - 2026-08-12
+### Fixed
+- the inherited `Frontend::Tlc::CharactersController#import` action is now guarded (404s even if a future route wires it in) instead of silently minting a `Dnd2024::Character` for a TLC user; the adminbook TLC characters index is now routed and reachable (#53)
+- the D&D 2024 and D&D 5 character creation forms no longer leak state across mounts: `createStore` now gets a fresh object each time instead of the shared module-level default constant, so abandoning a dirty form and reopening it starts blank instead of pre-filling stale data (#67)
+
 ## [0.5.2.0] - 2026-08-12
 ### Removed
 - `package-lock.json`: `yarn.lock` is the only lockfile the Docker build ever reads, and carrying both double-counted every Dependabot advisory (#92)
