@@ -1,7 +1,7 @@
 import { createSignal, createEffect, For, Show, batch } from 'solid-js';
 
 import { ErrorWrapper, Button, EditWrapper, Dice, GuideWrapper } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale, useAppAlert } from '../../../../context';
 import { Minus, Plus } from '../../../../assets';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
@@ -22,6 +22,9 @@ const TRANSLATION = {
 
 export const Dnd5Abilities = (props) => {
   const character = () => props.character;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8).
+  const config = () => dndConfigFor(character().provider);
 
   const [lastActiveCharacterId, setLastActiveCharacterId] = createSignal(undefined);
   const [editMode, setEditMode] = createSignal(false);
@@ -74,7 +77,7 @@ export const Dnd5Abilities = (props) => {
       >
         <Show when={character().ability_boosts && character().ability_boosts.length > 0}>
           <div class="warning">
-            <p class="text-sm">{localize(TRANSLATION, locale()).abilityBoosts} {Object.entries(config.abilities).filter(([slug]) => character().ability_boosts.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
+            <p class="text-sm">{localize(TRANSLATION, locale()).abilityBoosts} {Object.entries(config().abilities).filter(([slug]) => character().ability_boosts.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
           </div>
         </Show>
         <Show when={character().leveling_ability_boosts > 0}>
@@ -84,7 +87,7 @@ export const Dnd5Abilities = (props) => {
               when={character().leveling_ability_boosts_list.length > 0}
               fallback={<p class="text-sm">{localize(TRANSLATION, locale()).anySplitBoosts}</p>}
             >
-              <p class="text-sm">{localize(TRANSLATION, locale()).splitBoosts} {Object.entries(config.abilities).filter(([slug]) => character().leveling_ability_boosts_list.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
+              <p class="text-sm">{localize(TRANSLATION, locale()).splitBoosts} {Object.entries(config().abilities).filter(([slug]) => character().leveling_ability_boosts_list.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
             </Show>
           </div>
         </Show>
@@ -96,7 +99,7 @@ export const Dnd5Abilities = (props) => {
         >
           <div class="blockable pt-4 pb-8">
             <div class="grid grid-cols-3 emd:grid-cols-6 elg:grid-cols-3 exl:grid-cols-6 gap-x-2 gap-y-4">
-              <For each={Object.entries(config.abilities)}>
+              <For each={Object.entries(config().abilities)}>
                 {([slug, values]) =>
                   <div>
                     <p class="text-sm uppercase text-center mb-2">{localize(values.name, locale())}</p>

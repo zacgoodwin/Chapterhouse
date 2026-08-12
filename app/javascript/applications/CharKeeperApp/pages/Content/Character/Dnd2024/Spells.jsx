@@ -3,7 +3,7 @@ import { createSignal, createEffect, For, Show, createMemo, batch, Switch, Match
 import { SpellsToggleList } from './SpellsToggleList';
 import { SpellCastTime, SpellRange, SpellAttack, SpellComponents, SpellDuration, SpellEffects } from '../../../../pages';
 import { StatsBlock, ErrorWrapper, Button, Toggle, Checkbox, Select, GuideWrapper, Dice } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale } from '../../../../context';
 import {
   Avatar, Artificer, Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock,
@@ -48,6 +48,9 @@ const TRANSLATION = {
 
 export const Dnd2024Spells = (props) => {
   const character = () => props.character;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8).
+  const config = () => dndConfigFor(character().provider);
 
   const [lastActiveCharacterId, setLastActiveCharacterId] = createSignal(undefined);
 
@@ -281,7 +284,7 @@ export const Dnd2024Spells = (props) => {
               <div class="mb-4 flex">
                 <Select
                   labelText={localize(TRANSLATION, locale())['customSpellAbility']}
-                  items={{ 'null': localize(TRANSLATION, locale())['noValue'], 'int': localize(config.abilities.int.name, locale()), 'wis': localize(config.abilities.wis.name, locale()), 'cha': localize(config.abilities.cha.name, locale()) }}
+                  items={{ 'null': localize(TRANSLATION, locale())['noValue'], 'int': localize(config().abilities.int.name, locale()), 'wis': localize(config().abilities.wis.name, locale()), 'cha': localize(config().abilities.cha.name, locale()) }}
                   selectedValue={spellAbility()}
                   onSelect={(value) => setSpellAbility(value === 'null' ? null : value)}
                 />
@@ -320,13 +323,13 @@ export const Dnd2024Spells = (props) => {
                                     fallback={
                                       <Show when={knownSpellIds().includes(spell.id) && !staticSpellIds().includes(spell.id)}>
                                         <p class="text-xs mt-1">
-                                          {localize(config.classes[characterSpells().find((item) => item.feat_id === spell.id).prepared_by]['name'], locale())}
+                                          {localize(config().classes[characterSpells().find((item) => item.feat_id === spell.id).prepared_by]['name'], locale())}
                                         </p>
                                       </Show>
                                     }
                                   >
                                     <p class="text-xs text-wrap">
-                                      {spell.origin_values.map((item) => localize(config.classes[item]['name'], locale())).join(' * ')}
+                                      {spell.origin_values.map((item) => localize(config().classes[item]['name'], locale())).join(' * ')}
                                     </p>
                                   </Show>
                                 </div>

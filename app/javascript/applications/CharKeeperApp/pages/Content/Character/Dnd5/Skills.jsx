@@ -1,7 +1,7 @@
 import { createSignal, createEffect, For, Show, batch, Switch, Match } from 'solid-js';
 
 import { ErrorWrapper, Levelbox, EditWrapper, Dice, GuideWrapper, Button, Checkbox } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale, useAppAlert } from '../../../../context';
 import { Minus, Plus } from '../../../../assets';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
@@ -19,6 +19,9 @@ const TRANSLATION = {
 
 export const Dnd5Skills = (props) => {
   const character = () => props.character;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8).
+  const config = () => dndConfigFor(character().provider);
 
   const [lastActiveCharacterId, setLastActiveCharacterId] = createSignal(undefined);
   const [editMode, setEditMode] = createSignal(false);
@@ -113,12 +116,12 @@ export const Dnd5Skills = (props) => {
                     <div class="mt-2" />
                   </Show>
                   <p class="text-sm text-black!">{localize(TRANSLATION, locale())['skillBoosts']} {character().skill_boosts}</p>
-                  <p class="text-sm text-black!">{Object.entries(config.skills).filter(([slug]) => character().skill_boosts_list.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
+                  <p class="text-sm text-black!">{Object.entries(config().skills).filter(([slug]) => character().skill_boosts_list.includes(slug)).map(([, values]) => localize(values.name, locale())).join(', ')}</p>
                 </Show>
               </div>
             </Show>
             <div class="skills-grid">
-              <For each={Object.keys(config.abilities)}>
+              <For each={Object.keys(config().abilities)}>
                 {(slug) =>
                   <Show
                     when={editMode()}
@@ -136,13 +139,13 @@ export const Dnd5Skills = (props) => {
                             </Switch>
                             <p class="uppercase mr-4">{skill.ability}</p>
                             <p class="flex-1 flex items-center" classList={{ 'font-medium!': skill.selected }}>
-                              {localize(config.skills[skill.slug].name, locale())}
+                              {localize(config().skills[skill.slug].name, locale())}
                             </p>
                             <Dice
                               width="28"
                               height="28"
                               text={modifier(skill.modifier)}
-                              onClick={() => props.openD20Test(`/check skill "${skill.slug}"`, `${localize(TRANSLATION, locale())['check']}, ${localize(config.skills[skill.slug].name, locale())}`, skill.modifier)}
+                              onClick={() => props.openD20Test(`/check skill "${skill.slug}"`, `${localize(TRANSLATION, locale())['check']}, ${localize(config().skills[skill.slug].name, locale())}`, skill.modifier)}
                             />
                           </div>
                         }
@@ -153,7 +156,7 @@ export const Dnd5Skills = (props) => {
                       {(skill) =>
                         <div class="skills-grid-item">
                           <p class={`flex-1 flex items-center ${skill.level > 0 ? 'font-medium!' : ''}`}>
-                            {localize(config.skills[skill.slug].name, locale())}
+                            {localize(config().skills[skill.slug].name, locale())}
                           </p>
                           <div class="skills-grid-item-actions">
                             <Show

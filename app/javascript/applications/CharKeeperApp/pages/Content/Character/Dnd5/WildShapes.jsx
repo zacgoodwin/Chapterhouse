@@ -1,7 +1,7 @@
 import { createSignal, createMemo } from 'solid-js';
 
 import { Select, ErrorWrapper, GuideWrapper } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale, useAppAlert } from '../../../../context';
 import { updateCharacterRequest } from '../../../../requests/updateCharacterRequest';
 import { localize } from '../../../../helpers';
@@ -17,6 +17,10 @@ const TRANSLATION = {
 
 export const Dnd2024WildShapes = (props) => {
   const character = () => props.character;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8). This component
+  // only mounts for isDnd2024Family (Dnd5.jsx), so tlc reaches it too.
+  const config = () => dndConfigFor(character().provider);
 
   const [selectedBeastforms, setSelectedBeastforms] = createSignal(character().selected_beastforms);
 
@@ -25,12 +29,12 @@ export const Dnd2024WildShapes = (props) => {
   const [locale] = useAppLocale();
 
   const availableBeastforms = createMemo(() => {
-    const result = Object.entries(config.beastforms).map(([key, values]) => [key, localize(values.name, locale())]);
+    const result = Object.entries(config().beastforms).map(([key, values]) => [key, localize(values.name, locale())]);
     return Object.fromEntries(result);
   })
 
   const beastformsSelect = createMemo(() => {
-    const result = Object.entries(config.beastforms).filter(([key,]) => selectedBeastforms().includes(key)).map(([key, values]) => [key, localize(values.name, locale())]);
+    const result = Object.entries(config().beastforms).filter(([key,]) => selectedBeastforms().includes(key)).map(([key, values]) => [key, localize(values.name, locale())]);
     return Object.fromEntries([['null', localize(TRANSLATION, locale())['noShape']]].concat(result));
   });
 

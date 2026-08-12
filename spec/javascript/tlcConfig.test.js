@@ -117,22 +117,63 @@ const sourceFiles = (dir) =>
 
 const isComment = (line) => /^(\/\/|\*|\/\*|\{\/\*)/.test(line.trim());
 
+// Shared by both sweeps below: a matching line survives only if the nearest
+// non-blank line above it is a comment explaining why. Pure and file-agnostic
+// so the mutation check further down can drive it with fabricated lines.
+const unexplainedLines = (lines, matchesLine) => {
+  const found = [];
+  lines.forEach((line, index) => {
+    if (!matchesLine(line) || isComment(line)) return;
+
+    const previous = lines.slice(0, index).reverse().find((candidate) => candidate.trim() !== '');
+    if (!previous || !isComment(previous)) found.push(index + 1);
+  });
+  return found;
+};
+
+const unexplainedMatches = (matchesLine) => {
+  const unexplained = [];
+  for (const file of sourceFiles(CHARKEEPER)) {
+    const lines = readFileSync(file, 'utf8').split(/\r?\n/);
+    for (const lineNumber of unexplainedLines(lines, matchesLine)) {
+      unexplained.push(`${path.relative(CHARKEEPER, file)}:${lineNumber}`);
+    }
+  }
+  return unexplained;
+};
+
 // Pre-merge grep sweep (plan eng finding 9): an exact dnd2024 comparison that
 // survives has to say why tlc is excluded, otherwise it is a silent misroute.
 test("every surviving === 'dnd2024' carries a why-kept comment", () => {
-  const unexplained = [];
+  assert.deepEqual(unexplainedMatches((line) => line.includes("=== 'dnd2024'")), []);
+});
 
-  for (const file of sourceFiles(CHARKEEPER)) {
-    const lines = readFileSync(file, 'utf8').split(/\r?\n/);
-    lines.forEach((line, index) => {
-      if (!line.includes("=== 'dnd2024'") || isComment(line)) return;
+// Post-A5a-followup sweep (issue #64): a static dnd2024.json import bypasses
+// dndConfigFor's merge entirely, so any tlc-reachable component that keeps one
+// silently drops the tlc.json delta the moment that component's data diverges.
+// A surviving import has to say why it's safe (not tlc-reachable, or gated to a
+// branch tlc never enters), same rule as the '=== dnd2024' sweep above. Matches
+// any import path ENDING in dnd2024.json, not just ones with a literal `data/`
+// segment -- tlcConfig.js itself imports it same-directory (`./dnd2024.json`),
+// which a data/-anchored regex would silently skip.
+test('every surviving static dnd2024.json import carries a why-kept comment', () => {
+  assert.deepEqual(unexplainedMatches((line) => /from ['"].*\/dnd2024\.json['"]/.test(line)), []);
+});
 
-      const previous = lines.slice(0, index).reverse().find((candidate) => candidate.trim() !== '');
-      if (!previous || !isComment(previous)) {
-        unexplained.push(`${path.relative(CHARKEEPER, file)}:${index + 1}`);
-      }
-    });
-  }
+// Mutation check: prove unexplainedLines actually flags an uncommented match, so
+// the sweep above isn't vacuously green because nothing exercises its RED path.
+test('unexplainedLines catches an uncommented static dnd2024.json import', () => {
+  const matchesImport = (line) => /from ['"].*\/dnd2024\.json['"]/.test(line);
 
-  assert.deepEqual(unexplained, []);
+  const uncommented = [
+    "import { createSignal } from 'solid-js';",
+    "import config from '../../data/dnd2024.json';",
+  ];
+  const commented = [
+    "// Kept exact: this component never renders for a tlc character.",
+    "import config from '../../data/dnd2024.json';",
+  ];
+
+  assert.deepEqual(unexplainedLines(uncommented, matchesImport), [2]);
+  assert.deepEqual(unexplainedLines(commented, matchesImport), []);
 });

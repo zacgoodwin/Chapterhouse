@@ -1,7 +1,7 @@
 import { createSignal, For, Show, batch } from 'solid-js';
 
 import { Button, Checkbox, createModal, TextArea } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { Minus, Plus } from '../../../../assets';
 import { useAppLocale } from '../../../../context';
 import { modifier, localize } from '../../../../helpers';
@@ -21,6 +21,11 @@ const TRANSLATION = {
 }
 
 export const SpellsTable = (props) => {
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8). props.character
+  // is a plain object here (Spells.jsx passes character(), already dereferenced).
+  const config = () => dndConfigFor(props.character.provider);
+
   const [changingSpell, setChangingSpell] = createSignal(null);
 
   const { Modal, openModal, closeModal } = createModal();
@@ -110,7 +115,7 @@ export const SpellsTable = (props) => {
                     </Show>
                     <Show when={props.activeSpellClass === undefined}>
                       <p class="text-xs text-right">
-                        {spell.prepared_by ? localize(config.classes[spell.prepared_by]['name'], locale()) : localize(TRANSLATION, locale())['static']}
+                        {spell.prepared_by ? localize(config().classes[spell.prepared_by]['name'], locale()) : localize(TRANSLATION, locale())['static']}
                       </p>
                     </Show>
                   </td>

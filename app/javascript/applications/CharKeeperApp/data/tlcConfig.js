@@ -1,3 +1,6 @@
+// Why-kept: this IS the merge -- every other tlc-reachable component reads
+// dnd2024 data through dndConfigFor(provider) below, never this import
+// directly.
 import dnd2024Config from './dnd2024.json' with { type: 'json' };
 import tlcDelta from './tlc.json' with { type: 'json' };
 

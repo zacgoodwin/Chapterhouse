@@ -4,6 +4,8 @@ import * as i18n from '@solid-primitives/i18n';
 
 import { CharacterForm } from '../../../../pages';
 import { Select, Input, Checkbox, Label } from '../../../../components';
+// Kept exact (issue #64 sweep): the dnd2024 character creation form. A tlc
+// character is created through the separate Forms/Tlc.jsx form, never this one.
 import config from '../../../../data/dnd2024.json';
 import { useAppLocale } from '../../../../context';
 import { translate, localize } from '../../../../helpers';
