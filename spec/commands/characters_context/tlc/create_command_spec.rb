@@ -13,6 +13,8 @@ describe CharactersContext::Tlc::CreateCommand do
 
   # PH p.38 27-point-buy cost table. A persisted create must spend exactly 27.
   let(:point_buy_cost) { { 8 => 0, 9 => 1, 10 => 2, 11 => 3, 12 => 4, 13 => 5, 14 => 7, 15 => 9 } }
+  # 9 + 7 + 5 + 4 + 2 + 0 = 27, the standard array spread the form can also buy.
+  let(:point_buy_abilities) { { str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8 } }
 
   # AC 1
   context 'for a valid tlc create payload' do
@@ -28,6 +30,80 @@ describe CharactersContext::Tlc::CreateCommand do
 
       spent = character.data.abilities.values.sum { |score| point_buy_cost.fetch(score.to_i) }
       expect(spent).to eq(27)
+    end
+  end
+
+  # Point buy (issue #80). The form constrains the client; these gate the server,
+  # which has to hold on its own when the client is bypassed.
+  context 'with an affordable point-buy spread' do
+    let(:params) { valid_params.merge(abilities: point_buy_abilities) }
+
+    it 'persists the bought scores over the class recommendation', :aggregate_failures do
+      expect { command_call }.to change(Tlc::Character, :count).by(1)
+      expect(command_call[:errors]).to be_blank
+      # Reload: what matters is the spread that survived the JSONB round trip,
+      # not the symbol-keyed hash still sitting in memory.
+      expect(command_call[:result].reload.data.abilities.symbolize_keys).to eq(point_buy_abilities)
+    end
+  end
+
+  context 'with a spread that costs more than the 27-point budget' do
+    # 36 points. Every score is inside 8..15 -- only the total is out of bounds,
+    # so the range check alone would let this through.
+    let(:params) { valid_params.merge(abilities: { str: 15, dex: 15, con: 15, int: 15, wis: 8, cha: 8 }) }
+
+    it 'fails validation and persists nothing', :aggregate_failures do
+      expect(point_buy_abilities.values.sum { |score| point_buy_cost.fetch(score) }).to eq(27)
+      expect { command_call }.not_to change(Character, :count)
+      expect(command_call[:errors]).to include(:abilities)
+      expect(command_call[:errors_list]).to include('Ability scores must cost 27 points or fewer in point buy')
+    end
+  end
+
+  # Per-score schema errors come back flattened (BaseCommand#flatten_hash_from),
+  # so the key is `abilities.<score>` rather than `abilities`.
+  context 'with a score above the 15 ceiling' do
+    let(:params) { valid_params.merge(abilities: point_buy_abilities.merge(cha: 16)) }
+
+    it 'fails validation and persists nothing', :aggregate_failures do
+      expect { command_call }.not_to change(Character, :count)
+      expect(command_call[:errors]).to include(:'abilities.cha')
+    end
+  end
+
+  context 'with a score below the 8 floor' do
+    let(:params) { valid_params.merge(abilities: point_buy_abilities.merge(str: 7)) }
+
+    it 'fails validation and persists nothing', :aggregate_failures do
+      expect { command_call }.not_to change(Character, :count)
+      expect(command_call[:errors]).to include(:'abilities.str')
+    end
+  end
+
+  context 'with an incomplete abilities hash' do
+    let(:params) { valid_params.merge(abilities: { str: 15, dex: 14 }) }
+
+    it 'fails validation on every missing score, not just some', :aggregate_failures do
+      expect { command_call }.not_to change(Character, :count)
+      expect(command_call[:errors].keys).to include(
+        :'abilities.con', :'abilities.int', :'abilities.wis', :'abilities.cha'
+      )
+    end
+  end
+
+  context 'with a Constitution score above the bard class-builder default' do
+    # Bard's class-builder default is con: 12 (modifier +1); con: 15 here is
+    # modifier +2, one point higher -- health must track the bought score,
+    # not the recommended array the builder computed it against.
+    let(:params) { valid_params.merge(abilities: point_buy_abilities.merge(con: 15, str: 13)) }
+
+    it 'raises max and current health by the constitution modifier delta', :aggregate_failures do
+      expect(point_buy_abilities.merge(con: 15, str: 13).values.sum { |score| point_buy_cost.fetch(score) })
+        .to eq(27)
+
+      data = command_call[:result].reload.data
+      expect(data.health['max']).to eq(10)
+      expect(data.health['current']).to eq(10)
     end
   end
 

@@ -1,12 +1,13 @@
-import { Show } from 'solid-js';
+import { Show, For } from 'solid-js';
 import { createStore, reconcile } from 'solid-js/store';
 import * as i18n from '@solid-primitives/i18n';
 
 import { CharacterForm } from '../../../../pages';
-import { Select, Input, Checkbox } from '../../../../components';
+import { Select, Input, Checkbox, Label, Button } from '../../../../components';
 import { tlcConfig, tlcCreationSpecies } from '../../../../data/tlcConfig';
 import { useAppLocale } from '../../../../context';
-import { translate } from '../../../../helpers';
+import { Minus, Plus } from '../../../../assets';
+import { translate, localize, pointBuyFloor, pointBuyRemaining, canPointBuyChange } from '../../../../helpers';
 
 // Cloned from Forms/Dnd2024.jsx. Deltas, all of them deliberate:
 //   * species come from tlcCreationSpecies, never dnd2024.json -- the merged
@@ -16,19 +17,24 @@ import { translate } from '../../../../helpers';
 //     `import` route is deliberately unrouted (frontend/tlc/characters_controller.rb);
 //   * no homebrew toggle -- /frontend/homebrews only serves a `dnd2024` bucket
 //     (HomebrewsContext::FindAvailableService), so there is nothing to layer yet;
-//   * no level or ability inputs -- TlcCharacter::BaseBuilder fixes level 3 and
-//     point-buy scores server-side. The note tells the player that.
+//   * no level input -- TlcCharacter::BaseBuilder fixes level 3 server-side;
+//   * point-buy abilities instead of dnd2024's class standard array, which is
+//     what the intro paragraph promises (PH 2024 p.38, plan Phase A2). The
+//     counter below only keeps the form honest; CharactersContext::Tlc::CreateCommand
+//     re-prices the spread server-side.
 // Optional-trait selection is Phase D (D2); until then traits come from the API.
-const TLC_DEFAULT_FORM = {
+//
+// A function, not a constant: `abilities` is nested, so a spread of a shared
+// object would hand every mount the same abilities object to mutate.
+const blankTlcForm = () => ({
   name: '', species: undefined, legacy: undefined, size: undefined, background: undefined,
-  main_class: undefined, alignment: 'neutral', skip_guide: false
-};
+  main_class: undefined, alignment: 'neutral', skip_guide: false, abilities: pointBuyFloor()
+});
 
 export const TlcCharacterForm = (props) => {
-  // Copy, never the constant itself: createStore writes through the proxy into the
-  // object it is handed, so passing TLC_DEFAULT_FORM would let every keystroke edit
-  // the module constant -- and the reset below spreads that same constant.
-  const [characterTlcForm, setCharacterTlcForm] = createStore({ ...TLC_DEFAULT_FORM });
+  // Fresh object, never a shared one: createStore writes through the proxy into
+  // the object it is handed.
+  const [characterTlcForm, setCharacterTlcForm] = createStore(blankTlcForm());
 
   const [locale, dict] = useAppLocale();
   const t = i18n.translator(dict);
@@ -37,10 +43,21 @@ export const TlcCharacterForm = (props) => {
   // the 2024 ones. Both have to render without throwing.
   const legacies = () => tlcCreationSpecies[characterTlcForm.species]?.legacies ?? {};
 
+  const pointsRemaining = () => pointBuyRemaining(characterTlcForm.abilities);
+  const canChangeAbility = (slug, step) => canPointBuyChange(characterTlcForm.abilities, slug, step);
+
+  // Guarded here as well as on the button: a disabled Button is the UI telling the
+  // player no, not the allocator enforcing the budget.
+  const changeAbility = (slug, step) => {
+    if (!canChangeAbility(slug, step)) return;
+
+    setCharacterTlcForm('abilities', slug, characterTlcForm.abilities[slug] + step);
+  }
+
   const saveCharacter = async () => {
     const result = await props.onCreateCharacter(characterTlcForm);
 
-    if (result === null) setCharacterTlcForm(reconcile({ ...TLC_DEFAULT_FORM, skip_guide: true }));
+    if (result === null) setCharacterTlcForm(reconcile({ ...blankTlcForm(), skip_guide: true }));
   }
 
   return (
@@ -92,6 +109,42 @@ export const TlcCharacterForm = (props) => {
           selectedValue={characterTlcForm.alignment}
           onSelect={(value) => setCharacterTlcForm({ ...characterTlcForm, alignment: value })}
         />
+        <div>
+          <Label labelText={t('newCharacterPage.tlc.abilities')} />
+          <p class="dark:text-snow text-sm mb-2">
+            {t('newCharacterPage.tlc.pointsRemaining')} {pointsRemaining()}
+          </p>
+          <div class="grid grid-cols-3 emd:grid-cols-6 gap-x-2 gap-y-4">
+            <For each={Object.entries(tlcConfig.abilities)}>
+              {([slug, values]) =>
+                <div>
+                  <p class="ability-title dark:text-snow">{localize(values.name, locale())}</p>
+                  <div class="ability-value-box">
+                    <p class="text-2xl font-normal! dark:text-snow">{characterTlcForm.abilities[slug]}</p>
+                  </div>
+                  {/* Default size, not the sheet's `small`: DESIGN.md asks for 44px
+                      increment controls and 40px is the largest the Button atom has.
+                      ponytail: 40px ceiling, lift it in the atom when the creation
+                      form is re-themed to the Stacked Accordion. */}
+                  <div class="mt-2 flex justify-center gap-2">
+                    <Button
+                      default
+                      disabled={!canChangeAbility(slug, -1)}
+                      ariaLabel={`${t('newCharacterPage.tlc.decreaseAbility')} ${localize(values.name, locale())}`}
+                      onClick={() => changeAbility(slug, -1)}
+                    ><Minus /></Button>
+                    <Button
+                      default
+                      disabled={!canChangeAbility(slug, 1)}
+                      ariaLabel={`${t('newCharacterPage.tlc.increaseAbility')} ${localize(values.name, locale())}`}
+                      onClick={() => changeAbility(slug, 1)}
+                    ><Plus /></Button>
+                  </div>
+                </div>
+              }
+            </For>
+          </div>
+        </div>
         <Checkbox
           labelText={t('newCharacterPage.tlc.skipGuide')}
           labelPosition="right"

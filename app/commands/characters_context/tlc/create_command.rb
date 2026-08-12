@@ -7,6 +7,9 @@ module CharactersContext
     #   * builds Tlc::Character via TlcCharacter builders (level-3 default);
     #   * accepts + validates selected_traits (union-scope slug check, cap 10,
     #     dedupe) and mixed_species;
+    #   * accepts point-buy `abilities` and validates them against the PH p.38
+    #     table + 27-point budget (Tlc::PointBuy) -- dnd2024 creation has no
+    #     ability input at all and keeps its class standard array;
     #   * NEVER declares eval_variables / description_eval_variables — those are
     #     Ruby-eval'd feat columns (dnd2024_decorator.rb:389/:396) and stay
     #     seed-only (plan §Security T4 / decisions 16/37).
@@ -42,6 +45,24 @@ module CharactersContext
           optional(:skip_guide).filled(:bool)
           optional(:selected_traits).value(:array).each(:string)
           optional(:mixed_species).maybe(:string)
+          # Point-buy range (PH 2024 p.38), NOT the 1..30 the update contract
+          # allows: these are the pre-boost scores the player bought.
+          optional(:abilities).hash do
+            required(:str).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+            required(:dex).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+            required(:con).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+            required(:int).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+            required(:wis).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+            required(:cha).filled(:integer, gteq?: ::Tlc::PointBuy::MIN, lteq?: ::Tlc::PointBuy::MAX)
+          end
+        end
+
+        # Defense in depth: the creation form constrains the client, so a spread
+        # that costs more than 27 only arrives from a bypassed client.
+        rule(:abilities) do
+          next if value.blank?
+
+          key.failure(:point_buy_budget_exceeded) unless ::Tlc::PointBuy.affordable?(value)
         end
 
         # Nonexistent slug = validation error (reject); a rule-breaking-but-real
@@ -80,7 +101,31 @@ module CharactersContext
           )
         input[:data][:selected_traits] = input[:selected_traits].uniq if input.key?(:selected_traits)
         input[:data][:mixed_species] = input[:mixed_species] if input.key?(:mixed_species)
+        apply_point_buy_abilities(input) if input.key?(:abilities)
       end
+
+      # Last word over TlcCharacter::Classes::*Builder, which seeds the class's
+      # recommended array (itself a legal 27-point spread) for clients that send
+      # no abilities at all -- e.g. the Discord bot or a skip_guide create. The
+      # builder also baked its default Constitution into result[:health] (each
+      # *Builder sets health to hit_die_max + con_modifier, a level-1-style
+      # baseline every TLC class shares regardless of the level-3 default) --
+      # swap the abilities without correcting health and a CON 15 bard keeps
+      # the CON 12 default's hit points.
+      def apply_point_buy_abilities(input)
+        default_abilities = input[:data][:abilities]
+        default_health = input[:data][:health]
+        input[:data][:abilities] = input[:abilities]
+        return unless default_abilities && default_health
+
+        con_delta = ability_modifier(input[:abilities][:con]) - ability_modifier(default_abilities[:con])
+        return if con_delta.zero?
+
+        default_health[:current] += con_delta
+        default_health[:max] += con_delta
+      end
+
+      def ability_modifier(score) = (score / 2) - 5
 
       def do_persist(input)
         character = ::Tlc::Character.create!(input.slice(:user, :name, :data))

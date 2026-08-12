@@ -141,6 +141,7 @@ en:
             invalid: Invalid legacy
           abilities:
             invalid_value: Ability value should be positive and less than 30
+            point_buy_budget_exceeded: Ability scores must cost 27 points or fewer in point buy
           coins:
             invalid_value: Coins values should not be negative
           health:

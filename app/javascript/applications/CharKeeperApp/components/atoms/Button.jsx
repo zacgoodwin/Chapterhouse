@@ -19,7 +19,10 @@ export const Button = (props) => {
   }
 
   return (
-    <p
+    <button
+      type="button"
+      disabled={props.disabled}
+      aria-label={props.ariaLabel}
       class={[props.classList, 'default-button'].join(' ')}
       classList={{
         'default-button-size': props.size === undefined || props.size === 'default',
@@ -36,6 +39,6 @@ export const Button = (props) => {
       <Show when={!loading()} fallback={<Loading spinner />}>
         {safeChildren()}
       </Show>
-    </p>
+    </button>
   );
 }

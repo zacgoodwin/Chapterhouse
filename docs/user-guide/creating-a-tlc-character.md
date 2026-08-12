@@ -23,19 +23,41 @@ its own filter tab.
 8. **Main class** — the 2024 class list, which TLC shares. TLC's own subclasses
    are picked later, on the sheet, not here.
 9. **Alignment** — defaults to neutral.
-10. **Skip new character guide** — leave it off to walk the guided setup on the
+10. **Ability scores** — point buy, see below.
+11. **Skip new character guide** — leave it off to walk the guided setup on the
     sheet, turn it on to land on the finished sheet directly.
-11. **Save**.
+12. **Save**.
+
+## Ability scores: point buy
+
+TLC uses point buy only (players-guide-digest §2, PH 2024 p.38); there is no
+roll and no standard array to pick. Every ability starts at 8 and you spend a
+27-point budget with the +/- steppers. **Points remaining** above the row counts
+down as you spend.
+
+| Score | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|-------|---|---|----|----|----|----|----|----|
+| Cost  | 0 | 1 | 2  | 3  | 4  | 5  | 7  | 9  |
+
+The last two steps cost 2 points each, so a 15 costs 9 and not 7. **+** grays out
+at 15 or when the next step costs more than you have left; **−** grays out at 8.
+Under-spending is allowed — 27 points to spend, not 27 you must burn. These
+scores are pre-background: your background names three abilities, and the
+sheet's guided setup has you split +2/+1 or +1/+1/+1 across them afterwards, so
+a 15 here can still finish above 15. TLC species do not currently add ability
+boosts of their own.
+
+The server prices the spread again on save (`Tlc::PointBuy`): a payload that
+costs more than 27, or carries a score outside 8-15, is rejected whatever the
+form did.
 
 ## What the server fills in
 
-You do not choose a level or roll ability scores in this form:
+You do not choose a level in this form:
 
 - **Level 3.** Leyfarers start at level 3 (players-guide-digest §2), set by
   `TlcCharacter::BaseBuilder`. The class also starts at 3, so hit dice and
   class-feature grants line up.
-- **Point-buy ability scores.** TLC uses point buy only; there is no roll or
-  standard-array option to pick.
 
 ## What is not in this form yet
 

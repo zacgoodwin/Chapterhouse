@@ -17,10 +17,11 @@ registerHooks({
   resolve(specifier, context, nextResolve) {
     if (BARRELS.some((barrel) => specifier.endsWith(barrel))) return { url: STUBS, shortCircuit: true };
 
-    // esbuild resolves extensionless imports; node does not.
+    // esbuild resolves extensionless imports and directory indexes (the `assets`
+    // barrel is imported as a bare directory); node does neither.
     if (!specifier.startsWith('.')) return nextResolve(specifier, context);
 
-    return ['', '.js', '.jsx'].reduce((found, extension) => {
+    return ['', '.js', '.jsx', '/index.js', '/index.jsx'].reduce((found, extension) => {
       if (found) return found;
       try { return nextResolve(specifier + extension, context); } catch { return null; }
     }, null) ?? nextResolve(specifier, context);

@@ -148,7 +148,11 @@
     },
     "tlc": {
       "start": "Leyfarers start at level 3 with point-buy ability scores. Species and class options are shared with D&D 2024 where The Leyfarer's Chronicle does not replace them.",
-      "skipGuide": "Skip new character guide"
+      "abilities": "Ability scores, point buy (27 points, 8 to 15, before background boosts)",
+      "pointsRemaining": "Points remaining:",
+      "skipGuide": "Skip new character guide",
+      "decreaseAbility": "Decrease",
+      "increaseAbility": "Increase"
     }
   },
   "itemsPage": {
