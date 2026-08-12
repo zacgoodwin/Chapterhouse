@@ -33,3 +33,12 @@ config/deploy
 # Dev Dirs
 .worktrees/
 graphify-out/
+workflows/
+.roborev/
+
+# Gitignored local state — invisible to `git status --porcelain`, so it must
+# be excluded here explicitly or fly's build context would ship it.
+.bundle/
+storage/
+dump.rdb
+*.rdb
