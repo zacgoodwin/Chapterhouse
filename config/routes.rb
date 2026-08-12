@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :recipes, only: %i[index new create]
     end
     namespace :tlc do
+      resources :characters, only: %i[index]
       resources :feats, except: %i[show]
       resources :spells, except: %i[show]
       resources :items, except: %i[show]

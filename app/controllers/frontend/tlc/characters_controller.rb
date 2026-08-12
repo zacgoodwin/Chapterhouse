@@ -11,6 +11,14 @@ module Frontend
         character_update: 'commands.characters_context.tlc.update'
       ]
 
+      # `import` is inherited from Frontend::Dnd2024::CharactersController and its
+      # `character_import` private method hardcodes ImportContext::Dnd2024 -- if a
+      # future ticket routes `post :import` under namespace :tlc without also
+      # overriding this, it would silently mint Dnd2024::Character rows for a TLC
+      # user (see #53). Guard holds independent of routing. Real fix is
+      # ImportContext::Tlc, which does not exist yet.
+      def import = page_not_found
+
       private
 
       def render_character(result, fields, status)

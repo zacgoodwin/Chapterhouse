@@ -84,6 +84,58 @@ describe 'Frontend::Tlc::Characters' do
     end
   end
 
+  # #53: `import` is inherited from Frontend::Dnd2024::CharactersController, whose
+  # `character_import` private method hardcodes ImportContext::Dnd2024 -- if a
+  # future ticket ever wires `post :import` into `namespace :tlc` without
+  # re-checking the override in app/controllers/frontend/tlc/characters_controller.rb,
+  # this proves the guard still 404s instead of silently minting a
+  # Dnd2024::Character for a TLC user. The route is absent from config/routes.rb
+  # today (#7), so it is drawn here just for this example and restored after --
+  # otherwise this would only prove the application-wide catch-all 404s, which
+  # is true whether or not the controller guards `import` at all.
+  describe 'POST /frontend/tlc/characters/import (import guard)' do
+    # A plain #draw (not disable_clear_and_finalize) clears the route set first,
+    # so the one route below is all that exists when the request runs. The
+    # app-wide catch-all (config/application.rb's `app.routes.append { match
+    # '*path' ... }`) is a *persistent* append block Rails replays after every
+    # #draw/#finalize! regardless of what was cleared -- it still lands last,
+    # after this route, exactly as it does in the real app. disable_clear_and_finalize
+    # skips the clear, which left the PREVIOUS finalize's routes (catch-all
+    # included, already last) in place ahead of the newly appended one --
+    # inverting the order and making the sanity check below hit the catch-all.
+    around do |example|
+      Rails.application.routes.draw do
+        post 'frontend/tlc/characters/import', to: 'frontend/tlc/characters#import'
+      end
+      example.run
+    ensure
+      Rails.application.reload_routes!
+    end
+
+    it 'returns 404 and creates zero Dnd2024::Character rows, even with the route wired', :aggregate_failures do
+      # Sanity check the temporary route actually resolved -- otherwise the 404
+      # below would just be the app's `match '*path'` catch-all and this test
+      # would pass even if the controller guard were deleted.
+      expect(
+        Rails.application.routes.recognize_path('/frontend/tlc/characters/import', method: :post)
+      ).to include(controller: 'frontend/tlc/characters', action: 'import')
+
+      expect {
+        post '/frontend/tlc/characters/import', params: {
+          provider: 'beyond',
+          data: {
+            name: 'Grundar', race: 'human', size: 'medium', main_class: 'monk', alignment: 'neutral',
+            classes: { monk: 5 }, max_health: 30, selected_proficiencies: ['nature'],
+            languages: %w[common gnomish dwarvish], money: 8_052,
+            abilities: { str: 10, dex: 12, con: 14, int: 16, wis: 14, cha: 10 }
+          }, charkeeper_access_token: access_token
+        }
+      }.not_to change(Dnd2024::Character, :count)
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
   describe 'PATCH /frontend/tlc/characters/:id' do
     let!(:character) { create :character, :tlc, user: user }
 
