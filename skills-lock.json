@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "ecc-guide": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/ecc-guide/SKILL.md",
+      "computedHash": "407d6a1b6bd6d869c8f2422e2ee2e7d4fba9f3bf5fac67b0d0a99a867c8bec1d"
+    },
+    "ecc-recipes": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/ecc-recipes/SKILL.md",
+      "computedHash": "442badb07b5789cda6c6397027d6e65c870813bc56aabf7cfced67d94cfc89cc"
+    },
+    "postgres-patterns": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-patterns/SKILL.md",
+      "computedHash": "5ec6a4f0504f15fe9464ccaed3ab51afcb52345b9456f36b65afc4e5af1fc6aa"
+    },
+    "triage": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/triage/SKILL.md",
+      "computedHash": "f844266a4d3b742b42045a162acb8eda26b8e9359a3b7a3526665c453148473a"
+    }
+  }
+}
