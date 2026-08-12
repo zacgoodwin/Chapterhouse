@@ -20,7 +20,11 @@ const TRANSLATION = {
 }
 
 export const Dnd5CharacterForm = (props) => {
-  const [form, setForm] = createStore(DND5_DEFAULT_FORM);
+  // Copy, never the constant itself: createStore writes through the proxy into the
+  // object it is handed, so passing DND5_DEFAULT_FORM directly would let every
+  // keystroke mutate the module constant -- abandoning a dirty form and remounting
+  // it would then read that same stale state back in.
+  const [form, setForm] = createStore({ ...DND5_DEFAULT_FORM });
 
   const [locale, dict] = useAppLocale();
   const t = i18n.translator(dict);
