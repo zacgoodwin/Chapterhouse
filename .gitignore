@@ -51,3 +51,7 @@ docs/**/*.pdf
 graphify-out/
 # z-loop scratch worktrees
 .worktrees/
+# loop-me workflow specs (private, never public)
+workflows/
+# roborev snapshots
+/.roborev/

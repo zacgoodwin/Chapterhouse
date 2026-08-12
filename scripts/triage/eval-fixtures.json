@@ -1,0 +1,33 @@
+[
+  {
+    "number": 93,
+    "title": "Maint: bump solid-js to 1.9.14 to clear seroval GHSA-mv8w-475r-vwqw",
+    "body": "Dependabot reports 6 open alerts on main; 3 advisories double-counted (both package-lock.json and yarn.lock present). Triage found none reachable in production. seroval 1.3.2 CRITICAL GHSA-mv8w-475r-vwqw: type confusion in seroval.fromJSON() under SSR hydration only; Chapterhouse is client-only. Fix: bump solid-js to 1.9.14.",
+    "expected": "ready-for-agent"
+  },
+  {
+    "number": 92,
+    "title": "Maint: drop package-lock.json (yarn.lock is the only lockfile that ships)",
+    "body": "Repo carries two JS lockfiles but only yarn.lock ships: Dockerfile installs with yarn --frozen-lockfile and never copies package-lock.json. Dead weight that doubles every Dependabot alert. Delete package-lock.json.",
+    "expected": "ready-for-agent"
+  },
+  {
+    "number": 91,
+    "title": "Revoke CREATEDB/CREATEROLE/BYPASSRLS on the prod chapter DB role",
+    "body": "The prod Supabase chapter role carries CREATEDB, CREATEROLE, BYPASSRLS; none needed at runtime. CREATEROLE is a privilege-escalation primitive. Dev project already revoked to least-privilege; README documents the minimal shape. Needs the same revoke run against the PROD database.",
+    "expected": "ready-for-human"
+  },
+  {
+    "number": 90,
+    "title": "Split credentials into per-env files (dev must not decrypt prod)",
+    "body": "Both Fly apps decrypt the one credentials.yml.enc with the same RAILS_MASTER_KEY, so compromise of the weaker dev app yields prod DB password, service keys, S3 keys. Split into per-environment credential files and rotate Fly secrets on both apps.",
+    "expected": "ready-for-human"
+  },
+  {
+    "number": 88,
+    "title": "Decide fate of upstream branding on the landing page",
+    "body": "Landing page still carries upstream maintainer's properties: App Store badges for upstream's apps, donation links, upstream Discord invite, the CharKeeper product name. Decide: keep (credit upstream), remove, or rebrand for Chapterhouse/Leyfarer's Chronicle. Ties into the design-language rollout.",
+    "expected": "ready-for-human",
+    "note": "Tracker historically says ready-for-agent, but the rubric routes 'Decide:' product/branding calls to Zac. Expected follows the rubric; 80% threshold tolerates the model siding with the tracker."
+  }
+]
