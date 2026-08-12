@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - every environment-scoped credential lookup (database, Supabase, storage, image proxy, Discord) resolves through one guarded switch: unknown section names fail at boot, and the dev instance can never silently read production credentials
 - local development now targets the dev Supabase project instead of production
 
+## [0.5.2.0] - 2026-08-12
+### Removed
+- `package-lock.json`: `yarn.lock` is the only lockfile the Docker build ever reads, and carrying both double-counted every Dependabot advisory (#92)
+
+### Fixed
+- `solid-js` bumped to 1.9.14, pulling in patched `seroval`/`seroval-plugins` and clearing GHSA-mv8w-475r-vwqw (type confusion in `seroval.fromJSON()`, reachable only under SSR hydration this SPA never uses); `js-yaml` and `brace-expansion` also bumped to clear their dev-scope advisories. A gate test now asserts `seroval` never re-enters the client bundle (#93)
+
 ## Unreleased
 ### Fixed
 - TLC characters now receive the D&D 2024 features they share (class, species, legacy, feat) on create and on feature-affecting updates (the strict `Tlc::Feat` scope attached nothing while the TLC feat corpus is empty)
