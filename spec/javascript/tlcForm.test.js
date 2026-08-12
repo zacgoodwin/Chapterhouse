@@ -114,6 +114,34 @@ test('a redefined dnd2024 species takes the TLC size, not the 2024 one', async (
   assert.equal(submitted.size, 'medium');
 });
 
+test('switching species after picking a legacy clears the stale legacy from the payload', async () => {
+  // The legacy Select only mounts once a species with legacies is already picked
+  // (Tlc.jsx `<Show when={Object.keys(legacies()).length > 0}>`), so a single SSR
+  // pass -- this harness only ever does one -- never renders it starting from the
+  // undefined default and there is no field handle to drive a "pick a legacy" click.
+  // Solid's server-build store hands `onCreateCharacter` the live, unproxied form
+  // object though (solid-js/store/dist/server.js createStore returns the state
+  // object itself), so writing `legacy` directly on the payload a prior save
+  // captured reproduces exactly what a real legacy pick would have left in the
+  // store -- then the species switch below has to clear it same as a real one would.
+  const submitted = [];
+  const { fields, save } = renderForm('en', async (payload) => { submitted.push(payload); return 'kept'; });
+
+  // elf keeps its dnd2024 legacies (tlc.json's elf entry has no `legacies` key, so
+  // the merge leaves the base ones in place).
+  speciesSelect(fields).onSelect('elf');
+  await save();
+  submitted[0].legacy = 'high_elf';
+
+  // birdfolk has no legacies at all -- a legacy left over from elf would otherwise
+  // ride along in the payload.
+  speciesSelect(fields).onSelect('birdfolk');
+  await save();
+
+  assert.equal(submitted[1].species, 'birdfolk');
+  assert.equal(submitted[1].legacy, undefined);
+});
+
 test('the form renders with real labels and the tlc intro paragraph', () => {
   const enStart = DICTIONARIES.en['newCharacterPage.tlc.start'];
   // Everything up to the first character renderToString would escape.
