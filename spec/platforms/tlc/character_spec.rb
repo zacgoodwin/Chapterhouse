@@ -91,6 +91,103 @@ describe Tlc::Character do
     end
   end
 
+  # Issue #68: species_name/background_name must resolve against self.class.config
+  # (PlatformConfig.data('tlc'), the dnd2024 baseline deep-merged with tlc.json),
+  # not the dnd2024-only ::Dnd2024::Character.species/.backgrounds, which never
+  # see tlc.json and miss every TLC-only species.
+  describe '#species_name' do
+    it 'resolves a TLC-only species that has no dnd2024.json entry' do
+      character = described_class.new(data: { species: 'birdfolk' })
+
+      # Reverting the fix (config_name(::Dnd2024::Character.species, ...)) makes
+      # this '-': 'birdfolk' has no key in dnd2024.json, only in tlc.json.
+      expect(character.species_name).to eq 'Birdfolk'
+    end
+
+    it 'resolves a species TLC shares with dnd2024 (e.g. dwarf)' do
+      character = described_class.new(data: { species: 'dwarf' })
+
+      expect(character.species_name).to eq 'Dwarf'
+    end
+
+    it 'returns "-" for an unrecognized species slug' do
+      character = described_class.new(data: { species: 'not-a-real-species' })
+
+      expect(character.species_name).to eq '-'
+    end
+
+    it 'returns "" when no species is set' do
+      character = described_class.new(data: {})
+
+      expect(character.species_name).to eq ''
+    end
+
+    # The character list row (ListItem.jsx) reads the same merged config
+    # (data/tlcConfig.js, client-built from dnd2024.json + tlc.json). Asserting
+    # the sheet's species_name equals a value pulled straight out of
+    # Tlc::Character.config proves both surfaces share one source of truth.
+    it 'agrees with the merged config the character list row reads' do
+      character = described_class.new(data: { species: 'birdfolk' })
+      merged_name = described_class.config.dig('species', 'birdfolk', 'name', 'en')
+
+      expect(character.species_name).to eq merged_name
+    end
+  end
+
+  describe '#background_name' do
+    it 'resolves a background via the merged config' do
+      character = described_class.new(data: { background: 'sage' })
+
+      expect(character.background_name).to eq 'Sage'
+    end
+
+    it 'resolves a TLC-only background that has no dnd2024.json entry' do
+      # tlc.json itself carries no backgrounds override today -- a bare slug
+      # there would make it selectable in the creation form's background
+      # picker (Tlc.jsx reads tlcConfig.backgrounds directly) with no
+      # TlcCharacter::Backgrounds::*Builder behind it, silently skipping
+      # feats/skills/ability boosts on creation (see BackgroundBuilder,
+      # which falls through to CustomBuilder's Homebrews::Background lookup
+      # for any slug ::Dnd2024::Character.backgrounds doesn't recognize).
+      # Stub self.class.config directly so the discrimination below doesn't
+      # require exposing a half-wired background to real players.
+      fake_config = described_class.config.deep_merge(
+        'backgrounds' => { 'leyfarer' => { 'name' => { 'en' => 'Leyfarer' } } }
+      )
+      allow(described_class).to receive(:config).and_return(fake_config)
+      character = described_class.new(data: { background: 'leyfarer' })
+
+      # Reverting the fix (config_name(::Dnd2024::Character.backgrounds, ...))
+      # makes this '-': 'leyfarer' only exists in the stubbed self.class.config,
+      # never in dnd2024.json. 'sage' above can't catch this on its own -- both
+      # lookups agree on it by coincidence.
+      expect(character.background_name).to eq 'Leyfarer'
+    end
+
+    it 'returns "" when no background is set' do
+      character = described_class.new(data: {})
+
+      expect(character.background_name).to eq ''
+    end
+  end
+
+  # Control: Dnd2024::Character#species_name is a separate implementation
+  # (app/platforms/dnd2024/character.rb) untouched by the TLC fix above. It has
+  # no notion of TLC-only species, and it must not gain one.
+  describe 'Dnd2024::Character#species_name (control, unaffected by this fix)' do
+    it 'still resolves species from dnd2024.json' do
+      character = Dnd2024::Character.new(data: { species: 'human' })
+
+      expect(character.species_name).to eq 'Human'
+    end
+
+    it 'still misses on a TLC-only species' do
+      character = Dnd2024::Character.new(data: { species: 'birdfolk' })
+
+      expect(character.species_name).to eq '-'
+    end
+  end
+
   describe 'StoreModel parity with Dnd2024::CharacterData' do
     # Dnd2024::CharacterData is a secondary constant in dnd2024/character.rb;
     # touch Dnd2024::Character so Zeitwerk loads the file that defines it.
