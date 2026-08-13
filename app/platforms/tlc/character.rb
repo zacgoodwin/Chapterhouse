@@ -77,18 +77,20 @@ module Tlc
       TlcDecorator.new.call(character: self, simple: simple, exclude_feature_origins: [6], version: version)
     end
 
-    # Display names for the serializer's `names` field. They read the dnd2024
-    # baseline config because TLC ships no distinct species/background config
-    # (plan P4). Homebrew name resolution through the dnd2024-keyed
+    # Display names for the serializer's `names` field. They read `self.class.config`
+    # (PlatformConfig.data('tlc'), the dnd2024 baseline deep-merged with tlc.json's
+    # overrides/additions) rather than `::Dnd2024::Character.species` /
+    # `.backgrounds`, which only ever see dnd2024.json and miss every TLC-only
+    # species (issue #68). Homebrew name resolution through the dnd2024-keyed
     # `cache.dnd_names` stays parked to Phase D, so an unknown slug renders '-',
     # the same value Dnd2024::Character#species_name lands on with no cache hit.
     # Copying that fallback here would be dead code today: the TLC importer
     # deliberately writes nothing to dnd_names
     # (homebrews_v2_context/import/tlc/species/add_command.rb:11), so the lookup
     # can only miss until Phase D adds a TLC-keyed name cache.
-    def species_name = config_name(::Dnd2024::Character.species, data.species)
+    def species_name = config_name(self.class.config['species'], data.species)
 
-    def background_name = config_name(::Dnd2024::Character.backgrounds, data.background)
+    def background_name = config_name(self.class.config['backgrounds'], data.background)
 
     private
 
