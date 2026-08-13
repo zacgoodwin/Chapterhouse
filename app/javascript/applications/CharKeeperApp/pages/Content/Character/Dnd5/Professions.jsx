@@ -2,7 +2,7 @@ import { createSignal, createEffect, For, Show, batch } from 'solid-js';
 import * as i18n from '@solid-primitives/i18n';
 
 import { ErrorWrapper, Toggle, Checkbox, GuideWrapper, Languages } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppLocale, useAppState } from '../../../../context';
 import { fetchItemsRequest } from '../../../../requests/fetchItemsRequest';
 import { localize, isDnd2024Family } from '../../../../helpers';
@@ -15,7 +15,10 @@ const TRANSLATION = {
 
 export const Dnd5Professions = (props) => {
   const character = () => props.character;
-  const feats = () => config.feats;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8).
+  const config = () => dndConfigFor(character().provider);
+  const feats = () => config().feats;
 
   // changeable data
   const [lastActiveCharacterId, setLastActiveCharacterId] = createSignal(undefined);
@@ -103,10 +106,10 @@ export const Dnd5Professions = (props) => {
             </For>
           </Toggle>
         </Show>
-        <Languages character={character()} defaults={config.languages} />
+        <Languages character={character()} defaults={config().languages} />
         <Show when={isDnd2024Family(character().provider)}>
           <Toggle title={localize(TRANSLATION, locale())['weaponMastery']}>
-            <For each={Object.entries(config.weaponMasteries)}>
+            <For each={Object.entries(config().weaponMasteries)}>
               {([slug, names]) =>
                 <div class="mb-1">
                   <Checkbox

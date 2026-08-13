@@ -2,6 +2,9 @@ import { createSignal, createEffect, createMemo, For, Show, batch } from 'solid-
 import * as i18n from '@solid-primitives/i18n';
 
 import { ErrorWrapper, Select, Checkbox, Button, GuideWrapper, Toggle } from '../../../../components';
+// Kept exact (issue #64 sweep): only reached inside the `provider === 'dnd2024'`
+// talents gate below (`Kept dnd2024-only` comments at the fetch and the Show),
+// which a tlc character never enters -- there is no tlc talents route yet.
 import dnd2024Config from '../../../../data/dnd2024.json';
 import dnd5Config from '../../../../data/dnd5.json';
 import { dndConfigFor } from '../../../../data/tlcConfig';

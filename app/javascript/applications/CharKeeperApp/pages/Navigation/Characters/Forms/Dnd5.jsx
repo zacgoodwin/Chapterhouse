@@ -5,6 +5,8 @@ import * as i18n from '@solid-primitives/i18n';
 import { CharacterForm } from '../../../../pages';
 import { Select, Input, Label } from '../../../../components';
 import dnd5Config from '../../../../data/dnd5.json';
+// Kept exact (issue #64 sweep): the dnd5 character creation form (alignments
+// list only). A tlc character is created through Forms/Tlc.jsx, never this one.
 import dnd2024Config from '../../../../data/dnd2024.json';
 import { useAppLocale } from '../../../../context';
 import { translate, localize } from '../../../../helpers';

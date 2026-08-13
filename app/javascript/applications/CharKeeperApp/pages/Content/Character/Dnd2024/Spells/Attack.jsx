@@ -1,11 +1,16 @@
 import { Show } from 'solid-js';
 
 import { Dice } from '../../../../../components';
-import config from '../../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../../data/tlcConfig';
 import { useAppLocale } from '../../../../../context';
 import { modifier, localize } from '../../../../../helpers';
 
 export const SpellAttack = (props) => {
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8). props.character
+  // is a plain object here (Dnd2024Spells.jsx/SpellsToggleList.jsx pass it dereferenced).
+  const config = () => dndConfigFor(props.character.provider);
+
   const [locale] = useAppLocale();
 
   const rollAttack = (event) => {
@@ -50,7 +55,7 @@ export const SpellAttack = (props) => {
         </Show>
       </Show>
       <Show when={props.dc && (props.character.spell_classes[props.activeSpellClass] || props.alterDc)}>
-        {localize(config.abilities[props.dc].shortName, locale()).toUpperCase()} {props.alterDc ? props.alterDc : props.character.spell_classes[props.activeSpellClass].save_dc}
+        {localize(config().abilities[props.dc].shortName, locale()).toUpperCase()} {props.alterDc ? props.alterDc : props.character.spell_classes[props.activeSpellClass].save_dc}
       </Show>
     </p>
   );

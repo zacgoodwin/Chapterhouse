@@ -2,7 +2,7 @@ import { createSignal, createMemo, For, Show, batch } from 'solid-js';
 
 import { SpellCastTime, SpellRange, SpellAttack, SpellComponents, SpellDuration, SpellEffects } from '../../../../pages';
 import { Button, Checkbox, createModal, TextArea, Toggle } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppState, useAppLocale } from '../../../../context';
 import { fetchSpellRequest } from '../../../../requests/fetchSpellRequest';
 import { localize } from '../../../../helpers';
@@ -24,6 +24,10 @@ const TRANSLATION = {
 }
 
 export const SpellsToggleList = (props) => {
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8). props.character
+  // is a plain object here (Dnd2024Spells.jsx passes character(), already dereferenced).
+  const config = () => dndConfigFor(props.character.provider);
   const spentSpellSlots = () => props.spentSpellSlots
 
   const [changingSpell, setChangingSpell] = createSignal(null);
@@ -148,7 +152,7 @@ export const SpellsToggleList = (props) => {
                   </div>
                   <Show when={props.activeSpellClass === undefined}>
                     <p class="text-xs">
-                      {characterSpell.prepared_by ? localize(config.classes[characterSpell.prepared_by]['name'], locale()) : localize(TRANSLATION, locale())['static']}
+                      {characterSpell.prepared_by ? localize(config().classes[characterSpell.prepared_by]['name'], locale()) : localize(TRANSLATION, locale())['static']}
                     </p>
                   </Show>
                   <div class="dnd2024-spell-tooltips">

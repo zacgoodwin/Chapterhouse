@@ -1,7 +1,7 @@
 import { Switch, Match, For, Show } from 'solid-js';
 
 import { ErrorWrapper, GuideWrapper, SharedBonuses } from '../../../../components';
-import config from '../../../../data/dnd2024.json';
+import { dndConfigFor } from '../../../../data/tlcConfig';
 import { useAppLocale, useAppState } from '../../../../context';
 import { createCharacterBonusRequest } from '../../../../requests/createCharacterBonusRequest';
 import { modifier, localize } from '../../../../helpers';
@@ -49,6 +49,9 @@ const SAVE_SLUGS = {
 
 export const Dnd5Bonuses = (props) => {
   const character = () => props.character;
+  // dndConfigFor keeps tlc on the merged config; the static dnd2024 import it
+  // replaced never saw the tlc.json delta (plan eng finding 8).
+  const config = () => dndConfigFor(character().provider);
 
   const [appState] = useAppState();
   const [locale] = useAppLocale();
@@ -74,7 +77,7 @@ export const Dnd5Bonuses = (props) => {
               <For each={Object.entries(value)}>
                 {([slug, value]) =>
                   <p class="bonus">
-                    {modifier(value)} {localize(config.abilities[slug].name, locale())}
+                    {modifier(value)} {localize(config().abilities[slug].name, locale())}
                   </p>
                 }
               </For>
@@ -83,7 +86,7 @@ export const Dnd5Bonuses = (props) => {
               <For each={Object.entries(value)}>
                 {([slug, value]) =>
                   <p class="bonus">
-                    {modifier(value)} {localize(config.abilities[slug].name, locale())} {localize(TRANSLATION, locale()).save}
+                    {modifier(value)} {localize(config().abilities[slug].name, locale())} {localize(TRANSLATION, locale()).save}
                   </p>
                 }
               </For>
@@ -111,7 +114,7 @@ export const Dnd5Bonuses = (props) => {
                 <For each={Object.entries(value)}>
                   {([slug, value]) =>
                     <p class="bonus">
-                      {`+[${localize(MAPPING, locale())[value] ? localize(MAPPING, locale())[value] : localize(DYNAMIC_ITEMS[value].name, locale())}]`} {localize(config.abilities[slug].name, locale())}
+                      {`+[${localize(MAPPING, locale())[value] ? localize(MAPPING, locale())[value] : localize(DYNAMIC_ITEMS[value].name, locale())}]`} {localize(config().abilities[slug].name, locale())}
                     </p>
                   }
                 </For>
@@ -120,7 +123,7 @@ export const Dnd5Bonuses = (props) => {
                 <For each={Object.entries(value)}>
                   {([slug, value]) =>
                     <p class="bonus">
-                      {`+[${localize(MAPPING, locale())[value]}]`} {localize(config.abilities[slug].name, locale())} {localize(TRANSLATION, locale()).save}
+                      {`+[${localize(MAPPING, locale())[value]}]`} {localize(config().abilities[slug].name, locale())} {localize(TRANSLATION, locale()).save}
                     </p>
                   }
                 </For>

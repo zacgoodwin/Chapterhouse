@@ -36,6 +36,10 @@ export const Dnd2024Spells = nullComponent;
 export const Dnd5Info = nullComponent;
 export const Dnd2024Bonuses = nullComponent;
 // components barrel
+// ErrorWrapper/GuideWrapper only guard/wrap in the real app; a test rendering
+// what they wrap has to see their children, not a swallowed null.
+export const ErrorWrapper = (props) => props.children;
+export const GuideWrapper = (props) => props.children;
 export const CharacterNavigation = nullComponent;
 export const Equipment = nullComponent;
 export const Notes = nullComponent;
@@ -75,6 +79,7 @@ export const Input = record('input');
 export const Checkbox = record('checkbox');
 export const Button = record('button');
 export const Label = record('label');
+export const Text = record('text');
 
 export let onSaveCharacter = null;
 
