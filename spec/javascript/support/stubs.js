@@ -19,6 +19,10 @@ export { WarningsBanner } from '../../../app/javascript/applications/CharKeeperA
 export { isDnd2024Family } from '../../../app/javascript/applications/CharKeeperApp/helpers/provider.jsx';
 
 const nullComponent = () => null;
+// A component that renders its own name as text. The DOM lane asserts on which
+// one landed in the container, which is how the platform/provider branches get
+// gated; solid inserts a returned string as a text node in either compile mode.
+const marker = (name) => () => `[${name}]`;
 // pages barrel
 export const Dnd5Abilities = nullComponent;
 export const Dnd5Combat = nullComponent;
@@ -35,6 +39,13 @@ export const Dnd5Bonuses = nullComponent;
 export const Dnd2024Spells = nullComponent;
 export const Dnd5Info = nullComponent;
 export const Dnd2024Bonuses = nullComponent;
+// The four destinations CharactersTab/CharacterTab route to. Markers, not nulls:
+// "which form did the platform picker open" is the assertion.
+export const TlcCharacterForm = marker('TlcCharacterForm');
+export const Dnd2024CharacterForm = marker('Dnd2024CharacterForm');
+export const Dnd5CharacterForm = marker('Dnd5CharacterForm');
+export const Dnd5 = marker('Dnd5Sheet');
+export const CharactersListItem = marker('CharactersListItem');
 // components barrel
 // ErrorWrapper/GuideWrapper only guard/wrap in the real app; a test rendering
 // what they wrap has to see their children, not a swallowed null.
@@ -49,6 +60,12 @@ export const Feats = nullComponent;
 export const Conditions = nullComponent;
 export const Combat = nullComponent;
 export const Gold = nullComponent;
+export const Loading = nullComponent;
+export const IconButton = nullComponent;
+// PageHeader/Modal only decorate in the real app; a test asserting on what sits
+// inside them has to see their children.
+export const PageHeader = (props) => props.children;
+export const createModal = () => ({ Modal: (props) => props.children, openModal: () => {}, closeModal: () => {} });
 export const createRoll = () => ({ Roll: nullComponent, openD20Test: () => {}, openD20Attack: () => {} });
 
 export const fields = [];
@@ -89,7 +106,13 @@ export const CharacterForm = (props) => {
 };
 
 // A component reading appState (WarningsBanner's dismiss) needs the accessToken.
-export const useAppState = () => [{ accessToken: 'test-token' }, {}];
+// activePageParams is what CharacterTab's fetch effect keys off, so a test picks
+// the character it opens by setting it before mounting. Plain object, not a
+// store: nothing under test re-reads it after mount.
+export const appState = { accessToken: 'test-token', activePageParams: {}, isAdmin: false };
+export const setActivePageParams = (params) => { appState.activePageParams = params; };
+export const useAppState = () => [appState, { navigate: () => {} }];
+export const useAppAlert = () => [{ renderAlerts: () => {}, renderNotice: () => {} }];
 
 // The `/helpers` barrel is redirected here, so a real request module
 // (updateCharacterRequest) linked in a test resolves its network layer to these.
@@ -97,6 +120,8 @@ export const useAppState = () => [{ accessToken: 'test-token' }, {}];
 // body; `apiRequest` records the call and returns whatever the test set.
 export const requests = [];
 let apiResponse = {};
+// A function value is called with the request url, so a test driving a component
+// that fires several different requests can answer each one.
 export const setApiResponse = (value) => { apiResponse = value; };
 export const resetRequests = () => { requests.length = 0; apiResponse = {}; };
 
@@ -104,5 +129,5 @@ export const options = (method, accessToken, payload) => ({ method, accessToken,
 export const formDataOptions = (method, accessToken, payload) => ({ method, accessToken, payload });
 export const apiRequest = async ({ url, options }) => {
   requests.push({ url, options });
-  return apiResponse;
+  return typeof apiResponse === 'function' ? apiResponse(url) : apiResponse;
 };

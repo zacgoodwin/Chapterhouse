@@ -47,6 +47,15 @@ docs/**/*.pdf
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+# Local-only env overrides, including .env.qa.local (the dev-instance QA login
+# the Playwright eval reads). This repo is public: never commit one.
+.env*.local
+
+# Playwright eval output. Traces and screenshots capture the logged-in QA
+# session, credentials typed into the form included.
+/test-results/
+/playwright-report/
+
 
 # generated knowledge graph (regenerate with /graphify)
 graphify-out/

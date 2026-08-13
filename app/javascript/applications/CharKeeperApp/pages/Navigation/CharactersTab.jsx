@@ -91,8 +91,8 @@ export const CharactersTab = () => {
       </div>
     );
 
-    // No automated gate: this memo only evaluates after the characters fetch has
-    // resolved, which SSR never does (README, Frontend tests).
+    // Gated by spec/javascript/tlcRouting.test.js: this memo only evaluates after
+    // the characters fetch resolves, so only the jsdom lane reaches it.
     if (platform() === 'tlc') {
       return <TlcCharacterForm onCreateCharacter={saveCharacter} setCurrentTab={setCurrentTab} />;
     }

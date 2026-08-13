@@ -49,7 +49,7 @@ Database rules:
 - The dev Fly app's release step migrates the dev DB under RAILS_ENV=production, which stamps `ar_internal_metadata.environment = production`. A later local `db:schema:load` against the dev project then raises ProtectedEnvironmentError; clear it first with `bin/rails db:environment:set RAILS_ENV=development`.
 - After running migrations in development, review the `db/schema.rb` diff: a dump from the Supabase catalog can pick up `extensions.*`/`pg_graphql`/`supabase_vault` lines that break localhost test schema loads. The gate spec `spec/config/supabase_migration_gates_spec.rb` catches this.
 
-Known gaps: the Cypress e2e login step used the removed password form and needs a rewrite against Supabase before it can run again.
+Known gaps: the Cypress e2e login step used the removed password form and was never rewritten against Supabase. Browser coverage now lives in the Playwright eval lane instead (see E2E tests); `spec/e2e` is dormant upstream code.
 
 ### Game systems
 
@@ -98,35 +98,51 @@ Modifier syntax errors (malformed Dentaku formulas, missing variables) surface a
 
 **Cache caveat:** `app/lib/platform_config.rb` caches the TLC config (`app/javascript/applications/CharKeeperApp/data/tlc.json`) under a cache key derived from the config files' own contents (`PlatformConfig::CONFIG_VERSION`, a SHA of every `data/*.json`) for 3 days. Editing `tlc.json` changes the key, so a deploy picks the new config up even though production's redis cache survives deploys. The digest is computed at boot: in development, restart the server (or `Rails.cache.clear`) after editing `tlc.json`.
 
-### Frontend tests
+### Frontend tests (gate lane)
 
 ```bash
 $ npm test
 ```
 
-`node --test` over `spec/javascript/*.test.js`. `spec/javascript/support/jsxLoader.js` compiles the SPA's `.jsx` with the same babel preset `esbuild.config.js` uses, in SSR mode, and redirects the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js`, whose field components record the props they are handed instead of drawing. That is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label against the real `fetchDictionary`, which is English-only and serves the `en` dictionary even to a browser still holding a stale persisted locale). `warningsBanner.test.js` mounts the real `WarningsBanner` through the same harness — direct render/dismiss cases plus a gate that the 2024 character sheet actually mounts it. The loader needs `module.registerHooks`, hence `.node-version` 22.15.0.
+`node --test` over `spec/javascript/*.test.js`. Deterministic, local, free, no network, ~2s on a warm checkout: this is the lane that has to stay green on every commit. `yarn install` is the only setup; nothing is installed by hand at run time.
 
-**What this harness cannot reach.** Anything whose state arrives from a `fetch` inside a `createEffect`, because SSR never runs effects and there is no DOM here (no jsdom, no headless browser). Two TLC surfaces sit behind exactly that and are checked by hand only:
+Both harnesses register the same module hooks (`spec/javascript/support/jsxHooks.js`), which compile the SPA's `.jsx` with the babel preset `esbuild.config.js` uses and redirect the `pages`/`components`/`context`/`helpers` barrels to `support/stubs.js` — the real barrels drag in the whole app, including the gitignored `supabaseConfig.js`. A test file imports exactly one harness:
 
-- `pages/Navigation/CharactersTab.jsx` — the platform picker routing `tlc` to `TlcCharacterForm`. The picker only renders after the characters fetch resolves.
+- **SSR** (`support/jsxLoader.js`) — compiles in SSR mode and renders through `renderToString`. `stubs.js`'s field components record the props they are handed instead of drawing, which is enough to render a creation form and drive it the way a player does (`tlcForm.test.js`: species list, size default, the payload Save submits, the post-save reset, and no blank label against the real `fetchDictionary`, which is English-only and serves the `en` dictionary even to a browser still holding a stale persisted locale). `warningsBanner.test.js` mounts the real `WarningsBanner` this way — direct render/dismiss cases plus a gate that the 2024 character sheet actually mounts it.
+- **jsdom** (`support/domHarness.js`) — jsdom supplies the document and the hooks resolve `solid-js` to its client build (the `browser` export condition, the same one esbuild picks), so components mount as real nodes and `createEffect` runs. That is the difference that matters: state arriving from a `fetch` inside an effect is invisible to the SSR harness, because SSR makes effects a no-op. The lane still never touches the network — the request layer resolves to `stubs.js`, and `domHarness.js` makes a real `fetch` throw.
+
+`tlcRouting.test.js` uses the jsdom harness to gate the two TLC surfaces that had no automated check at all:
+
+- `pages/Navigation/CharactersTab.jsx` — the platform picker routing `tlc` to `TlcCharacterForm`. Only evaluates after the characters fetch resolves.
 - `pages/Content/CharacterTab.jsx` — the `provider === 'tlc'` `<Match>` opening the interim Dnd5 sheet. `character()` is empty until its fetch resolves.
 
-Deleting either branch leaves `npm test` green. Cypress would cover them, but it has no automated runner in this repo (not a dependency in any `package.json`, no CI): the `spec/e2e` flow below is a manual install-run-uninstall, so a `.cy.js` spec runs only when a human runs it. Adding a real gate means adding a browser-based runner, which is a bigger call than any one ticket.
+Delete either branch and `npm test` fails naming that file. Companion cases keep the dnd5/dnd2024 destinations distinct, so a branch that matched everything would not pass either.
 
-### E2E tests
+The loader needs `module.registerHooks` and jsdom 30 requires `^22.22.2 || ^24.15.0 || >=26`, hence `.node-version` 22.22.2.
 
-With browser
+**What this lane still cannot reach.** Layout and CSS (jsdom computes no geometry, so anything keyed off a measured size is a guess), Supabase auth, the Rails side of any request, and the built bundle as a browser actually runs it. Those belong to the eval lane below.
+
+### E2E tests (eval lane)
+
 ```bash
-$ yarn add cypress@14.5.4 --dev
-$ rails server -e test -p 5002
-$ yarn cypress open --project ./spec/e2e
-$ yarn remove cypress
+$ npx playwright install chromium   # one-time, ~115MB, not needed for `npm test`
+$ npm run eval:e2e
 ```
 
-Headless
-```bash
-$ yarn add cypress@14.5.4 --dev
-$ rails server -e test -p 5002
-$ yarn run cypress run --project ./spec/e2e
-$ yarn remove cypress
-```
+Playwright against the deployed dev instance (https://dev.chapterhouse.tools; override with `QA_BASE_URL`). `spec/playwright/tlcSurfaces.spec.js` signs in and walks the same two TLC surfaces the gate lane covers, but through the shipped bundle, the real API and real CSS: the platform picker opening the TLC creation form, and a TLC character opening its sheet. The second spec creates a throwaway character, opens it, and deletes it again in a `finally`, so the eval needs no seeded fixture. A leftover `Eval Leyfarer <timestamp>` row on the QA account means a cleanup failed.
+
+**This is an eval, not a gate.** The house rule is two lanes with different budgets: gate tests are deterministic, local, free, under two seconds, and run on every commit; periodic evals are networked and slow, and run before ship and on a schedule. This suite needs a live deployment, a real Supabase login and a browser download, and the dev machine auto-stops to zero, so a cold run pays a start-up. Putting it in a pre-commit hook would make every commit depend on Fly's uptime. Run it before shipping anything that touches character creation or the sheet, and after any deploy to dev.
+
+It also asserts on what is **deployed**, which lags `main`. A red eval can mean "dev has not been redeployed yet" rather than "the code broke"; check the deployed version before chasing a failure.
+
+**Credentials.** `QA_EMAIL` and `QA_PASSWORD` come from `.env.qa.local` at the repo root, loaded by `playwright.config.js` through node's own `process.loadEnvFile` (no dotenv dependency). That file is gitignored and stays that way: this repo is public. A run with either missing fails immediately with a message naming the file. Failure traces land in `test-results/` and capture the logged-in session, credentials typed into the login form included, so that directory is gitignored too. Never attach one to an issue.
+
+**Cypress (`spec/e2e`)** is upstream's and is wired to nothing here: it appears in no `package.json`, its documented flow was a manual install-run-uninstall, and its one spec targets a Rails test server on port 5002 that this fork never starts. Kept in place only to keep subrepo merges with kortirso clean. It is not coverage.
+
+### CI
+
+There is none: no `.github/` directory, so every check above runs when a human runs it. Recommendation, deliberately not implemented in #69 because workflow files are deploy-adjacent infrastructure:
+
+- Add one GitHub Actions workflow running `npm test` on push and pull request. It needs no secrets, no services and no browser, and it now covers the TLC routing branches. It is the cheapest real gate available.
+- Add `bundle exec rspec` to the same workflow behind a Postgres service container and a `RAILS_MASTER_KEY` secret.
+- Leave the Playwright eval out of pull-request CI. It needs the QA login and a live deployment; a nightly or manually dispatched job is the right home for it.
