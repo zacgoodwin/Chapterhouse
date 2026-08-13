@@ -2,6 +2,12 @@
 // the props they were handed instead of drawing, so a test can assert on what the
 // form actually passes down rather than on its source text.
 export { translate, localize } from '../../../app/javascript/applications/CharKeeperApp/helpers/translate.jsx';
+// The TLC form's point-buy allocator has to run for real, or a test asserting on
+// the remaining-points counter asserts on a stub.
+export {
+  POINT_BUY_MIN, POINT_BUY_MAX, POINT_BUY_BUDGET, POINT_BUY_COST,
+  pointBuyFloor, pointBuySpent, pointBuyRemaining, canPointBuyChange
+} from '../../../app/javascript/applications/CharKeeperApp/helpers/pointBuy.js';
 
 // Dnd5.jsx mounts the REAL WarningsBanner at the top of its sheet body
 // (Dnd5.jsx:429). A render-gate for that mount imports Dnd5 through these barrels,
@@ -58,7 +64,10 @@ export const useAppLocale = () => [() => currentLocale, () => currentDict, { set
 const record = (kind) => (props) => {
   // Read every prop the form passes eagerly: SSR does not, and an accessor that
   // throws (a missing species, say) has to fail the test, not pass unevaluated.
-  fields.push({ kind, ...Object.fromEntries(Object.keys(props).map((key) => [key, props[key]])) });
+  // `live` keeps the props object itself, whose members are getters: read through
+  // it to see a prop AFTER a handler ran (a +/- button that just went disabled),
+  // rather than the value frozen at render time.
+  fields.push({ kind, live: props, ...Object.fromEntries(Object.keys(props).map((key) => [key, props[key]])) });
   return null;
 };
 
@@ -66,6 +75,7 @@ export const Select = record('select');
 export const Input = record('input');
 export const Checkbox = record('checkbox');
 export const Button = record('button');
+export const Label = record('label');
 
 export let onSaveCharacter = null;
 

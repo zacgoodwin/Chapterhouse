@@ -24,6 +24,16 @@ test('tlcConfig inherits keys that only dnd2024.json declares', () => {
   assert.equal(tlcConfig.classes.rogue.subclasses.gambler.name.en, 'Gambler');
 });
 
+// The subclass picker renders these names verbatim, so a typo in the base JSON
+// ships straight to the TLC surface (issue #80: "Anjurer").
+test('the wizard subclass picker spells every subclass correctly', () => {
+  assert.equal(dnd2024Config.classes.wizard.subclasses.abjurer.name.en, 'Abjurer');
+  assert.deepEqual(
+    Object.values(tlcConfig.classes.wizard.subclasses).map((subclass) => subclass.name.en).sort(),
+    ['Abjurer', 'Diviner', 'Evoker', 'Illusionist', 'Technomancer']
+  );
+});
+
 test('tlcConfig lets tlc.json override, arrays wholesale', () => {
   assert.deepEqual(dnd2024Config.species.dwarf.sizes, ['small']);
   assert.deepEqual(tlcConfig.species.dwarf.sizes, ['medium']);
