@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.5.4.0] - 2026-08-13
+### Added
+- Leyfarer characters are built with point buy: a 27-point budget, scores from 8 to 15, and a live remaining-points counter that stops you going over or out of range
+- the character sheet and the character list now agree on species names, so the 12 Leyfarer-only species (birdfolk, catfolk, fabricated, frogfolk, hyenafolk, kobold, lizardfolk, nereid, otterfolk, ratfolk, snailfolk, turtlefolk) read properly on the sheet instead of showing a dash
+### Fixed
+- the Wizard subclass reads "Abjurer", not "Anjurer"
+- Leyfarer characters no longer fall through to D&D 2024 data on the sheet: spells, abilities, skills, info, professions, class levels, wild shapes and bonuses all read the Leyfarer config
+### Changed
+- the frontend test suite gained a jsdom lane, so the two Leyfarer routing branches that no test could reach are now covered, plus a Playwright suite that exercises the same surfaces against the deployed dev instance
+
 ## [0.5.1.0] - 2026-07-23
 ### Added
 - the app lives at https://chapterhouse.tools (plus www) with its own TLS certs; chapterhouse.fly.dev still works
