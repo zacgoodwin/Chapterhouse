@@ -8,7 +8,8 @@
     "watch": "node esbuild.watch.config.js",
     "build": "node esbuild.config.js",
     "lint": "eslint app/javascript",
-    "test": "node --test \"spec/javascript/*.test.js\""
+    "test": "node --test \"spec/javascript/*.test.js\"",
+    "eval:e2e": "playwright test"
   },
   "dependencies": {
     "@babel/core": "^7.20.12",
@@ -20,10 +21,12 @@
     "solid-js": "^1.8.21"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "esbuild": "^0.24.0",
     "eslint": "^9.9.0",
     "eslint-plugin-solid": "^0.14.2",
-    "globals": "^17.7.0"
+    "globals": "^17.7.0",
+    "jsdom": "^30.0.1"
   },
   "eslintConfig": {
     "globals": {
@@ -32,6 +35,6 @@
     }
   },
   "engines": {
-    "node": ">=22.15.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   }
 }

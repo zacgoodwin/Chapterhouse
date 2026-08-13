@@ -57,8 +57,8 @@ export const CharacterTab = (props) => {
         {/* Interim scaffolding (plan L420-421): tlc borrows the Dnd5 sheet until
             the dedicated TLC sheet lands in D2. Kept as its own Match, not folded
             into the dnd2024 one, so D2 is a one-line component swap.
-            No automated gate: character() arrives from a fetch in an effect, which
-            SSR never runs, so `npm test` cannot reach this (README, Frontend tests). */}
+            Gated by spec/javascript/tlcRouting.test.js: character() arrives from a
+            fetch in an effect, so only the jsdom lane reaches this Match. */}
         <Match when={character().provider === 'tlc'}>
           <Dnd5 character={character()} onReloadCharacter={reloadCharacter} onReplaceCharacter={replaceCharacter} />
         </Match>
