@@ -36,7 +36,6 @@ export const Dnd2024Spells = nullComponent;
 export const Dnd5Info = nullComponent;
 export const Dnd2024Bonuses = nullComponent;
 // components barrel
-export const Label = nullComponent;
 export const CharacterNavigation = nullComponent;
 export const Equipment = nullComponent;
 export const Notes = nullComponent;
