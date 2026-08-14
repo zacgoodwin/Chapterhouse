@@ -3,23 +3,15 @@
 module CharactersContext
   module Dnd5
     class UpdateCommand < BaseCommand
+      include CharactersContext::AvatarAttaching
+      include CharactersContext::CharacterOptions
+      include CharactersContext::CoinsSyncing
       include Deps[
         attach_avatar_by_url: 'commands.image_processing.attach_avatar_by_url',
         attach_avatar_by_file: 'commands.image_processing.attach_avatar_by_file',
         refresh_feats: 'services.characters_context.dnd5.refresh_feats',
         cache: 'cache.avatars'
       ]
-
-      SKILLS = %w[
-        acrobatics animal arcana athletics deception history insight intimidation investigation
-        medicine nature perception performance persuasion religion sleight stealth survival
-      ].freeze
-      WEAPON_CORE_SKILLS = %w[light martial].freeze
-      ARMOR_PROFICIENCY = %w[light medium heavy shield].freeze
-      DAMAGE_TYPES = %w[
-        bludge pierce slash acid cold fire force lighting necrotic
-        poison psychic radiant thunder
-      ].freeze
 
       # rubocop: disable Metrics/BlockLength
       use_contract do
@@ -104,7 +96,7 @@ module CharactersContext
       def lock_key(input) = "character_update_#{input[:character].id}"
       def lock_time = 0
 
-      # rubocop: disable Metrics/AbcSize, Metrics/PerceivedComplexity
+      # rubocop: disable Metrics/AbcSize
       def do_prepare(input)
         if input[:classes]
           input[:level] = input[:classes].values.sum(&:to_i)
@@ -122,13 +114,7 @@ module CharactersContext
           input[:hit_dice][::Dnd5::Character::HIT_DICES[key]] += class_level
         end
 
-        if input.key?(:money)
-          gold, modulus = input[:money].divmod(100)
-          silver, copper = modulus.divmod(10)
-          input[:coins] = { copper: copper, silver: silver, gold: gold }
-        elsif input.key?(:coins)
-          input[:money] = (input.dig(:coins, :gold) * 100) + (input.dig(:coins, :silver) * 10) + input.dig(:coins, :copper)
-        end
+        sync_coins_and_money(input)
       end
 
       def do_persist(input)
@@ -145,7 +131,7 @@ module CharactersContext
 
         { result: input[:character] }
       end
-      # rubocop: enable Metrics/AbcSize, Metrics/PerceivedComplexity
+      # rubocop: enable Metrics/AbcSize
 
       def refresh_spells(input)
         input[:added_classes].each do |added_class|
@@ -165,18 +151,6 @@ module CharactersContext
         input[:removed_classes].each do |removed_class|
           input[:character].spells.where("data -> 'prepared_by' ? :prepared_by", prepared_by: removed_class).delete_all
         end
-      end
-
-      def upload_avatar(input) # rubocop: disable Metrics/AbcSize
-        return if input.slice(:avatar_file, :avatar_url, :file).keys.blank?
-
-        attach_avatar_by_file.call({ character: input[:character], file: input[:avatar_file] }) if input[:avatar_file]
-        attach_avatar_by_url.call({ character: input[:character], url: input[:avatar_url] }) if input[:avatar_url]
-        return unless input[:file]
-
-        input[:character].avatar.attach(input[:file])
-        cache.push_item(item: input[:character].avatar)
-      rescue StandardError => _e
       end
     end
   end

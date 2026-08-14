@@ -9,20 +9,16 @@ module CharactersContext
     # eval_variables / description_eval_variables (Ruby-eval'd feat columns —
     # plan §Security T4). Config-derived enums read the dnd2024 baseline (plan P4).
     class UpdateCommand < BaseCommand
+      include CharactersContext::AvatarAttaching
+      include CharactersContext::CharacterOptions
+      include CharactersContext::ClassSpellFeats
+      include CharactersContext::CoinsSyncing
       include Deps[
         attach_avatar_by_url: 'commands.image_processing.attach_avatar_by_url',
         attach_avatar_by_file: 'commands.image_processing.attach_avatar_by_file',
         refresh_feats: 'services.characters_context.tlc.refresh_feats',
         cache: 'cache.avatars'
       ]
-
-      SKILLS = %w[
-        acrobatics animal arcana athletics deception history insight intimidation investigation
-        medicine nature perception performance persuasion religion sleight stealth survival
-      ].freeze
-      WEAPON_CORE_SKILLS = %w[light martial].freeze
-      ARMOR_PROFICIENCY = %w[light medium heavy shield].freeze
-      DAMAGE_TYPES = %w[bludge pierce slash acid cold fire force lighting necrotic poison psychic radiant thunder].freeze
 
       # plan §Security threats 2/3: bound + dedupe the JSONB trait array.
       SELECTED_TRAITS_CAP = 10
@@ -168,13 +164,7 @@ module CharactersContext
           end
         end
 
-        if input.key?(:money)
-          gold, modulus = input[:money].divmod(100)
-          silver, copper = modulus.divmod(10)
-          input[:coins] = { copper: copper, silver: silver, gold: gold }
-        elsif input.key?(:coins)
-          input[:money] = (input.dig(:coins, :gold) * 100) + (input.dig(:coins, :silver) * 10) + input.dig(:coins, :copper)
-        end
+        sync_coins_and_money(input)
 
         if input.key?(:abilities)
           input[:ability_boosts] = 0
@@ -199,53 +189,15 @@ module CharactersContext
         if %i[classes subclasses selected_features selected_feats].intersect?(input.keys)
           refresh_feats.call(character: input[:character])
         end
-        refresh_spells(input) if input[:classes]
+        refresh_class_spells(input) if input[:classes]
         upload_avatar(input)
 
         { result: input[:character] }
       end
 
-      def refresh_spells(input) # rubocop: disable Metrics/AbcSize
-        input[:added_classes].each do |added_class|
-          next if ::Dnd2024::Character::CLASSES_KNOW_SPELLS_LIST.exclude?(added_class)
-
-          relation = ::Feat.tlc_content.where(origin: 6).where('origin_values && ?', "{#{added_class}}")
-          spells =
-            relation.where(user_id: [nil, input[:character].user_id]).or(relation.where(id: homebrew_item_ids(input)))
-            .map do |feat|
-              {
-                character_id: input[:character].id,
-                feat_id: feat.id,
-                ready_to_use: false,
-                value: { prepared_by: added_class }
-              }
-            end
-          ::Character::Feat.upsert_all(spells) if spells.any?
-        end
-
-        input[:removed_classes].each do |removed_class|
-          input[:character].feats.where("value -> 'prepared_by' ? :prepared_by", prepared_by: removed_class).delete_all
-        end
-      end
-
-      def homebrew_item_ids(input)
-        ::Homebrew::Book::Item
-          .where(homebrew_book_id: ::User::Book.where(user_id: input[:character].user).select(:homebrew_book_id))
-          .where(itemable_type: %w[Dnd2024::Feat Tlc::Feat])
-          .pluck(:itemable_id)
-      end
-
-      def upload_avatar(input) # rubocop: disable Metrics/AbcSize
-        return if input.slice(:avatar_file, :avatar_url, :file).keys.blank?
-
-        attach_avatar_by_file.call({ character: input[:character], file: input[:avatar_file] }) if input[:avatar_file]
-        attach_avatar_by_url.call({ character: input[:character], url: input[:avatar_url] }) if input[:avatar_url]
-        return unless input[:file]
-
-        input[:character].avatar.attach(input[:file])
-        cache.push_item(item: input[:character].avatar)
-      rescue StandardError => _e
-      end
+      # TLC reads the union content scope, and owns both dnd2024 and tlc homebrew feats.
+      def spell_feats_scope = ::Feat.tlc_content
+      def homebrew_feat_types = %w[Dnd2024::Feat Tlc::Feat]
     end
   end
 end
