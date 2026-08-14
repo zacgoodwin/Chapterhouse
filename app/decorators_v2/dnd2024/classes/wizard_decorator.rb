@@ -27,7 +27,7 @@ module Dnd2024
       end
 
       def spells_slots
-        ::Dnd2024::SubclassDecorator::SPELL_SLOTS[class_level] || ::Dnd2024::SubclassDecorator::SPELL_SLOTS[20]
+        SpellSlots::FULL_CASTER[class_level] || SpellSlots::FULL_CASTER[20]
       end
 
       def class_level
@@ -51,7 +51,7 @@ module Dnd2024
       end
 
       def max_spell_level
-        ::Dnd2024::SubclassDecorator::SPELL_SLOTS[class_level].keys.max
+        SpellSlots::FULL_CASTER[class_level].keys.max
       end
     end
   end

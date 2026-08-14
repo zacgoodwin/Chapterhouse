@@ -1,4 +1,4 @@
-import { Switch, Match, splitProps } from 'solid-js';
+import { splitProps } from 'solid-js';
 
 import { Label } from './Label';
 
@@ -17,31 +17,16 @@ export const Input = (props) => {
   return (
     <div class={props.containerClassList}>
       <Label { ...labelProps } />
-      <Switch
-        fallback={
-          <input
-            type="text"
-            class={INPUT_STYLES}
-            placeholder={props.placeholder || ''}
-            onInput={(e) => props.onInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={props.value}
-          />
-        }
-      >
-        <Match when={props.numeric}>
-          <input
-            type="number"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            class={INPUT_STYLES}
-            placeholder={props.placeholder || ''}
-            onInput={(e) => props.onInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={props.value}
-          />
-        </Match>
-      </Switch>
+      <input
+        type={props.numeric ? 'number' : 'text'}
+        pattern={props.numeric ? '[0-9]*' : undefined}
+        inputmode={props.numeric ? 'numeric' : undefined}
+        class={INPUT_STYLES}
+        placeholder={props.placeholder || ''}
+        onInput={(e) => props.onInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        value={props.value}
+      />
     </div>
   );
 }

@@ -26,7 +26,7 @@ module Dnd5Character
       end
 
       def spells_slots
-        @spells_slots ||= ::Dnd5Character::ClassDecorateWrapper::SPELL_SLOTS[class_level]
+        @spells_slots ||= SpellSlots::FULL_CASTER[class_level]
       end
 
       private
@@ -52,7 +52,7 @@ module Dnd5Character
       end
 
       def max_spell_level
-        ::Dnd5Character::ClassDecorateWrapper::SPELL_SLOTS[class_level].keys.max
+        SpellSlots::FULL_CASTER[class_level].keys.max
       end
     end
   end

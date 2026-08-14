@@ -1,4 +1,4 @@
-import { Switch, Match, splitProps } from 'solid-js';
+import { splitProps } from 'solid-js';
 
 import { Label } from './Label';
 
@@ -12,56 +12,30 @@ export const Input = (props) => {
     props.onKeyDown(event);
   }
 
+  const type = () => {
+    if (props.numeric) return 'number';
+    if (props.password) return 'password';
+
+    return 'text';
+  }
+
   return (
     <div class={props.containerClassList}>
       <Label { ...labelProps } />
-      <Switch
-        fallback={
-          <input
-            type="text"
-            class="default-input"
-            classList={{
-              'h-8! text-sm': props.size === 'small'
-            }}
-            placeholder={props.placeholder || ''}
-            onInput={(e) => props.onInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={props.value}
-            dataTestId={props.dataTestId}
-          />
-        }
-      >
-        <Match when={props.numeric}>
-          <input
-            type="number"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            class="default-input"
-            classList={{
-              'h-8! text-sm': props.size === 'small'
-            }}
-            placeholder={props.placeholder || ''}
-            onInput={(e) => props.onInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={props.value}
-            dataTestId={props.dataTestId}
-          />
-        </Match>
-        <Match when={props.password}>
-          <input
-            type="password"
-            class="default-input"
-            classList={{
-              'h-8! text-sm': props.size === 'small'
-            }}
-            placeholder={props.placeholder || ''}
-            onInput={(e) => props.onInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={props.value}
-            dataTestId={props.dataTestId}
-          />
-        </Match>
-      </Switch>
+      <input
+        type={type()}
+        pattern={props.numeric ? '[0-9]*' : undefined}
+        inputmode={props.numeric ? 'numeric' : undefined}
+        class="default-input"
+        classList={{
+          'h-8! text-sm': props.size === 'small'
+        }}
+        placeholder={props.placeholder || ''}
+        onInput={(e) => props.onInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        value={props.value}
+        dataTestId={props.dataTestId}
+      />
     </div>
   );
 }
